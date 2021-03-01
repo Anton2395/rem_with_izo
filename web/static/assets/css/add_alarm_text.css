@@ -92,13 +92,13 @@ div h5{
 input{
     border: 1px solid #9098AF;
     border-radius: 4px;
-    height: 50%;
-    width: 100%;
     font-family: 'Montserrat';
     font-style: normal;
     font-weight: 500;
     font-size: 18px;
     line-height: 12px;
+    height: 24px;
+    width: 400px;
 
 
 }
@@ -110,4 +110,17 @@ input{
     background: no-repeat url(../img/btn_back.svg);
     border: none;
     margin-left: 20px;
+}
+
+textarea{
+    border: 1px solid #9098AF;
+    border-radius: 4px;
+    font-family: 'Montserrat';
+    font-style: normal;
+    font-weight: 500;
+    font-size: 18px;
+    line-height: 12px;
+    margin-top: 8px;
+    height: 24px;
+    width: 400px;
 }
