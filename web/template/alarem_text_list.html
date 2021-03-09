@@ -5,6 +5,14 @@
     <!-- <link rel="stylesheet" href="/assets/bootstrap/css/bootstrap.min.css"> -->
     <link rel="stylesheet" href="/assets/css/alarm_text.css">
     <link rel="stylesheet" href="/assets/css/global_setting.css">
+    <script>
+    function clicked(e)
+    {
+        if(!confirm('Are you sure?')) {
+            e.preventDefault();
+        }
+    }
+    </script>
 </head>
 
 <body>
@@ -45,7 +53,7 @@
                 <td style="width: 160px;">
                     <form method="post" , action="/alarm_text/del">
                         <input type=hidden name="del" value={{i.id}}>
-                        <button class="btn_delete_alarm" type="submit">Delete</button>
+                        <button class="btn_delete_alarm" type="submit" onclick="clicked(event)">Delete</button>
                     </form>
                 </td>
 
