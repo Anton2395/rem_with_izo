@@ -1,29 +1,29 @@
 from sqlalchemy.orm import sessionmaker
 from web.app import Connections, ListValue, Alarms, Text_Alarm
 from sqlalchemy import create_engine
-engine = create_engine('sqlite:///test.db', echo=True)
+engine = create_engine('sqlite:///test.db', echo=False)
 Session = sessionmaker(bind=engine)
 
 
 def get_list_connections():
     session = Session()
-    value_list = []
-    k = session.query(ListValue).all()
-    for i in k:
-        val = {
-            "name": i.name,
-            "start": i.start,
-            "type": str(i.type_value),
-            "table": str(i.type_table),
-            "divide": i.divide,
-            "if_change": i.if_change,
-            "byte_bind": i.byte_bind,
-            "bit_bind": i.bit_bind
-        }
-        value_list.append(val)
     list_connections = []
     k = session.query(Connections).all()
     for i in k:
+        k = session.query(ListValue).filter_by(connections_id=i.id)
+        value_list = []
+        for j in k:
+            val = {
+                "name": j.name,
+                "start": j.start,
+                "type": str(j.type_value),
+                "table": str(j.type_table),
+                "divide": j.divide,
+                "if_change": j.if_change,
+                "byte_bind": j.byte_bind,
+                "bit_bind": j.bit_bind
+            }
+            value_list.append(val)
         connect = {
             "name": i.name,
             "ip": i.ip,
@@ -74,3 +74,4 @@ def get_alarm_all_world():
             }
             alarm_world.append(k)
     return alarm_world
+

@@ -9,13 +9,21 @@ TOKEN = 'tokenstart3dje34dfjd'
 SOCKET_PORT = 8084
 
 # подключение к базе данных
+# DB = {
+#     'driver': 'postgres',
+#     'dbName': 'test1',
+#     'host': 'localhost',
+#     'port': 5432,
+#     'user': "lex",
+#     'pass': '123',
+# }
 DB = {
     'driver': 'postgres',
-    'dbName': 'test1',
+    'dbName': 'tecmintdb',
     'host': 'localhost',
     'port': 5432,
-    'user': "lex",
-    'pass': '123',
+    'user': 'admin',
+    'pass': 'admin',
 }
 
 

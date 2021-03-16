@@ -1,15 +1,14 @@
-from cprint import cprint
 from flask import Flask, render_template, request, redirect, url_for
-
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, Integer, String, ForeignKey, Boolean
 from sqlalchemy.orm import sessionmaker, relationship
 from sqlalchemy import create_engine
 from sqlalchemy_utils.types.choice import ChoiceType
 
-from data import list_connections
 
-engine = create_engine('sqlite:///test.db', echo=True)
+# БД
+#######################################################
+engine = create_engine('sqlite:///test.db', connect_args={'check_same_thread': False}, echo=False)
 base = declarative_base()
 
 
@@ -29,7 +28,7 @@ class Connections(base):
 class ListValue(base):
     TYPES = [
         ('int', 'int'),
-        ('real', 'float'),
+        ('real', 'real'),
         ('bool', 'bool'),
         ('double', 'double')
     ]
@@ -80,6 +79,8 @@ class Text_Alarm(base):
 base.metadata.create_all(engine)
 
 Session = sessionmaker(bind=engine)
+##########################################################################
+
 
 app = Flask('opc', static_url_path='', static_folder='web/static', template_folder='web/template')
 connections = []
@@ -115,9 +116,11 @@ def add_alarm_text():
 
 @app.route('/alarm_text/del', methods=['POST'])
 def alarm_text_del():
+    # from data import pr
     id = request.form['del']
     session = Session()
     a = session.query(Text_Alarm).get(id)
+    # pr[a.name].kill()
     session.delete(a)
     session.commit()
     return redirect(url_for('alarm_text'))
@@ -205,10 +208,6 @@ def updata_connections():
 def del_connections():
     id = request.form['id']
     session = Session()
-    # b = session.query(ListValue).filter_by(connections_id=id)
-    # for i in b:
-    #     session.delete(i)
-    #     session.commit()
     a = session.query(Connections).get(id)
     session.delete(a)
     session.commit()
@@ -405,34 +404,6 @@ def up_alarm(id_alarm_text, id_alarm):
     session.commit()
     return redirect(url_for('alarm_list', id_alarm_text=id_alarm_text))
 
-
-# @app.route('/yyyyyyyyy', methods=['POST'])
-# def valuelistsasha():
-#     session = Session()
-#     for i in list_data:
-#         a = ListValue(name=i['name'], offset=i['start'], type_value=i['type'], type_table=i['table'],
-#                       connections_id=1, itarable=i['itarable'], divide=i['divide'], if_change=i['if_change'],
-#                       byte_bind=['byte_bind'], bit_bind=i['bit_bind'])
-#         session.add(a)
-#         session.commit()
-#     for i in list_data_not_speed_s300:
-#         a = ListValue(name=i['name'], offset=i['start'], type_value=i['type'], type_table=i['table'],
-#                       connections_id=1, itarable=i['itarable'], divide=i['divide'], if_change=i['if_change'],
-#                       byte_bind=['byte_bind'], bit_bind=i['bit_bind'])
-#
-#     id = Column(Integer, primary_key=True)
-#     name = Column(String, nullable=False)
-#     offset = Column(Integer, nullable=False)
-#     type_value = Column(ChoiceType(TYPES))
-#     type_table = Column(ChoiceType(TYPES))
-#     connections_id = Column(Integer, ForeignKey('connections.id'))
-#     # connections = relationship(Connections, cascade="all,delete", backref="value")
-#     ?itarable
-#     divide = Column(Boolean, default=False)
-#     if_change = Column(Boolean, default=False)
-#     byte_bind = Column(Integer, nullable=False)
-#     bit_bind = Column(Integer, nullable=False)
-#     ?alarms_id = Column(Integer, ForeignKey('alarms.id'))
 
 @app.route('/alarm_text/<int:id_alarm_text>/alarm/del/<int:id_alarm>', methods=['POST'])
 def del_alarm(id_alarm_text, id_alarm):
