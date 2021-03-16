@@ -355,3 +355,20 @@ PLC_init = {
 }
 
 result_query = {}
+
+
+data_for_restart = {}
+count = 0
+
+from get_alarm_and_list_connections import get_list_connections
+from core.processor import StartProcessOpcForConnectToPLC
+import time
+
+
+
+
+
+
+def get_status_con():
+    statuses_connection = mp.Array('i', [0 for i in get_list_connections()])
+    return statuses_connection
