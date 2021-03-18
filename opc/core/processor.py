@@ -74,13 +74,13 @@ class StartProcessOpcForConnectToPLC(Process):
 
     def __reconect_to_plc(self) -> bool:
         """пере подключение к плк в случае ошибки валидации данных"""
-        cprint.cprint.warn("Переподключаюсь к ПЛК %s" % self.address)
+        cprint.cprint.warn("Connect to PLC %s" % self.address)
         self.client.destroy()
         try:
             self.client = snap7.client.Client()
             self.client.set_connection_type(3)
             self.client.connect(self.address, self.rack, self.slot, tcpport=self.port)
-            cprint.cprint.info("Удачно подключился к %s" % self.address)
+            cprint.cprint.info("Good connect to %s" % self.address)
             return True
         except:
             time.sleep(3)
@@ -88,7 +88,7 @@ class StartProcessOpcForConnectToPLC(Process):
 
     def __create_table_if_not_exist(self) -> None:
         """фнкция создания таблиц в БД"""
-        cprint.cprint.info("Создаем таблицы")
+        cprint.cprint.info("Create table")
         self._c.execute('''CREATE TABLE IF NOT EXISTS mvlab_alarms \
         (key serial primary key,now_time TIMESTAMP  WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP, \
         text_alarm TEXT, status int, type_alarm VARCHAR(100), object_alarm TEXT)''')

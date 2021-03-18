@@ -361,12 +361,6 @@ data_for_restart = {}
 count = 0
 
 from get_alarm_and_list_connections import get_list_connections
-from core.processor import StartProcessOpcForConnectToPLC
-import time
-
-
-
-
 
 
 def get_status_con():

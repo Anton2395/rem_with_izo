@@ -8,7 +8,7 @@ from cprint import cprint
 import data
 from core.processor import StartProcessOpcForConnectToPLC
 
-from core.socket_server import start_socket
+# from core.socket_server import start_socket
 # from data import list_connections, statuses_connection
 from settings import createConnection
 from web.app import run_flask
@@ -106,13 +106,21 @@ def restart_process_if_not_alive(p):
             count=data_for_restart[p]['count']
         )
 
-
+def main1():
+    while True:
+        print('1')
+        time.sleep(1)
 
 
 
 
 if __name__ == '__main__':
-    #add_to_bd_connections()
+    # add_to_bd_connections()
+    # print('hi2')
     proc = Process(target=run_flask, args=(statuses_connection,))
     proc.start()
+    # print('hi1')
+    # proc1 = Process(target=main1)
+    # proc1.start()
+    # proc1.join()
     main()

@@ -17,13 +17,21 @@ SOCKET_PORT = 8084
 #     'user': "lex",
 #     'pass': '123',
 # }
+# DB = {
+#     'driver': 'postgres',
+#     'dbName': 'tecmintdb',
+#     'host': 'localhost',
+#     'port': 5432,
+#     'user': 'admin',
+#     'pass': 'admin',
+# }
 DB = {
     'driver': 'postgres',
-    'dbName': 'tecmintdb',
-    'host': 'localhost',
-    'port': 5432,
-    'user': 'admin',
-    'pass': 'admin',
+    'dbName': 'db1',
+    'host': '10.0.0.2',
+    'port': 15432,
+    'user': 'mvlab',
+    'pass': 'z1x2c3',
 }
 
 

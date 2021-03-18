@@ -1,4 +1,3 @@
-import gzip
 import json
 import math
 import socket
@@ -7,9 +6,9 @@ import time
 
 from cprint import cprint
 
-from core.teldafax_dashboard_data import PlcRemoteUse
-from data import list_connections, statuses_connection, PLC_init, result_query
-from settings import SOCKET_PORT
+from opc.core.teldafax_dashboard_data import PlcRemoteUse
+from opc.data import list_connections, statuses_connection, PLC_init, result_query
+from opc.settings import SOCKET_PORT
 
 
 def start_socket():

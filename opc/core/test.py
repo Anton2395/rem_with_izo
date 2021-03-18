@@ -5,8 +5,8 @@ import time
 from unittest import TestCase
 import multiprocessing as mp
 
-from core.processor import StartProcessOpcForConnectToPLC
-from core.socket_server import listen_server_mvlab
+from opc.core import StartProcessOpcForConnectToPLC
+from opc.core import listen_server_mvlab
 
 
 class TestSocetServerRun(TestCase):

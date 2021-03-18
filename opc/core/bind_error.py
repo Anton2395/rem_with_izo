@@ -1,6 +1,5 @@
 import datetime
 import threading
-import asyncio
 from cprint import cprint
 
 from settings import createConnection

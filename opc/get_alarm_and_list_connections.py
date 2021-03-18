@@ -16,8 +16,8 @@ def get_list_connections():
             val = {
                 "name": j.name,
                 "start": j.start,
-                "type": str(j.type_value),
-                "table": str(j.type_table),
+                "type": j.type_value.value,
+                "table": j.type_table.value,
                 "divide": j.divide,
                 "if_change": j.if_change,
                 "byte_bind": j.byte_bind,
@@ -35,6 +35,7 @@ def get_list_connections():
             "value_list": value_list
         }
         list_connections.append(connect)
+    session.close()
     return list_connections
 
 
@@ -74,4 +75,3 @@ def get_alarm_all_world():
             }
             alarm_world.append(k)
     return alarm_world
-
