@@ -1,0 +1,68 @@
+---
+version: '3.9'
+
+services:
+
+  postgres:
+    container_name: postgres_container
+    image: postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: mvlab
+      POSTGRES_PASSWORD: z1x2c3
+      POSTGRES_DB: db1
+      PGDATA: /data/postgres
+    volumes:
+       - postgres:/data/postgres
+      #  - ./volume/DB/:/data/postgres
+    ports:
+      - "15432:5432"
+    networks:
+      mvlab_network:
+        ipv4_address: 10.0.0.2
+
+  pgadmin:
+    container_name: pgadmin_container
+    image: dpage/pgadmin4:5.0
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-nr@mvlab.by}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-z1x2c3}
+    volumes:
+       - pgadmin:/root/.pgadmin
+      # - ./volume/pgadmin_data/:/root/.pgadmin
+    ports:
+      - "${PGADMIN_PORT:-5050}:80"
+    networks:
+      - mvlab_network
+    restart: unless-stopped
+
+
+  opc:
+    container_name: opc_server
+    build: ./opc
+    command: python3 main.py
+    restart: always
+    volumes:
+      - ./opc:/code
+    ports:
+      - 5001:5001
+    networks:
+      - mvlab_network
+
+
+networks:
+  mvlab_network:
+    driver: bridge
+    enable_ipv6: false
+    ipam:
+        # driver: default
+        config:
+          - subnet: 10.0.0.0/24
+          # - gateway: '10.0.0.1'
+
+volumes:
+    postgres:
+    pgadmin:
+#    web_data:
+#     api_data:
+#     opc_data:
