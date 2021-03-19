@@ -1,0 +1,22 @@
+li{
+    
+    font-size: 12px;
+    color: #90A1B1;
+ 
+    align-items: center;
+    list-style-type: none;
+    margin-left: -33px;
+    
+}
+img{
+   align-items: center; 
+   margin-right:12px ;
+ 
+}
+.dropdownMenu{
+    border: solid 2px #90A1B1;
+    width: 120px;
+    height: 172px;
+  background-color: white;
+  
+}
