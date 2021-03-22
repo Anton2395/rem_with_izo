@@ -18,12 +18,19 @@ data_for_restart = {}
 
 from get_alarm_and_list_connections import get_list_connections, get_alarm_all_world
 import multiprocessing as mp
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+from web.app import Connections
+from settings import DB
+from sqlalchemy import desc
 
+engine = create_engine('postgresql+psycopg2://' + DB['user'] + ':' + DB['pass'] + '@' + DB['host'] + '/' + DB['dbName'])
+Session = sessionmaker(bind=engine)
 
 list_connections = get_list_connections()
 statuses_connection = mp.Array('i', [0 for i in list_connections])
 
-
+ses = Session()
 
 def main():
     while True:
@@ -65,11 +72,14 @@ def main():
                 restart_process_if_not_alive(p)
                 print(pr[p].is_alive(), 'process', p)
             for a in statuses_connection:
+                for index, (value1, value2) in enumerate(zip(statuses_connection, ses.query(Connections).order_by(Connections.id))):
+                    value2.status = value1
+                    ses.commit()
                 print(a)
             time.sleep(1)
             if list_connections != get_list_connections():
                 for i in pr:
-                    pr[i].kill()
+                    pr[i].terminate()
                 break
 
 
@@ -92,7 +102,7 @@ def add_to_bd_connections():
 def restart_process_if_not_alive(p):
     if (not pr[p].is_alive()):
         cprint.err("restart process %s" % p)
-        pr[p].kill()
+        pr[p].terminate()
         pr[p] = StartProcessOpcForConnectToPLC(
             data_for_restart[p]['ip'],
             data_for_restart[p]['rack'],
@@ -116,11 +126,6 @@ def main1():
 
 if __name__ == '__main__':
     # add_to_bd_connections()
-    # print('hi2')
     proc = Process(target=run_flask, args=(statuses_connection,))
     proc.start()
-    # print('hi1')
-    # proc1 = Process(target=main1)
-    # proc1.start()
-    # proc1.join()
     main()
