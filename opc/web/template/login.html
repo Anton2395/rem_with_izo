@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="/assets/css/login.css">
+    <link rel="stylesheet" href="/assets/css/global_setting.css">
+</head>
+<body>
+    <div class="login">
+        <div class="header_login">  
+            <h2>Login page</h2>
+            <a href="#"><button class="btn_back" type="submit"></button> </a>
+        </div>
+        <div class="table_and_btn">
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    {% for message in messages %}
+                       <h5 style="color: #30307A;
+                                text-align: center;
+                                font-family: 'Montserrat';
+                                font-style: normal;
+                                font-weight: 700;
+                                font-size: 16px;">{{message}}</h5>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <form method="POST">
+                <table class="input_login">
+                    <tr>
+                        <th>login</td>
+                        <td><input type="text" name="login"></td>
+                    </tr>
+                    <tr>
+                        <td>password</td>
+                        <td><input type="password" name="password"></td>
+                    </tr>
+                    <tr>
+                       <td><input class = "submit_btn" type="submit" value="LogIn"></td>
+                    </tr>
+                </table>
+
+            </form>
+        </div>
+    </div>
+
+</body>
+</html>

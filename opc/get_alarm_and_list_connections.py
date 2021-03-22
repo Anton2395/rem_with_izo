@@ -1,14 +1,16 @@
 from sqlalchemy.orm import sessionmaker
 from web.app import Connections, ListValue, Alarms, Text_Alarm
 from sqlalchemy import create_engine
-engine = create_engine('sqlite:///test.db', echo=False)
+from settings import DB
+
+engine = create_engine('postgresql+psycopg2://' + DB['user'] + ':' + DB['pass'] + '@' + DB['host'] + '/' + DB['dbName'])
 Session = sessionmaker(bind=engine)
 
 
 def get_list_connections():
     session = Session()
     list_connections = []
-    k = session.query(Connections).all()
+    k = session.query(Connections).order_by(Connections.id)
     for i in k:
         k = session.query(ListValue).filter_by(connections_id=i.id)
         value_list = []
