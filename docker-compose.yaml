@@ -11,6 +11,7 @@ services:
       POSTGRES_PASSWORD: z1x2c3
       POSTGRES_DB: db1
       PGDATA: /data/postgres
+      TZ: Europe/Minsk
     volumes:
       - postgres:/data/postgres
       #  - ./volume/DB/:/data/postgres
@@ -26,6 +27,8 @@ services:
     environment:
       PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-nr@mvlab.by}
       PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-z1x2c3}
+      TZ: Europe/Minsk
+
     volumes:
       - pgadmin:/root/.pgadmin
       # - ./volume/pgadmin_data/:/root/.pgadmin
@@ -41,6 +44,8 @@ services:
     container_name: nginx_server
     image: nginx
     restart: always
+    environment:
+      - TZ=Europe/Minsk
     volumes:
       - ./temp_data:/usr/share/nginx/html
       # - web_data:/usr/share/nginx/html
@@ -49,6 +54,20 @@ services:
     networks:
       mvlab_network:
         ipv4_address: 10.0.0.4
+
+  node-red:
+    container_name: node-red
+    image: nodered/node-red:latest
+    restart: always
+    environment:
+      - TZ=Europe/Minsk
+    ports:
+      - "1880:1880"
+    volumes:
+      - ./node-red:/data      
+    networks:
+      mvlab_network:
+        ipv4_address: 10.0.0.8
 
   web:
     container_name: web_server
@@ -102,6 +121,7 @@ services:
     networks:
       mvlab_network:
         ipv4_address: 10.0.0.7
+      
 
 networks:
   mvlab_network:
