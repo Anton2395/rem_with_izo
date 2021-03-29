@@ -1,19 +1,18 @@
 ---
-version: '3.9'
+version: "3.9"
 
 services:
-
   postgres:
     container_name: postgres_container
     image: postgres
-    restart: unless-stopped
+    restart: always
     environment:
       POSTGRES_USER: mvlab
       POSTGRES_PASSWORD: z1x2c3
       POSTGRES_DB: db1
       PGDATA: /data/postgres
     volumes:
-       - postgres:/data/postgres
+      - postgres:/data/postgres
       #  - ./volume/DB/:/data/postgres
     ports:
       - "15432:5432"
@@ -28,41 +27,95 @@ services:
       PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-nr@mvlab.by}
       PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-z1x2c3}
     volumes:
-       - pgadmin:/root/.pgadmin
+      - pgadmin:/root/.pgadmin
       # - ./volume/pgadmin_data/:/root/.pgadmin
     ports:
       - "${PGADMIN_PORT:-5050}:80"
     networks:
-      - mvlab_network
+      mvlab_network:
+        ipv4_address: 10.0.0.3
+
     restart: unless-stopped
 
+  nginx:
+    container_name: nginx_server
+    image: nginx
+    restart: always
+    volumes:
+      - ./temp_data:/usr/share/nginx/html
+      # - web_data:/usr/share/nginx/html
+    ports:
+      - "81:80"
+    networks:
+      mvlab_network:
+        ipv4_address: 10.0.0.4
+
+  web:
+    container_name: web_server
+    build: ./web
+    # command: bash -c "npm install && npm run dev"
+    command: bash -c "
+      npm install &&
+      npm run dev"
+    volumes:
+      - ./web:/code
+      # - web_data:/code/
+    ports:
+      - "8011:80"
+    networks:
+      mvlab_network:
+        ipv4_address: 10.0.0.5
+    # restart: unless-stopped
 
   opc:
     container_name: opc_server
     build: ./opc
     command: python3 main.py
     restart: always
+    # depends_on:
+    #   - postgres
     volumes:
       - ./opc:/code
     ports:
       - 5001:5001
     networks:
-      - mvlab_network
+      mvlab_network:
+        ipv4_address: 10.0.0.6
 
+  api:
+    container_name: api_server
+    build: ./api
+    # restart: always
+    command:
+      bash -c
+      "
+      python3 manage.py makemigrations &&
+      python3 manage.py migrate &&
+      python3 manage.py runserver 0.0.0.0:50001"
+      # gunicorn --bind 0.0.0.0:50001 project_v_0_0_1.wsgi"
+    depends_on:
+      - postgres
+    volumes:
+      - ./api:/code
+    ports:
+      - 50001:50001
+    networks:
+      mvlab_network:
+        ipv4_address: 10.0.0.7
 
 networks:
   mvlab_network:
     driver: bridge
     enable_ipv6: false
     ipam:
-        # driver: default
-        config:
-          - subnet: 10.0.0.0/24
-          # - gateway: '10.0.0.1'
+      # driver: default
+      config:
+        - subnet: 10.0.0.0/24
+        # - gateway: '10.0.0.1'
 
 volumes:
-    postgres:
-    pgadmin:
-#    web_data:
+  postgres:
+  pgadmin:
+  web_data:
 #     api_data:
 #     opc_data:
