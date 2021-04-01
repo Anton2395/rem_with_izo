@@ -11,7 +11,7 @@ from settings import DB
 # БД
 #######################################################
 # engine = create_engine('sqlite:///test.db', connect_args={'check_same_thread': False}, echo=False)
-engine = create_engine('postgresql+psycopg2://' + DB['user'] + ':' + DB['pass'] + '@' + DB['host'] + '/' + DB['dbName'])
+engine = create_engine('postgresql+psycopg2://' + DB['user'] + ':' + DB['pass'] + '@' + DB['host'] + '/' + DB['dbName'], pool_size=20, max_overflow=0)
 base = declarative_base()
 
 
@@ -129,6 +129,7 @@ def login_page():
             flash('neverno')
     else:
         flash('zapolnite polya')
+    ses.close()
     return render_template('login.html')
 
 
@@ -142,6 +143,7 @@ def status(id_status):
         data = '#32CD32'
     if con_data.status == False:
         data = '#FF0000'
+    session.close()
     return data
 
 
@@ -168,6 +170,7 @@ def main():
 def alarm_text():
     session = Session()
     data = session.query(Text_Alarm).all()
+    session.close()
     return render_template('alarem_text_list.html', data=data)
 
 
@@ -186,6 +189,7 @@ def add_alarm_text():
     session = Session()
     session.add(a)
     session.commit()
+    session.close()
     return redirect(url_for('alarm_text'))
 
 
@@ -199,6 +203,7 @@ def alarm_text_del():
     # pr[a.name].kill()
     session.delete(a)
     session.commit()
+    session.close()
     return redirect(url_for('alarm_text'))
 
 
@@ -207,6 +212,7 @@ def alarm_text_del():
 def up_alarm_text_form(id_alarm_text):
     session = Session()
     data = session.query(Text_Alarm).get(id_alarm_text)
+    session.close()
     return render_template('up_alarm_text.html', alarm_text_get=data)
 
 
@@ -220,6 +226,7 @@ def up_alarm_text(id_alarm_text):
     a.name = name
     a.type = type
     session.commit()
+    session.close()
     return redirect(url_for('alarm_text'))
 
 
@@ -227,7 +234,7 @@ def up_alarm_text(id_alarm_text):
 @login_required
 def index():
     session = Session()
-    a = session.query(Connections).all()
+    a = session.query(Connections).order_by(Connections.id)
     data = []
     for i in a:
         k = {
@@ -241,6 +248,7 @@ def index():
             "id": i.id
         }
         data.append(k)
+    session.close()
     return render_template('connections_list.html', data=data)
 
 
@@ -265,6 +273,7 @@ def add_connections():
     session = Session()
     session.add(a)
     session.commit()
+    session.close()
     return redirect(url_for('index'))
 
 
@@ -297,6 +306,7 @@ def updata_connections():
     a.start = start
     a.offset = offset
     session.commit()
+    session.close()
     return redirect(url_for('index'))
 
 

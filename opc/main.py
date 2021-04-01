@@ -24,7 +24,7 @@ from web.app import Connections
 from settings import DB
 from sqlalchemy import desc
 
-engine = create_engine('postgresql+psycopg2://' + DB['user'] + ':' + DB['pass'] + '@' + DB['host'] + '/' + DB['dbName'])
+engine = create_engine('postgresql+psycopg2://' + DB['user'] + ':' + DB['pass'] + '@' + DB['host'] + '/' + DB['dbName'], pool_size=20, max_overflow=0)
 Session = sessionmaker(bind=engine)
 
 list_connections = get_list_connections()
@@ -81,7 +81,6 @@ def main():
                 for i in pr:
                     pr[i].terminate()
                 break
-
 
 def add_to_bd_connections():
     try:

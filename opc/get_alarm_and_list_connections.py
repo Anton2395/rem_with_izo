@@ -3,7 +3,7 @@ from web.app import Connections, ListValue, Alarms, Text_Alarm
 from sqlalchemy import create_engine
 from settings import DB
 
-engine = create_engine('postgresql+psycopg2://' + DB['user'] + ':' + DB['pass'] + '@' + DB['host'] + '/' + DB['dbName'])
+engine = create_engine('postgresql+psycopg2://' + DB['user'] + ':' + DB['pass'] + '@' + DB['host'] + '/' + DB['dbName'], pool_size=20, max_overflow=0)
 Session = sessionmaker(bind=engine)
 
 
@@ -15,16 +15,38 @@ def get_list_connections():
         k = session.query(ListValue).filter_by(connections_id=i.id)
         value_list = []
         for j in k:
-            val = {
-                "name": j.name,
-                "start": j.start,
-                "type": j.type_value.value,
-                "table": j.type_table.value,
-                "divide": j.divide,
-                "if_change": j.if_change,
-                "byte_bind": j.byte_bind,
-                "bit_bind": j.bit_bind
-            }
+            alarm = []
+            if j.alarms_id != "Null":
+                a = session.query(Alarms).get(j.alarms_id)
+                b = session.query(Text_Alarm).get(a.text_alarm_id)
+                al = {
+                    "bit": a.bit,
+                    "text": b.name + '-' + i.name,
+                    "type": b.type
+                }
+                alarm.append(al)
+                val = {
+                    "name": j.name,
+                    "start": j.start,
+                    "type": j.type_value.value,
+                    "table": j.type_table.value,
+                    "divide": j.divide,
+                    "if_change": j.if_change,
+                    "byte_bind": j.byte_bind,
+                    "bit_bind": j.bit_bind,
+                    "alarms": alarm
+                }
+            else:
+                val = {
+                    "name": j.name,
+                    "start": j.start,
+                    "type": j.type_value.value,
+                    "table": j.type_table.value,
+                    "divide": j.divide,
+                    "if_change": j.if_change,
+                    "byte_bind": j.byte_bind,
+                    "bit_bind": j.bit_bind
+                }
             value_list.append(val)
         connect = {
             "name": i.name,
