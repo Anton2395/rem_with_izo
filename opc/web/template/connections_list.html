@@ -5,6 +5,7 @@
     <!-- <link rel="stylesheet" href="/assets/bootstrap/css/bootstrap.min.css"> -->
     <link rel="stylesheet" href="/assets/css/connection.css">
     <link rel="stylesheet" href="/assets/css/global_setting.css">
+    <script   src="/assets/js/jquery-3.6.0.min.js"   integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="   crossorigin="anonymous"></script>
     <script>
     function clicked(e)
     {
@@ -22,7 +23,7 @@
                 <a href="/add_con"><button class="add_connection"type="submit">Add connection</button></a>
                 <!-- <input class="btn_back" type="button" onclick="history.back();"/> -->
             </div>
-            
+
             <!-- <a href="/"><button type="submit">rgrgr</button></a> -->
 
             <div class="header_btn">
@@ -42,6 +43,7 @@
                 <td>DB</td>
                 <td>start</td>
                 <td>offset</td>
+                <td>status</td>
                 <td></td>
                 <td></td>
             </tr>
@@ -55,6 +57,7 @@
                 <td>{{i.DB}}</td>
                 <td>{{i.start}}</td>
                 <td>{{i.offset}}</td>
+                <td class="{{i.id}}" name="{{i.id}}" style="width: 10px;"></td>
                 <td style="width: 160px;">
                     <form method="get" , action="/value_list/{{i.id}}">
                         <button class="btn_value_list" type="submit">Value list</button>
@@ -72,6 +75,31 @@
             {% endfor %}
         </table>
     </div>
+<script>
+        function show()
+    {
+        $.ajax({
+            url: "/",
+            cache: false,
+            success: function(html){
+                    $("#content").html(html);
+            }
+        });
+        {% for i in data %}
+        $.get('/status/{{i.id}}', function (data, status){
+        if (status == "success"){
+        $('td.{{i.id}}').css('background', data);}
+        else{
+        $('td.{{i.id}}').css('background', '#696969');
+        };
+        });
+        {% endfor %}
+    }
+    $(document).ready(function(){
+            show();
+            setInterval('show()',3000);
+    });
+</script>
 </body>
 
 </html>

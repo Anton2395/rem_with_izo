@@ -1,14 +1,17 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, flash
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, Integer, String, ForeignKey, Boolean
 from sqlalchemy.orm import sessionmaker, relationship
 from sqlalchemy import create_engine
 from sqlalchemy_utils.types.choice import ChoiceType
-
+from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user
+from werkzeug.security import check_password_hash
+from settings import DB
 
 # БД
 #######################################################
-engine = create_engine('sqlite:///test.db', connect_args={'check_same_thread': False}, echo=False)
+# engine = create_engine('sqlite:///test.db', connect_args={'check_same_thread': False}, echo=False)
+engine = create_engine('postgresql+psycopg2://' + DB['user'] + ':' + DB['pass'] + '@' + DB['host'] + '/' + DB['dbName'], pool_size=20, max_overflow=0)
 base = declarative_base()
 
 
@@ -23,7 +26,7 @@ class Connections(base):
     start = Column(Integer, nullable=False)
     offset = Column(Integer, nullable=False)
     listvalue = relationship("ListValue", cascade="all, delete")
-
+    status = Column(Boolean, default=None, nullable=True)
 
 class ListValue(base):
     TYPES = [
@@ -76,6 +79,18 @@ class Text_Alarm(base):
     alarm = relationship("Alarms", cascade="all, delete")
 
 
+class User(base, UserMixin):
+    __tablename__ = 'user'
+    id = Column(Integer, primary_key=True)
+    login = Column(String, nullable=False, unique=True)
+    password = Column(String, nullable=False)
+
+
+
+
+
+
+
 base.metadata.create_all(engine)
 
 Session = sessionmaker(bind=engine)
@@ -83,7 +98,66 @@ Session = sessionmaker(bind=engine)
 
 
 app = Flask('opc', static_url_path='', static_folder='web/static', template_folder='web/template')
+app.secret_key = 'kldjalksdjio23poekl2op3k-d3-0980qdwkslajsd89234'
+manager = LoginManager(app)
 connections = []
+
+
+
+@manager.user_loader
+def load_user(user_id):
+    ses = Session()
+    return ses.query(User).get(user_id)
+
+@app.route('/login', methods=['GET', 'POST'])
+def login_page():
+    login = request.form.get('login')
+    password = request.form.get('password')
+    ses = Session()
+    if login and password:
+        user = ses.query(User).filter_by(login=login).first()
+
+        if user and user.password == password:#check_password_hash(user.password, password):
+            login_user(user)
+
+            next_page = request.args.get('next')
+            try:
+                return redirect(next_page)
+            except:
+                return redirect(url_for('main'))
+        else:
+            flash('neverno')
+    else:
+        flash('zapolnite polya')
+    ses.close()
+    return render_template('login.html')
+
+
+@app.route('/status/<int:id_status>', methods=['GET'])
+def status(id_status):
+    session = Session()
+    con_data = session.query(Connections).get(id_status)
+    if con_data.status == None:
+        data = '#696969'
+    if con_data.status == True:
+        data = '#32CD32'
+    if con_data.status == False:
+        data = '#FF0000'
+    session.close()
+    return data
+
+
+@app.after_request
+def redirect_to_signin(response):
+    if response.status_code == 401:
+        return redirect('login' + '?next=' + request.url)
+    return response
+
+@app.route('/logout', methods=['GET', 'POST'])
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for('main'))
 
 
 @app.route('/')
@@ -92,18 +166,22 @@ def main():
 
 
 @app.route('/alarm_text')
+@login_required
 def alarm_text():
     session = Session()
     data = session.query(Text_Alarm).all()
+    session.close()
     return render_template('alarem_text_list.html', data=data)
 
 
 @app.route('/alarm_text/add_alarm_text', methods=['GET'])
+@login_required
 def add_alarm_text_form():
     return render_template('add_alarm_text.html')
 
 
 @app.route('/alarm_text/add_alarm_text', methods=['POST'])
+@login_required
 def add_alarm_text():
     name = request.form['name']
     type = request.form['type']
@@ -111,10 +189,12 @@ def add_alarm_text():
     session = Session()
     session.add(a)
     session.commit()
+    session.close()
     return redirect(url_for('alarm_text'))
 
 
 @app.route('/alarm_text/del', methods=['POST'])
+@login_required
 def alarm_text_del():
     # from data import pr
     id = request.form['del']
@@ -123,17 +203,21 @@ def alarm_text_del():
     # pr[a.name].kill()
     session.delete(a)
     session.commit()
+    session.close()
     return redirect(url_for('alarm_text'))
 
 
 @app.route('/alarm_text/up/<int:id_alarm_text>', methods=['GET'])
+@login_required
 def up_alarm_text_form(id_alarm_text):
     session = Session()
     data = session.query(Text_Alarm).get(id_alarm_text)
+    session.close()
     return render_template('up_alarm_text.html', alarm_text_get=data)
 
 
 @app.route('/alarm_text/up/<int:id_alarm_text>', methods=['POST'])
+@login_required
 def up_alarm_text(id_alarm_text):
     name = request.form['name']
     type = request.form['type']
@@ -142,22 +226,40 @@ def up_alarm_text(id_alarm_text):
     a.name = name
     a.type = type
     session.commit()
+    session.close()
     return redirect(url_for('alarm_text'))
 
 
 @app.route('/connections')
+@login_required
 def index():
     session = Session()
-    data = session.query(Connections).all()
+    a = session.query(Connections).order_by(Connections.id)
+    data = []
+    for i in a:
+        k = {
+            "name": i.name,
+            "ip": i.ip,
+            "rack": i.rack,
+            "slot": i.slot,
+            "DB": i.DB,
+            "start": i.start,
+            "offset": i.offset,
+            "id": i.id
+        }
+        data.append(k)
+    session.close()
     return render_template('connections_list.html', data=data)
 
 
 @app.route('/add_con', methods=['GET'])
+@login_required
 def con():
     return render_template('conn.html')
 
 
 @app.route('/add_con', methods=['POST'])
+@login_required
 def add_connections():
     name = request.form['name']
     ip = request.form['ip']
@@ -171,10 +273,12 @@ def add_connections():
     session = Session()
     session.add(a)
     session.commit()
+    session.close()
     return redirect(url_for('index'))
 
 
 @app.route('/updata_con/<int:id>', methods=['GET'])
+@login_required
 def up_con(id):
     session = Session()
     data = session.query(Connections).get(id)
@@ -182,6 +286,7 @@ def up_con(id):
 
 
 @app.route('/updata_con', methods=['POST'])
+@login_required
 def updata_connections():
     id = request.form['id']
     name = request.form['name']
@@ -201,10 +306,12 @@ def updata_connections():
     a.start = start
     a.offset = offset
     session.commit()
+    session.close()
     return redirect(url_for('index'))
 
 
 @app.route('/del_con', methods=['POST'])
+@login_required
 def del_connections():
     id = request.form['id']
     session = Session()
@@ -215,6 +322,7 @@ def del_connections():
 
 
 @app.route('/value_list/<int:id>', methods=['GET'])
+@login_required
 def value_list(id):
     session = Session()
     a = session.query(ListValue).filter_by(connections_id=id)
@@ -249,6 +357,7 @@ def value_list(id):
 
 
 @app.route('/value_list/<int:id>/add_value_list', methods=['GET'])
+@login_required
 def add_value_list(id):
     session = Session()
     a = session.query(Alarms).all()
@@ -260,6 +369,7 @@ def add_value_list(id):
 
 
 @app.route('/value_list/<int:id>/add_value_list', methods=['POST'])
+@login_required
 def add_value(id):
     name = request.form['name']
     start = request.form['start']
@@ -277,10 +387,12 @@ def add_value(id):
     byte_bind = request.form['byte_bind']
     bit_bind = request.form['bit_bind']
     alarm = request.form['alarm']
+    if alarm == 'Null':
+        alarm = None
     a = ListValue(name=name,
                   start=start,
-                  type_value=type_value,
-                  type_table=type_table,
+                  type_value=str(type_value),
+                  type_table=str(type_table),
                   connections_id=id,
                   divide=divide,
                   if_change=if_change,
@@ -295,6 +407,7 @@ def add_value(id):
 
 
 @app.route('/value_list/<int:id>/del', methods=['POST'])
+@login_required
 def del_value(id):
     id1 = request.form['id_val']
     session = Session()
@@ -305,6 +418,7 @@ def del_value(id):
 
 
 @app.route('/value_list/up/<int:id1>/<int:id2>', methods=['GET'])
+@login_required
 def up_value(id1, id2):
     session = Session()
     a = session.query(ListValue).get(id2)
@@ -324,6 +438,7 @@ def up_value(id1, id2):
 
 
 @app.route('/value_list/up/<int:id1>/<int:id2>', methods=['POST'])
+@login_required
 def up_value_ch(id1, id2):
     session = Session()
     a = session.query(ListValue).get(id2)
@@ -342,6 +457,8 @@ def up_value_ch(id1, id2):
     byte_bind = request.form['byte_bind']
     bit_bind = request.form['bit_bind']
     alarm = request.form['alarm']
+    if alarm == 'Null':
+        alarm = None
     a.name = name
     a.start = start
     a.type_value = type_value
@@ -356,6 +473,7 @@ def up_value_ch(id1, id2):
     return redirect(url_for('value_list', id=id1))
 
 @app.route('/alarm_text/<int:id_alarm_text>/alarm', methods=['GET'])
+@login_required
 def alarm_list(id_alarm_text):
     session = Session()
     a = session.query(Alarms).filter_by(text_alarm_id=id_alarm_text)
@@ -370,11 +488,13 @@ def alarm_list(id_alarm_text):
 
 
 @app.route('/alarm_text/<int:id_alarm_text>/alarm/add_alarm', methods=['GET'])
+@login_required
 def add_alarm_form(id_alarm_text):
     return render_template('add_alarm.html', data=id_alarm_text)
 
 
 @app.route('/alarm_text/<int:id_alarm_text>/alarm/add_alarm', methods=['POST'])
+@login_required
 def add_alarm(id_alarm_text):
     bit = request.form['bit']
     session = Session()
@@ -385,6 +505,7 @@ def add_alarm(id_alarm_text):
 
 
 @app.route('/alarm_text/<int:id_alarm_text>/alarm/up/<int:id_alarm>', methods=['GET'])
+@login_required
 def up_alarm_form(id_alarm_text, id_alarm):
     session = Session()
     a = session.query(Alarms).get(id_alarm)
@@ -396,6 +517,7 @@ def up_alarm_form(id_alarm_text, id_alarm):
 
 
 @app.route('/alarm_text/<int:id_alarm_text>/alarm/up/<int:id_alarm>', methods=['POST'])
+@login_required
 def up_alarm(id_alarm_text, id_alarm):
     bit = request.form['bit']
     session = Session()
@@ -406,6 +528,7 @@ def up_alarm(id_alarm_text, id_alarm):
 
 
 @app.route('/alarm_text/<int:id_alarm_text>/alarm/del/<int:id_alarm>', methods=['POST'])
+@login_required
 def del_alarm(id_alarm_text, id_alarm):
     session = Session()
     a = session.query(Alarms).get(id_alarm)
