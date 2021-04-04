@@ -5,7 +5,7 @@ services:
   postgres:
     container_name: postgres_container
     image: postgres
-    restart: always
+    # restart: always
     environment:
       POSTGRES_USER: mvlab
       POSTGRES_PASSWORD: z1x2c3
@@ -24,6 +24,7 @@ services:
   pgadmin:
     container_name: pgadmin_container
     image: dpage/pgadmin4:5.0
+    # restart: always
     environment:
       PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-nr@mvlab.by}
       PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-z1x2c3}
@@ -43,7 +44,7 @@ services:
   nginx:
     container_name: nginx_server
     image: nginx
-    restart: always
+    # restart: always
     environment:
       - TZ=Europe/Minsk
     volumes:
@@ -58,7 +59,7 @@ services:
   node-red:
     container_name: node-red
     image: nodered/node-red:latest
-    restart: always
+    # restart: always
     environment:
       - TZ=Europe/Minsk
     ports:
@@ -90,9 +91,9 @@ services:
     container_name: opc_server
     build: ./opc
     command: python3 main.py
-    restart: always
-    # depends_on:
-    #   - postgres
+    # restart: always
+    depends_on:
+      - postgres
     volumes:
       - ./opc:/code
     ports:
