@@ -1,7 +1,11 @@
 /venv/
 /test.db
+**/__pycache__/**
 /__pycache__/
+__pycache__
 .idea/
-/__pycache__/
+
 .DS_Store
+node-red
+
 
