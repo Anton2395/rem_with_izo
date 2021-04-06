@@ -75,7 +75,6 @@ def main():
                 for index, (value1, value2) in enumerate(zip(statuses_connection, ses.query(Connections).order_by(Connections.id))):
                     value2.status = value1
                     ses.commit()
-                print(a)
             time.sleep(1)
             if list_connections != get_list_connections():
                 for i in pr:
