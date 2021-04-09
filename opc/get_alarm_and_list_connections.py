@@ -16,13 +16,14 @@ def get_list_connections():
         value_list = []
         for j in k:
             alarm = []
-            if j.alarms_id != "Null":
-                a = session.query(Alarms).get(j.alarms_id)
-                b = session.query(Text_Alarm).get(a.text_alarm_id)
+            if j.alarms_id != None:
+                aar = session.query(Alarms).get(j.alarms_id)
+                # print('asdasd' ,aar.text_alarm_id, aar.bit, aar.id)
+                bar = session.query(Text_Alarm).get(aar.text_alarm_id)
                 al = {
-                    "bit": a.bit,
-                    "text": b.name + '-' + i.name,
-                    "type": b.type
+                    "bit": aar.bit,
+                    "text": bar.name + '-' + i.name,
+                    "type": bar.type
                 }
                 alarm.append(al)
                 val = {
