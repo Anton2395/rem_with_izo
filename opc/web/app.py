@@ -45,6 +45,7 @@ class ListValue(base):
     type_table = Column(ChoiceType(TYPES))
     connections_id = Column(Integer, ForeignKey('connections.id'))
     divide = Column(Boolean, default=False)
+    divide_number = Column(Integer, nullable=True)
     if_change = Column(Boolean, default=False)
     byte_bind = Column(Integer, nullable=False)
     bit_bind = Column(Integer, nullable=False)
@@ -327,7 +328,6 @@ def value_list(id):
     session = Session()
     a = session.query(ListValue).filter_by(connections_id=id)
     b = session.query(Connections).get(id).name
-    # c = a.get_name_alarm()
     array = []
     for i in a:
         if i.alarms_id == "None":
@@ -375,11 +375,12 @@ def add_value(id):
     start = request.form['start']
     type_value = request.form['type_value']
     type_table = request.form['type_table']
-
     if request.form['divide'] == 'True':
         divide = 1
+        divide_number = request.form['divide_number']
     else:
         divide = 0
+        divide_number = None
     if request.form['if_change'] == 'True':
         if_change = 1
     else:
@@ -395,6 +396,7 @@ def add_value(id):
                   type_table=str(type_table),
                   connections_id=id,
                   divide=divide,
+                  divide_number=divide_number,
                   if_change=if_change,
                   byte_bind=byte_bind,
                   bit_bind=bit_bind,
@@ -448,8 +450,10 @@ def up_value_ch(id1, id2):
     type_table = request.form['type_table']
     if request.form['divide'] == "True":
         divide = True
+        divide_number = request.form['divide_number']
     else:
         divide = False
+        divide_number = None
     if request.form['if_change'] == "True":
         if_change = True
     else:
@@ -465,6 +469,7 @@ def up_value_ch(id1, id2):
     a.type_table = type_table
     a.connections_id = id1
     a.divide = divide
+    a.divide_number = divide_number
     a.if_change = if_change
     a.byte_bind = byte_bind
     a.bit_bind = bit_bind

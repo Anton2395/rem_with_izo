@@ -26,28 +26,55 @@ def get_list_connections():
                     "type": bar.type
                 }
                 alarm.append(al)
-                val = {
-                    "name": j.name,
-                    "start": j.start,
-                    "type": j.type_value.value,
-                    "table": j.type_table.value,
-                    "divide": j.divide,
-                    "if_change": j.if_change,
-                    "byte_bind": j.byte_bind,
-                    "bit_bind": j.bit_bind,
-                    "alarms": alarm
-                }
+                if j.divide == False:
+                    val = {
+                        "name": j.name,
+                        "start": j.start,
+                        "type": j.type_value.value,
+                        "table": j.type_table.value,
+                        "divide": j.divide,
+                        "if_change": j.if_change,
+                        "byte_bind": j.byte_bind,
+                        "bit_bind": j.bit_bind,
+                        "alarms": alarm
+                    }
+                else:
+                    val = {
+                        "name": j.name,
+                        "start": j.start,
+                        "type": j.type_value.value,
+                        "table": j.type_table.value,
+                        "divide": j.divide,
+                        "divide_number": j.divide_number,
+                        "if_change": j.if_change,
+                        "byte_bind": j.byte_bind,
+                        "bit_bind": j.bit_bind,
+                        "alarms": alarm
+                    }
             else:
-                val = {
-                    "name": j.name,
-                    "start": j.start,
-                    "type": j.type_value.value,
-                    "table": j.type_table.value,
-                    "divide": j.divide,
-                    "if_change": j.if_change,
-                    "byte_bind": j.byte_bind,
-                    "bit_bind": j.bit_bind
-                }
+                if j.divide == False:
+                    val = {
+                        "name": j.name,
+                        "start": j.start,
+                        "type": j.type_value.value,
+                        "table": j.type_table.value,
+                        "divide": j.divide,
+                        "if_change": j.if_change,
+                        "byte_bind": j.byte_bind,
+                        "bit_bind": j.bit_bind
+                    }
+                else:
+                    val = {
+                        "name": j.name,
+                        "start": j.start,
+                        "type": j.type_value.value,
+                        "table": j.type_table.value,
+                        "divide": j.divide,
+                        "divide_number": j.divide_number,
+                        "if_change": j.if_change,
+                        "byte_bind": j.byte_bind,
+                        "bit_bind": j.bit_bind
+                    }
             value_list.append(val)
         connect = {
             "name": i.name,
