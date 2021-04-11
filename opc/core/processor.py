@@ -132,7 +132,7 @@ class StartProcessOpcForConnectToPLC(Process):
                 if result > 65000:
                     result = 0
                 else:
-                    result = result / 10
+                    result = result / int(data['divide_number'])
         elif (type == 'real'):
             offset = 4
             end = int(start) + int(offset)

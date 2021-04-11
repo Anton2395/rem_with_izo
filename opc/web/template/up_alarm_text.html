@@ -23,14 +23,23 @@
             <th>{{alarm_text_get.id}}</th>
         </tr>
         <tr>
-            <th>name</th>
+            <th>name:</th>
             <th><textarea type='text' name="name" value={{alarm_text_get.name}} >{{alarm_text_get.name}}</textarea></th>
             <!-- <th><input type="text" name="name" value={{alarm_text_get.name}}></th> -->
         </tr>
         <tr>
-            <th>type</th>
+            <th>type:</th>
             <th>
-                <input type="text" name="type" value={{alarm_text_get.type}}>
+                <select name="type">
+                    {% if alarm_text_get.type=='alarm' %}
+                    <option value="alarm" selected>Alarm</option>
+                    <option value="warnings">Warning</option>
+                    {% endif %}
+                    {% if alarm_text_get.type=='warnings' %}
+                    <option value="alarm">Alarm</option>
+                    <option value="warnings" selected>Warning</option>
+                    {% endif %}
+                </select>
             </th>
         </tr>
     </table>

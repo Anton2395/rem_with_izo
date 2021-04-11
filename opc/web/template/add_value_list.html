@@ -6,6 +6,9 @@
     <!-- <link rel="stylesheet" href="/assets/bootstrap/css/bootstrap.min.css"> -->
     <link rel="stylesheet" href="/assets/css/add_value_list.css">
     <link rel="stylesheet" href="/assets/css/global_setting.css">
+    <script   src="/assets/js/jquery-3.6.0.min.js"
+              integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+              crossorigin="anonymous"></script>
 </head>
 <body>
     <div class="add_value_list">
@@ -28,8 +31,8 @@
                 <tr>
                     <th>type_value</th>
                     <th>
-                        <input type="radio" name="type_value" value="int" checked>int
-                        <input type="radio" name="type_value" value="real">real
+                        <input class='clInt' type="radio" name="type_value" value="int">int
+                        <input type="radio" name="type_value" value="real" checked>real
                         <input type="radio" name="type_value" value="bool">bool
                         <input type="radio" name="type_value" value="double">double
                     </th>
@@ -46,8 +49,8 @@
                 <tr>
                     <th>divide</th>
                     <th>
-                        <input type="radio" name="divide" value="True" checked>True
-                        <input type="radio" name="divide" value="False">False
+                        <input type="radio" name="divide" value="True">True
+                        <input type="radio" name="divide" value="False" checked>False
                         <input type="number" name="divide_number" placeholder="число деления">
                     </th>
                 </tr>
@@ -84,5 +87,10 @@
             </form>
         </div>
     </div>
+<script>
+    var value = $('input[class="clInt"]').click(function(){
+	console.log('Привет от JavaScript!');
+});
+</script>
 </body>
 </html>
