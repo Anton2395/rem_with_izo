@@ -31,10 +31,18 @@
                 <tr>
                     <th>type_value</th>
                     <th>
-                        <input class='clInt' type="radio" name="type_value" value="int">int
-                        <input type="radio" name="type_value" value="real" checked>real
-                        <input type="radio" name="type_value" value="bool">bool
-                        <input type="radio" name="type_value" value="double">double
+                        <input class='clInt' type="radio" name="type_value" value="int" checked>int
+                        <input class="clDrug" type="radio" name="type_value" value="real">real
+                        <input class="clDrug" type="radio" name="type_value" value="bool">bool
+                        <input class="clDrug" type="radio" name="type_value" value="double">double
+                    </th>
+                </tr>
+                <tr class="block-text">
+                    <th>divide</th>
+                    <th>
+                        <input type="radio" name="divide" value="True">True
+                        <input type="radio" name="divide" value="False" checked>False
+                        <input type="number" name="divide_number" placeholder="число деления">
                     </th>
                 </tr>
                 <tr>
@@ -44,14 +52,6 @@
                         <input type="radio" name="type_table" value="real">real
                         <input type="radio" name="type_table" value="bool">bool
                         <input type="radio" name="type_table" value="double">double
-                    </th>
-                </tr>
-                <tr>
-                    <th>divide</th>
-                    <th>
-                        <input type="radio" name="divide" value="True">True
-                        <input type="radio" name="divide" value="False" checked>False
-                        <input type="number" name="divide_number" placeholder="число деления">
                     </th>
                 </tr>
                 <tr>
@@ -88,9 +88,15 @@
         </div>
     </div>
 <script>
-    var value = $('input[class="clInt"]').click(function(){
-	console.log('Привет от JavaScript!');
+    $('input[class="clInt"]').click(function(){
+
+	$('.block-text').html('<th>divide</th><th><input type="radio" name="divide" value="True">True<input type="radio" name="divide" value="False" checked>False<input type="number" name="divide_number" placeholder="число деления"></th>')
 });
+    $('input[class="clDrug"]').click(function(){
+
+    $('.block-text').html('')
+});
+
 </script>
 </body>
 </html>

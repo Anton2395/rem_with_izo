@@ -7,6 +7,9 @@ from sqlalchemy_utils.types.choice import ChoiceType
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user
 from werkzeug.security import check_password_hash
 from settings import DB
+from sqlalchemy.schema import MetaData, Table
+from passlib.hash import django_pbkdf2_sha256
+
 
 # БД
 #######################################################
@@ -80,13 +83,16 @@ class Text_Alarm(base):
     alarm = relationship("Alarms", cascade="all, delete")
 
 
+# class User(base, UserMixin):
+#     __tablename__ = 'user'
+#     id = Column(Integer, primary_key=True)
+#     login = Column(String, nullable=False, unique=True)
+#     password = Column(String, nullable=False)
+
+metadata = MetaData(bind=engine)
+
 class User(base, UserMixin):
-    __tablename__ = 'user'
-    id = Column(Integer, primary_key=True)
-    login = Column(String, nullable=False, unique=True)
-    password = Column(String, nullable=False)
-
-
+    __table__ = Table('users_userp', metadata, autoload=True)
 
 
 
@@ -116,9 +122,9 @@ def login_page():
     password = request.form.get('password')
     ses = Session()
     if login and password:
-        user = ses.query(User).filter_by(login=login).first()
+        user = ses.query(User).filter_by(username=login).first()
 
-        if user and user.password == password:#check_password_hash(user.password, password):
+        if user and django_pbkdf2_sha256.verify(password, user.password):#check_password_hash(user.password, password):
             login_user(user)
 
             next_page = request.args.get('next')
@@ -132,6 +138,7 @@ def login_page():
         flash('zapolnite polya')
     ses.close()
     return render_template('login.html')
+
 
 
 @app.route('/status/<int:id_status>', methods=['GET'])
