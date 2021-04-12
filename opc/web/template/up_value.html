@@ -92,9 +92,11 @@
                             {% if data.a.divide == True %}
                             <input type="radio" name="divide" value="True" checked>True
                             <input type="radio" name="divide" value="False">False
+                            <input type="number" name="divide_number" placeholder="число деления" value="{{data.a.divide_number}}">
                             {% else %}
-                            <input type="radio" name="divide" value="True">True<br>
+                            <input type="radio" name="divide" value="True">True
                             <input type="radio" name="divide" value="False" checked>False
+                            <input type="number" name="divide_number" placeholder="число деления">
                             {% endif %}
                         </th>
                     </tr>

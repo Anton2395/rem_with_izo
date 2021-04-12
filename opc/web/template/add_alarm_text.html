@@ -20,15 +20,20 @@
 <form method="post" action="/alarm_text/add_alarm_text">
     <table class="input_add_alarm">
         <tr>
-            <th>name</th>
+            <th>name:</th>
             <th>
                 <textarea type='text' name="name"></textarea>
             </th>
             <!-- <th><input type="text" name="name"></th> -->
         </tr>
         <tr>
-            <th>type</th>
-            <th><input type="text" name="type"></th>
+            <th>type:</th>
+            <th>
+                <select name="type">
+                    <option value="alarm">Alarm</option>
+                    <option value="warning">Warning</option>
+                </select>
+            </th>
         </tr>
     </table>
     <div class="add_alarm_btn">
