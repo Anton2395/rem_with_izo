@@ -140,6 +140,7 @@ def login_page():
     return render_template('login.html')
 
 
+
 @app.route('/status/<int:id_status>', methods=['GET'])
 def status(id_status):
     session = Session()
