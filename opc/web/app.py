@@ -382,10 +382,14 @@ def add_value(id):
     start = request.form['start']
     type_value = request.form['type_value']
     type_table = request.form['type_table']
-    if request.form['divide'] == 'True':
-        divide = 1
-        divide_number = request.form['divide_number']
-    else:
+    try:
+        if request.form['divide'] == 'True':
+            divide = 1
+            divide_number = request.form['divide_number']
+        else:
+            divide = 0
+            divide_number = None
+    except:
         divide = 0
         divide_number = None
     if request.form['if_change'] == 'True':
