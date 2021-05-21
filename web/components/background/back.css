@@ -5,13 +5,14 @@
     border: 2px solid #ECEDF4; 
     border-radius: 12px; 
     justify-content: space-between;
-    padding-bottom: 6px;
-    
+
+    margin-left: 20px;
+    margin-top: 20px;
 
     
     
 }
-.title {
+.title_card {
     display: block; 
     font-family: "Montserrat";
     font-style: medium;
@@ -24,7 +25,7 @@
     top:0px;
     display: flex; 
     justify-content: space-between;
-   
+    width:100%;
 }
 button{
     background-color: transparent;

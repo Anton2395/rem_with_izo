@@ -1,461 +1,1549 @@
 <template>
-  <div>  
-     <modal v-show="showModal" @close="closeModal"></modal>
-    <div style="
-    align-items: flex-start;
-    display: flex;
-">
-      <background title="Показания перехода" style="margin-right: 10px">
-        <card
-          :number="data_sensor.methane"
-          description="Метан, %"
-          path="445.png"
-          class="card"
-        >
-        </card>
-        <card
-          :number="data_sensor.carbondioxide"
-          description="Углекислый газ, %"
-          path="2.svg"
-          class="card"
-        >
-        </card>
-        <card
-          :number="data_sensor.oxygen"
-          description="Кислород, %"
-          path="3.svg"
-          class="card"
-        >
-        </card>
-      
-        <card
-          :number="data_sensor.pressure"
-          description="Давление, мБар"
-          path="5.png"
-          class="card"
-        >
-        </card>
-          <card
-          :number="data_sensor.pressure_out"
-          description="Давление, мБар"
-          path="4.png"
-          class="card"
-        >
-        </card>
-        <card
-          :number="data_sensor.consumption"
-          description="Расход, м3/ч"
-          path="6.png"
-          class="card"
-        >
-        </card>
-        <card
-          :number="data_sensor.temperature"
-          description="Температура, °C"
-          path="7.png"
-          class="card"
-        >
-        </card>
-      </background>
-      <background title="Режим работы">
-        <card :description2="work_status.name" 
-        class="card" 
-        :color="work_status.color"> </card>
-      </background>
-    </div>
-
-    <div style="
-    align-items: flex-start;
-    display: flex;
-">
-      <background title="Выработка электроэнергии">
-        <div>
-          <card
-            :number="data_sensor.power1"
-            description="Мощность машина 1, кВт"
-            path="8.png"
-            class="card"
+  <div @click="hideModals">
+    <div class="btn-group">
+      <main>
+        <button
+          class="btn-rnd" 
+          :class="{ 'btn-close': ShowModalPlus.modalBul }"
+          @click="ShowModalPlus.modalBul = !ShowModalPlus.modalBul"
+          @click.stop="noChange"
+        >+ </button>
+        <div class="plus-form" v-if="ShowModalPlus.modalBul">
+          <div class="plus-form-item" @click="showCartItem('DurationWork')">
+            Продолжительность работы
+          </div>
+          <div class="plus-form-item" @click="showCartItem('StockBalances')">
+            Остатки на складах
+          </div>
+          <div class="plus-form-item" @click="showCartItem('PanelRelease')">
+            Выпуск панелей
+          </div>
+          <div class="plus-form-item" @click="showCartItem('TotalConsumption')">
+            Суммарный расход
+          </div>
+          <div
+            class="plus-form-item"
+            @click="showCartItem('EnergyConsumption')"
           >
-          </card>
-          <card
-            :number="data_sensor.power2"
-            description="Мощность машина 2, кВт"
-            path="9.png"
-            class="card"
+            Расход электроэнергии
+          </div>
+          <div
+            class="plus-form-item"
+            @click="showCartItem('SpecificConsumption')"
           >
-          </card>
-          <card
-            :number="data_sensor.power3"
-            description="Мощность машина 3, кВт"
-            path="10.png"
-            class="card"
-          >
-          </card>
-          <card
-            :number="data_sensor.power4"
-            description="Мощность машина 4, кВт"
-            path="11.png"
-            class="card"
-          >
-          </card>
-          <div>
-
-            <card
-              :number="sumPowerX"
-              description="Суммарная мощность всех генераторов, кВт"
-              path="12.png"
-              size="4.4"
-              class="card"
-            >
-            </card>
-
-
+            Удельный расход на км
+          </div>
+          <div class="plus-form-item" @click="showCartItem('ComparisonModule')">
+            Модуль сравнения
           </div>
         </div>
-      </background>
-      <background title="Компрессоры">
-      <card
-        :description2="compres_V501_status.name=='Работа' ? `${compres_V501_status.name} \n ${data_sensor.frequency1}Гц` : compres_V501_status.name"
-        description="Компрессор V501"
-        path="16.png"
-        class="card"
-        :color="compres_V501_status.color"
-      >
-      </card>
-      <card
-        :description2="compres_V502_status.name=='Работа' ? `${compres_V502_status.name} \n ${data_sensor.frequency2}Гц` : compres_V502_status.name"
-        description="Компрессор V502"
-        path="17.png"
-        class="card"
-        :color="compres_V502_status.color"
-
-      >
-      </card>
-      <card
-        :description2="compres_V503_status.name=='Работа' ? `${compres_V503_status.name} \n ${data_sensor.frequency3}Гц` : compres_V503_status.name"
-        description="Компрессор V503"
-        path="18.png"
-        class="card"
-        :color="compres_V503_status.color"
-      >
-      </card>
-    </background>
+      </main>
     </div>
-
-
-
-<div>
-<background title="Машины">
-
-
-
-        <div style="display: flex">
-          <card
-            :description2="`${generator_D601_status2.name} \n ${generator_D601_status1.name} `"
-            description="Генератор D0601"
-            path="19.png"
-            class="card"
-            :color="generator_D601_status1.name!='Авария' ? generator_D601_status2.color : generator_D601_status1.color"
-
-          >
-          </card>
-          <card
-            :description2="`${generator_D602_status2.name} \n ${generator_D602_status1.name} `"
-            description="Генератор D0602"
-            path="20.png"
-            class="card"
-
-
-            :color="generator_D602_status1.name!='Авария' ? generator_D602_status2.color : generator_D602_status1.color"
-
-          >
-          </card>
-          <card
-            :description2="`${generator_D603_status2.name} \n ${generator_D603_status1.name} `"
-            description="Генератор D0603"
-            path="21.png"
-            class="card"
-            :color="generator_D603_status1.name!='Авария' ? generator_D603_status2.color : generator_D603_status1.color"
-
-          >
-          </card>
-          <card
-            :description2="`${generator_D604_status2.name} \n ${generator_D604_status1.name} `"
-            description="Генератор D0604"
-            path="22.png"
-            class="card"
-
-            :color="generator_D604_status1.name!='Авария' ? generator_D604_status2.color : generator_D604_status1.color"
-
-          >
-          </card>
-          <card
-            :description2="fakel_A604.name"
-            description="Факел А0604"
-            path="23.png"
-            class="card"
-            :color="fakel_A604.color"
-          >
-          </card>
-        </div>
-      </background>
-
-
-      <background title="Насосы">
-
-      <card
-        :description2="pump_p301_status.name"
-        description="Насос Р301"
-        path="13.png"
-        class="card"
-        :color="pump_p301_status.color"
-      >
-      </card>
-    </background>
-
-    <background title="Задвижки">
-      <card
-        :description2="valve_B1101_status.name"
-        description="Задвижка B1101"
-        path="14.png"
-        class="card"
-        :color="valve_B1101_status.color"
-      >
-      </card>
-      <card
-        :description2="valve_B1601_status.name"
-        description="Задвижка B1601"
-        path="15.png"
-        class="card"
-        :color="valve_B1601_status.color"
-      >
-      </card>
-    </background>
+    <calendar></calendar>
+    <section class="charts">
+      <div class="block-1">
+        <durationWork
+          v-if="DurationWork.cardShow"
+          :card="DurationWork"
+          :calendar="calendar"
+        ></durationWork>
+        <stockBalances
+          v-if="StockBalances.cardShow"
+          :card="StockBalances"
+          :calendar="calendar.date"
+        ></stockBalances>
       </div>
-    
-
-
-
-    <div>
-
-      
-    </div>
-
-    
-
-
+      <div class="block-2">
+        <!-- <div class="chart-data panel-release" v-if="PanelRelease.cardShow">
+          <div class="chart-header">
+            <div class="title">Выпуск панелей</div>
+            <period title="PanelRelease"></period>
+            <div
+              class="bul"
+              @click="PanelRelease.modalBul = !PanelRelease.modalBul"
+              @click.stop="noChange"
+            >
+              <span></span>
+            </div>
+          </div>
+          <div class="chart-content">
+            <div class="menu-bul" v-if="PanelRelease.modalBul">
+              <div
+                class="btn-bul"
+                @click="
+                  PanelRelease.cardShow = !PanelRelease.cardShow
+                  PanelRelease.modalBul = false
+                "
+              >
+                <span class="show"></span>
+                <span>Скрыть</span>
+              </div>
+              <div class="btn-bul">
+                <span class="new"></span>
+                <span @click="updatePanelRelease">Обновить</span>
+              </div>
+            </div>
+            <div class="diagram">
+              <highcharts
+                :options="chartOptionsPio"
+                :constructor-type="'stockChart'"
+              ></highcharts>
+            </div>
+            <div class="content-box">
+              <div class="indicators">
+                <div class="module">
+                  <div class="index">{{ panelRelease.sum }}</div>
+                  <indicator :change="panelRelease.change_sum"></indicator>
+                </div>
+                <div class="data-list">
+                  <div class="list">
+                    <div class="item">
+                      <div class="circle" style="background: #4bbeaa"></div>
+                      <div class="title">годно</div>
+                    </div>
+                    <div class="data">
+                      <div class="index">{{ panelRelease.suitable }}</div>
+                      <indicator
+                        :change="panelRelease.change_suitable"
+                      ></indicator>
+                    </div>
+                  </div>
+                  <div class="list">
+                    <div class="item">
+                      <div class="circle" style="background: #2d9ad8"></div>
+                      <div class="title">некондиция</div>
+                    </div>
+                    <div class="data">
+                      <div class="index">{{ panelRelease.substandard }}</div>
+                      <indicator
+                        :change="panelRelease.change_substandard"
+                      ></indicator>
+                    </div>
+                  </div>
+                  <div class="list">
+                    <div class="item">
+                      <div class="circle" style="background: #fc7a7a"></div>
+                      <div class="title">брак</div>
+                    </div>
+                    <div class="data">
+                      <div class="index">{{ panelRelease.defect }}</div>
+                      <indicator
+                        :change="panelRelease.change_defect"
+                      ></indicator>
+                    </div>
+                  </div>
+                </div>
+                <div class="indicators-footer">
+                  <div class="title">Залито метров</div>
+                  <div class="data">
+                    <div class="index">{{ panelRelease.flooded }}</div>
+                    <indicator
+                      :change="panelRelease.change_flooded"
+                    ></indicator>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div> -->
+        <!-- <div
+            class="chart-data consumption"
+            v-if="SpecificConsumption.cardShow"
+        >
+          <div class="chart-header">
+            <div class="title">Удельный расход на км</div>
+            <period title="SpecificConsumption"></period>
+            <div
+                class="bul"
+                @click="SpecificConsumption.modalBul = !SpecificConsumption.modalBul"
+                @click.stop="noChange"
+            >
+              <span></span>
+            </div>
+          </div>
+          <div class="chart-content">
+            <div
+                class="menu-bul"
+                v-if="SpecificConsumption.modalBul"
+            >
+              <div
+                  class="btn-bul"
+                  @click="SpecificConsumption.cardShow=!SpecificConsumption.cardShow; SpecificConsumption.modalBul=false"
+              ><span class="show"></span>
+                <span>Скрыть</span>
+              </div>
+              <div class="btn-bul">
+                <span class="new"></span>
+                <span @click="updateSpecificConsumption">Обновить</span>
+              </div>
+            </div>
+            <div class="iteam-group">
+              <div class="item">
+                <div class="data">
+                  <div class="quantity">{{ specificConsumption.iso }}</div>
+                  <div class="subtitle">Изоцианат, л</div>
+                </div>
+                <div class="icon">
+                  <div class="circle" style="background: #2D9AD8">
+                    <div class="title">ISO</div>
+                    <div class="subtitle">km</div>
+                  </div>
+                </div>
+              </div>
+              <div class="item">
+                <div class="data">
+                  <div class="quantity">{{ specificConsumption.pol }}</div>
+                  <div class="subtitle">Полиол, л</div>
+                </div>
+                <div class="icon">
+                  <div class="circle" style="background: #FC7A7A">
+                    <div class="title">POL</div>
+                    <div class="subtitle">km</div>
+                  </div>
+                </div>
+              </div>
+              <div class="item">
+                <div class="data">
+                  <div class="quantity">{{ specificConsumption.pen }}</div>
+                  <div class="subtitle">Пентан, л</div>
+                </div>
+                <div class="icon">
+                  <div class="circle" style="background: #4BBEAA">
+                    <div class="title">PEN</div>
+                    <div class="subtitle">km</div>
+                  </div>
+                </div>
+              </div>
+              <div class="item">
+                <div class="data">
+                  <div class="quantity">{{ specificConsumption.kat1 }}</div>
+                  <div class="subtitle">Катализатор1, л</div>
+                </div>
+                <div class="icon">
+                  <div class="circle" style="background: #2D9AD8">
+                    <div class="title">K1</div>
+                    <div class="subtitle">km</div>
+                  </div>
+                </div>
+              </div>
+              <div class="item">
+                <div class="data">
+                  <div class="quantity">{{ specificConsumption.kat2 }}</div>
+                  <div class="subtitle">Катализатор2, л</div>
+                </div>
+                <div class="icon">
+                  <div class="circle" style="background: #FC7A7A">
+                    <div class="title">K2</div>
+                    <div class="subtitle">km</div>
+                  </div>
+                </div>
+              </div>
+              <div class="item">
+                <div class="data">
+                  <div class="quantity">{{ specificConsumption.kat3 }}</div>
+                  <div class="subtitle">Катализатор3, л</div>
+                </div>
+                <div class="icon">
+                  <div class="circle" style="background: #4BBEAA">
+                    <div class="title">K3</div>
+                    <div class="subtitle">km</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div> -->
+        <PanelRelease></PanelRelease>
+        <SpecificConsumption></SpecificConsumption>
+        <TotalConsumption></TotalConsumption>
+        <ComparisonModule></ComparisonModule>
+        <EnergyConsumption></EnergyConsumption>
+        <!-- <div
+            class="chart-data consumption"
+            v-if="TotalConsumption.cardShow"
+        >
+          <div class="chart-header">
+            <div class="title">Суммарный расход</div>
+            <period title="TotalConsumption"></period>
+            <div
+                class="bul"
+                @click="TotalConsumption.modalBul=!TotalConsumption.modalBul;"
+                @click.stop="noChange"
+            >
+              <span></span>
+            </div>
+          </div>
+          <div class="chart-content">
+            <div
+                class="menu-bul"
+                v-if="TotalConsumption.modalBul"
+            >
+              <div
+                  class="btn-bul"
+                  @click="TotalConsumption.cardShow=!TotalConsumption.cardShow; TotalConsumption.modalBul=false"
+              ><span class="show"></span>
+                <span>Скрыть</span>
+              </div>
+              <div class="btn-bul">
+                <span class="new"></span>
+                <span @click="updateTotalConsumption">Обновить</span>
+              </div>
+            </div>
+            <div class="iteam-group">
+              <div class="item">
+                <div class="data">
+                  <div class="quantity">{{ totalConsumption.iso }}</div>
+                  <div class="subtitle">Изоцианат, л</div>
+                </div>
+                <div class="icon">
+                  <div class="circle" style="background: #2D9AD8">ISO</div>
+                </div>
+              </div>
+              <div class="item">
+                <div class="data">
+                  <div class="quantity">{{ totalConsumption.pol }}</div>
+                  <div class="subtitle">Полиол, л</div>
+                </div>
+                <div class="icon">
+                  <div class="circle" style="background: #FC7A7A">POL</div>
+                </div>
+              </div>
+              <div class="item">
+                <div class="data">
+                  <div class="quantity">{{ totalConsumption.pen }}</div>
+                  <div class="subtitle">Пентан, л</div>
+                </div>
+                <div class="icon">
+                  <div class="circle" style="background: #4BBEAA">PEN</div>
+                </div>
+              </div>
+              <div class="item">
+                <div class="data">
+                  <div class="quantity">{{ totalConsumption.kat1 }}</div>
+                  <div class="subtitle">Катализатор1, л</div>
+                </div>
+                <div class="icon">
+                  <div class="circle" style="background: #2D9AD8">K1</div>
+                </div>
+              </div>
+              <div class="item">
+                <div class="data">
+                  <div class="quantity">{{ totalConsumption.kat2 }}</div>
+                  <div class="subtitle">Катализатор2, л</div>
+                </div>
+                <div class="icon">
+                  <div class="circle" style="background: #FC7A7A">K2</div>
+                </div>
+              </div>
+              <div class="item">
+                <div class="data">
+                  <div class="quantity">{{ totalConsumption.kat3 }}</div>
+                  <div class="subtitle">Катализатор3, л</div>
+                </div>
+                <div class="icon">
+                  <div class="circle" style="background: #4BBEAA">K3</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div> -->
+        <!-- <div
+          class="chart-data comparison-module"
+          v-if="ComparisonModule.cardShow"
+        >
+          <div class="chart-header">
+            <div class="title">Модуль сравнения</div>
+            <div
+              class="bul"
+              @click="ComparisonModule.modalBul = !ComparisonModule.modalBul"
+              @click.stop="noChange"
+            >
+              <span></span>
+            </div>
+          </div>
+          <div class="chart-content">
+            <div class="menu-bul" v-if="ComparisonModule.modalBul">
+              <div
+                class="btn-bul"
+                @click="
+                  ComparisonModule.cardShow = !ComparisonModule.cardShow
+                  ComparisonModule.modalBul = false
+                "
+              >
+                <span class="show"></span>
+                <span>Скрыть</span>
+              </div>
+              <div class="btn-bul">
+                <span class="new"></span>
+                <span @click="updateComparisonModule">Обновить</span>
+              </div>
+            </div>
+            <div class="content-box">
+              <div class="calendar-period">
+                <div class="select-date">
+                  <input type="date" v-model="ComparisonModuleDate1" />
+                </div>
+              </div>
+              <period
+                title="ComparisonModule"
+                :isType2="ComparisonModule.option.isType2"
+              ></period>
+              <div
+                class="indicators"
+                v-if="comparisonModuleData && comparisonModuleData.isQuery"
+              >
+                <div class="module">
+                  <div class="index">{{ comparisonModuleData.sum1 }}</div>
+                  <indicator
+                    :change="comparisonModuleData.change_sum1"
+                  ></indicator>
+                </div>
+                <div class="data-list">
+                  <div class="list">
+                    <div class="item">
+                      <div class="circle" style="background: #4bbeaa"></div>
+                      <div class="title">годно</div>
+                    </div>
+                    <div class="data">
+                      <div class="index">
+                        {{ comparisonModuleData.suitable1 }}
+                      </div>
+                      <indicator
+                        :change="comparisonModuleData.change_suitable1"
+                      ></indicator>
+                    </div>
+                  </div>
+                  <div class="list">
+                    <div class="item">
+                      <div class="circle" style="background: #2d9ad8"></div>
+                      <div class="title">некондиция</div>
+                    </div>
+                    <div class="data">
+                      <div class="index">
+                        {{ comparisonModuleData.substandard1 }}
+                      </div>
+                      <indicator
+                        :change="comparisonModuleData.change_substandard1"
+                      ></indicator>
+                    </div>
+                  </div>
+                  <div class="list">
+                    <div class="item">
+                      <div class="circle" style="background: #fc7a7a"></div>
+                      <div class="title">брак</div>
+                    </div>
+                    <div class="data">
+                      <div class="index">
+                        {{ comparisonModuleData.defect1 }}
+                      </div>
+                      <indicator
+                        :change="comparisonModuleData.change_defect1"
+                      ></indicator>
+                    </div>
+                  </div>
+                </div>
+                <div class="indicators-footer">
+                  <div class="title">Залито метров</div>
+                  <div class="data">
+                    <div class="index">{{ comparisonModuleData.flooded1 }}</div>
+                    <indicator
+                      :change="comparisonModuleData.change_flooded1"
+                    ></indicator>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="content-box">
+              <div class="calendar-period">
+                <div class="select-date">
+                  <input type="date" v-model="ComparisonModuleDate2" />
+                </div>
+              </div>
+              <period
+                title="ComparisonModule"
+                :isType1="ComparisonModule.option.isType1"
+                end="1"
+              ></period>
+              <div
+                class="indicators"
+                v-if="comparisonModuleData && comparisonModuleData.isQuery"
+              >
+                <div class="module">
+                  <div class="index">{{ comparisonModuleData.sum2 }}</div>
+                </div>
+                <div class="data-list">
+                  <div class="list">
+                    <div class="item">
+                      <div class="circle" style="background: #4bbeaa"></div>
+                      <div class="title">годно</div>
+                    </div>
+                    <div class="data">
+                      <div class="index">
+                        {{ comparisonModuleData.suitable2 }}
+                      </div>
+                    </div>
+                  </div>
+                  <div class="list">
+                    <div class="item">
+                      <div class="circle" style="background: #2d9ad8"></div>
+                      <div class="title">некондиция</div>
+                    </div>
+                    <div class="data">
+                      <div class="index">
+                        {{ comparisonModuleData.substandard2 }}
+                      </div>
+                    </div>
+                  </div>
+                  <div class="list">
+                    <div class="item">
+                      <div class="circle" style="background: #fc7a7a"></div>
+                      <div class="title">брак</div>
+                    </div>
+                    <div class="data">
+                      <div class="index">
+                        {{ comparisonModuleData.defect2 }}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="indicators-footer">
+                  <div class="title">Залито метров</div>
+                  <div class="data">
+                    <div class="index">{{ comparisonModuleData.flooded2 }}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div> -->
+        <!-- <div
+            class="chart-data-min energy-consumption"
+            v-if="EnergyConsumption.cardShow"
+        >
+          <div class="chart-header">
+            <div class="title">Расход энергоресурсов</div>
+            <period title="EnergyConsumption"></period>
+            <div
+                class="bul"
+                @click="EnergyConsumption.modalBul=!EnergyConsumption.modalBul;"
+                @click.stop="noChange"
+            >
+              <span></span>
+            </div>
+          </div>
+          <div class="chart-content">
+            <div
+                class="menu-bul"
+                v-if="EnergyConsumption.modalBul"
+            >
+              <div
+                  class="btn-bul"
+                  @click="EnergyConsumption.cardShow=!EnergyConsumption.cardShow; EnergyConsumption.modalBul=false"
+              ><span class="show"></span>
+                <span>Скрыть</span>
+              </div>
+              <div class="btn-bul">
+                <span class="new"></span>
+                <span @click="updateEnergyConsumption">Обновить</span>
+              </div>
+            </div>
+            <div class="iteam-group">
+              <div class="item">
+                <div class="data">
+                  <div class="quantity">{{ energyConsumption.input1 }}</div>
+                  <div class="subtitle">Ввод1, кВт</div>
+                </div>
+                <div class="icon">
+                  <div class="circle"></div>
+                </div>
+              </div>
+              <div class="item">
+                <div class="data">
+                  <div class="quantity">{{ energyConsumption.input2 }}</div>
+                  <div class="subtitle">Ввод2, кВт</div>
+                </div>
+                <div class="icon">
+                  <div class="circle"></div>
+                </div>
+              </div>
+              <div class="item">
+                <div class="data">
+                  <div class="quantity">{{ energyConsumption.gas }}</div>
+                  <div class="subtitle">Газ, м3</div>
+                </div>
+                <div class="iconLast">
+                  <div class="circle"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>  -->
+      </div>
+    </section>
   </div>
 </template>
 
-
-
-
-
 <script>
-import {mapActions} from "vuex";
-import {mapGetters} from "vuex";
-
-import card from "@/components/card/card.vue";
-import background from "@/components/background/back.vue";
-import data from "@iconify/icons-bx/bx-user";
-// import ModalWindow from "@/components/modal-window.vue";
-import modal from "@/components/modalv2.vue";
+import { mapActions } from 'vuex'
+import { mapGetters } from 'vuex'
+import Period from '@/components/home/period'
+import Calendar from '@/components/home/calendar'
+import DurationWork from '@/components/home/DurationWork'
+import StockBalances from '@/components/home/StockBalances'
+import DataIndicator from '~/components/home/DataIndicator'
+import SpecificConsumption from '~/components/SpecificConsumption'
+import TotalConsumption from '~/components/TotalConsumption'
+import EnergyConsumption from '~/components/EnergyConsumption'
+import ComparisonModule from '~/components/ComparisonModule'
+import PanelRelease from '~/components/PanelRelease'
 
 export default {
-  layout: "header_footer",
-  components: {
-    card,
-    background,
-    modal,
+  layout: 'header_footer',
+
+  created() {
+    this.setActiveTabHeader('HOME')
+    this.setActiveTabSidebar('Dashboard')
+    this.$on('hideCartItem', (name) => {
+      this[name].cardShow = false
+    })
+    this.$on('showModalBul', (name) => {
+      this[name].modalBul = !this[name].modalBul
+    })
+    this.$on('noChange', (name) => {})
+
+    this.$on('changeCalendar', (calendar) => {
+      this.calendar = calendar
+    })
+
+    this.$on('setPeriod', (option) => {
+      if (option.end) {
+        this[option.title].option.id2 = option.id2
+        this[option.title].option.isType2 = option.isType2
+        this.updateComparisonModule()
+      } else {
+        this[option.title].option.id1 = option.id1
+        this[option.title].option.isType1 = option.isType1
+        this['update' + option.title]()
+      }
+    })
+
+    this.updatePanelRelease()
+    this.updateEnergyConsumption()
+    this.updateTotalConsumption()
+    this.updateSpecificConsumption()
   },
   data() {
     return {
-      timerId:null,
-      data_sensor: {},
-      data_status_device: {},
-      work_status: {},
-      pump_p301_status: {},
-      valve_B1101_status: {},
-      valve_B1601_status: {},
-      compres_V501_status: {},
-      compres_V502_status: {},
-      compres_V503_status: {},
-      generator_D601_status1: {},
-      generator_D601_status2: {},
-      generator_D602_status1: {},
-      generator_D602_status2: {},
-      generator_D603_status1: {},
-      generator_D603_status2: {},
-      generator_D604_status1: {},
-      generator_D604_status2: {},
-      fakel_A604: {},
-      showModal:false,
-      sumPowerX: "",
-    };
-  },
-  created(){
-    this.setActiveTabHeader("HOME");
-    this.setActiveTabSidebar("Dashboard");
-  },
-  mounted() {
-    
-this.get_data_dash(),
-
-this.timerId=setInterval(this.get_data_dash, 5000)
-
-    
-  },
-  methods: {
-    ...mapActions("users", {
-      setActiveTabHeader: "setActiveTabHeader",
-      setActiveTabSidebar: "setActiveTabSidebar",
-    }),
-    show_alert() {
-        this.$notify.error({
-
-          title: 'Ошибка',
-
-          message: 'Нет связи с микросервисом'
-        });
+      ShowModalPlus: {
+        modalBul: false,
       },
-    closeModal(){
-      this.showModal=false;
+      PanelRelease: {
+        modalBul: false,
+        cardShow: true,
+        option: {
+          id1: 0,
+          isType1: 0,
+        },
+      },
+      TotalConsumption: {
+        modalBul: false,
+        cardShow: true,
+        option: {
+          id1: 0,
+          isType1: 0,
+        },
+      },
+      EnergyConsumption: {
+        modalBul: false,
+        cardShow: true,
+        option: {
+          id1: 0,
+          isType1: 0,
+        },
+      },
+      SpecificConsumption: {
+        modalBul: false,
+        cardShow: true,
+        option: {
+          id1: 0,
+          isType1: null,
+        },
+      },
+      ComparisonModuleDate1: null,
+      ComparisonModuleDate2: null,
+      ComparisonModule: {
+        modalBul: false,
+        cardShow: true,
+        option: {
+          id1: 0,
+          id2: 0,
+          isType1: 0,
+          isType2: 0,
+          date1: null,
+          date2: null,
+        },
+      },
+      DurationWork: {
+        modalBul: false,
+        cardShow: true,
+      },
+      StockBalances: {
+        modalBul: false,
+        cardShow: true,
+      },
+      calendar: {
+        time: new Date().getTime(),
+        date: formatDate(new Date().getTime()),
+      },
+    }
+  },
+
+  components: {
+    period: Period,
+    calendar: Calendar,
+    durationWork: DurationWork,
+    stockBalances: StockBalances,
+    indicator: DataIndicator,
+    SpecificConsumption,
+    TotalConsumption,
+    EnergyConsumption,
+    ComparisonModule,
+    PanelRelease,
+  },
+
+  watch: {
+    calendar: function () {
+      this.updateAll()
     },
-     async get_data_dash() {
-      let isSlash=(url)=>{
-        let arr=[];
-        // console.log(url);
-        for(let i=0;i<url.length;i++){
-          if (url[i]=="/"){
-            arr.push(i);
-          }
-          }
-          // console.log(arr);
-          if (arr.length>0){
-            let ind = ((arr[arr.length-1])+1);
-            if (typeof url[ind]== "undefined" || url[ind] == ""){
-              return true;
-            } else{
-              return false;
-            }
-          }
-          else{
-            return false;
-          }
-        };
-      
-        let urlBool = isSlash(document.URL);
-        // console.log(urlBool);
-        if (!urlBool){
-              clearInterval(this.timerId);
-              return;   
-          };
-      
-
-      let list_workMode = ["Не выбран", "Автоматический режим", "Ручной режим"];
-      let list_statusPump = ["Выключен", "Работа", "Авария"];
-      let list_statusValve = ["Закрыта", "Открыта", "Авария", "Авария"];
-
-      let list_statusCompressor = ["Остановлен", "Работа", "Авария"];
-      let list_statusGenerator1 = [ "МУправление", "ДУправление", "Готов к ДУ", "ДУправление", "Авария","","Авария","Авария" ];
-      let list_statusGenerator2 = ["Отключен"];
-      list_statusGenerator2[8] = ["Генерация"];
-      list_statusGenerator2[24] = ["Генерация"];
-      list_statusGenerator2[16] = ["Переведен в ДУ"];
-      let list_statusFakel = ["Остановлен", "Работа", "Авария", "Авария"];
-
-
-    try{ 
-      // this.showModal=false;
-    
-      this.data_sensor = await this.$axios.$get(`/dashboard/teldafax/value/`);
-      this.data_status_device = await this.$axios.$get(`/dashboard/teldafax/status/`);
-        }
-      catch(e){
-       if(e.response.status==401){
-         this.$router.go("/");
-       }
-       this.show_alert();
-        //this.showModal=true;
-        // this.$refs.modal.show = true;
-        return;
-      }
-      if (typeof this.data_sensor.sum_power != "undefined") {
-         this.sumPowerX = (this.data_sensor.sum_power).toFixed(1); 
-         } 
-
-      this.showModal = false;
-      this.work_status["name"] = list_workMode[+this.data_status_device.work_status];
-      this.pump_p301_status["name"] = list_statusPump[+this.data_status_device.pump_p301_status];
-      this.valve_B1101_status["name"] = list_statusValve[+this.data_status_device.valve_B1101_status];
-      this.valve_B1601_status["name"] = list_statusValve[+this.data_status_device.valve_B1601_status];
-      this.compres_V501_status["name"] = list_statusCompressor[+this.data_status_device.compres_V501_status];
-      this.compres_V502_status["name"] = list_statusCompressor[+this.data_status_device.compres_V502_status];
-      this.compres_V503_status["name"] = list_statusCompressor[+this.data_status_device.compres_V503_status];
-      this.generator_D601_status1["name"] = list_statusGenerator1[+this.data_status_device.generator_D601_status1];         
-      this.generator_D601_status2["name"] = list_statusGenerator2[+this.data_status_device.generator_D601_status2];
-      this.generator_D602_status1["name"] = list_statusGenerator1[+this.data_status_device.generator_D602_status1];
-      this.generator_D602_status2["name"] = list_statusGenerator2[+this.data_status_device.generator_D602_status2];
-      this.generator_D603_status1["name"]= list_statusGenerator1[+this.data_status_device.generator_D603_status1];
-      this.generator_D603_status2["name"]=list_statusGenerator2[+this.data_status_device.generator_D603_status2];
-      this.generator_D604_status1["name"]= list_statusGenerator1[+this.data_status_device.generator_D604_status1];
-      this.generator_D604_status2["name"]= list_statusGenerator2[ +this.data_status_device.generator_D604_status2];
-      this.fakel_A604["name"]=list_statusFakel[+this.data_status_device.fakel_A604];
-
-
-      for (let a in this.$data){
-        if ((this[a].name=="Остановлен")||(this[a].name=="Готов")||(this[a].name=="Выключен")||(this[a].name=="Не выбран")||(this[a].name=="Закрыта")||(this[a].name=="Не генерирует")){
-            this[a]["color"]="#000";
-        };
-        if (this[a].name=="Авария"){
-            this[a]["color"]="#721C24";
-        };
-        if ((this[a].name=="Работа")||(this[a].name=="Генерация")||(this[a].name=="Открыта")||(this[a].name=="Автоматический режим")){
-            this[a]["color"]="#588C64";
-        };
-        if ((this[a].name=="Ручной режим")||(this[a].name=="Автомат")){
-            this[a]["color"]="#856404";
-        };
-      };
-
-
-      
-      
-
+    ComparisonModuleDate1: function (newValue) {
+      this.ComparisonModule.option.date1 = newValue
+      this.updateComparisonModule()
+    },
+    ComparisonModuleDate2: function (newValue) {
+      this.ComparisonModule.option.date2 = newValue
+      this.updateComparisonModule()
     },
   },
-};
+
+  computed: {
+    ...mapGetters('home', {
+      comparisonModuleData: 'comparisonModule',
+      energyConsumption: 'energyConsumption',
+      totalConsumption: 'totalConsumption',
+      specificConsumption: 'specificConsumption',
+      panelRelease: 'panelRelease',
+    }),
+   
+  },
+
+  methods: {
+    //check
+    ...mapActions('users', {
+      setActiveTabHeader: 'setActiveTabHeader',
+      setActiveTabSidebar: 'setActiveTabSidebar',
+    }),
+
+    ...mapActions('home', {
+      getComparisonModule: 'getComparisonModule',
+      getEnergyConsumption: 'getEnergyConsumption',
+      getTotalConsumption: 'getTotalConsumption',
+      getSpecificConsumption: 'getSpecificConsumption',
+      getPanelRelease: 'getPanelRelease',
+    }),
+    showCartItem(name) {
+      this.ShowModalPlus.modalBul = false
+      this[name].cardShow = true
+    },
+    hideModals() {
+      if (
+        this.ShowModalPlus.modalBul ||
+        this.PanelRelease.modalBul ||
+        this.TotalConsumption.modalBul ||
+        this.EnergyConsumption.modalBul ||
+        this.SpecificConsumption.modalBul ||
+        this.ComparisonModule.modalBul ||
+        this.DurationWork.modalBul ||
+        this.StockBalances.modalBul
+      ) {
+        this.DurationWork.modalBul = false
+        this.StockBalances.modalBul = false
+        this.ShowModalPlus.modalBul = false
+        this.PanelRelease.modalBul = false
+        this.TotalConsumption.modalBul = false
+        this.EnergyConsumption.modalBul = false
+        this.SpecificConsumption.modalBul = false
+        this.ComparisonModule.modalBul = false
+      }
+    },
+    noChange() {
+      console.log('change')
+    },
+    updateComparisonModule() {
+      if (
+        !(
+          this.ComparisonModule.option.date1 &&
+          this.ComparisonModule.option.date2
+        )
+      )
+        return
+
+      this.getComparisonModule(this.ComparisonModule.option)
+    },
+    updateEnergyConsumption() {
+      this.EnergyConsumption.option.date = this.calendar.date
+      this.getEnergyConsumption(this.EnergyConsumption.option)
+    },
+    updateTotalConsumption() {
+      this.TotalConsumption.option.date = this.calendar.date
+      this.getTotalConsumption(this.TotalConsumption.option)
+    },
+    updateSpecificConsumption() {
+      this.SpecificConsumption.option.date = this.calendar.date
+      this.getSpecificConsumption(this.SpecificConsumption.option)
+    },
+    updatePanelRelease() {
+      this.PanelRelease.option.date = this.calendar.date
+      this.getPanelRelease(this.PanelRelease.option)
+    },
+    updateAll() {
+      this.updatePanelRelease()
+      this.updateSpecificConsumption()
+      this.updateTotalConsumption()
+      this.updateEnergyConsumption()
+    },
+  },
+}
+
+function formatDate(date) {
+  let d = new Date(date)
+
+  return d.getFullYear() + '-' + d.getMonth() + 1 + '-' + d.getDate()
+}
 </script>
 
 <style>
-.card {
-  margin-top: 12px;
-  margin-left: 5px;
-  margin-right: 5px;
-  margin-bottom: 5px;
+.highcharts-scrollbar {
+  display: none !important;
 }
-.background {
-  margin-left: 20px;
-  margin-top: 20px;
+</style>
+
+<style lang="scss" scoped>
+
+.chart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #E9E9E9;
+  padding: 2px 8px 2px 12px;
+
+  .title {
+    font-family: "Montserrat", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-weight: 500;
+    font-size: 14px;
+    text-align: center;
+    color: #000000;
+  }
+
+  .bul {
+    cursor: pointer;
+    width: 25px;
+    height: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    span {
+      position: relative;
+      background-color: #CFCDCD;
+      width: 3px;
+      height: 3px;
+      border-radius: 50%;
+      font-size: 0;
+      left: -10px;
+    }
+
+    span:before {
+      position: absolute;
+      left: 5px;
+      top: 0;
+      content: '';
+
+      background-color: #CFCDCD;
+      font-size: 0;
+      width: 3px;
+      height: 3px;
+      border-radius: 50%;
+    }
+
+    span:after {
+      position: absolute;
+      left: 10px;
+      top: 0;
+      content: '';
+      background-color: #CFCDCD;
+      font-size: 0;
+      width: 3px;
+      height: 3px;
+      border-radius: 50%;
+    }
+  }
 }
 
-.title {
-  font-weight: bold;
-  font-size: 14px;
+.indicators {
+  padding-right: 44px;
+
+  .module {
+    position: relative;
+    display: flex;
+    align-items: baseline;
+    padding-left: 68px;
+    padding-top: 12px;
+    margin-bottom: 12px;
+
+    .index {
+      font-size: 24px;
+      font-weight: 500;
+      margin-right: 9px;
+    }
+  }
+
+  .data-list {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+
+    .list {
+      max-width: 207px;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      font-size: 14px;
+
+      .item {
+        display: flex;
+        align-items: center;
+        font-weight: 500;
+
+        .circle {
+          width: 12px;
+          height: 12px;
+          border-radius: 50%;
+          margin-right: 6px;
+        }
+      }
+    }
+  }
+
+  .indicators-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    .title {
+      margin-left: 9px;
+      font-style: normal;
+      font-weight: normal;
+      font-size: 14px;
+    }
+
+    .data {
+      display: flex;
+      align-items: baseline;
+
+      .index {
+        font-style: normal;
+        font-weight: 500;
+        font-size: 14px;
+      }
+    }
+  }
 }
 
-.backside {
+.charts {
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+  padding: 0 36px;
+
+  .block-1 {
+    width: 280px;
+    margin-right: 36px;
+  }
+
+  .block-2 {
+    display: flex;
+    flex-wrap: wrap;
+
+    .panel-release {
+      .chart-content {
+        display: flex;
+
+        .diagram {
+          width: 45%;
+          overflow: hidden;
+        }
+
+        .content-box {
+          width: 55%;
+          padding-top: 25px;
+
+          .indicators {
+            .module {
+              padding-left: 17px;
+            }
+
+            .data-list {
+              align-items: end;
+              margin-bottom: 8px;
+            }
+
+            .indicators-footer {
+              .title {
+                font-style: normal;
+                font-weight: normal;
+                font-size: 18px;
+                margin-left: 0;
+              }
+            }
+          }
+        }
+      }
+    }
+
+    .consumption {
+      .chart-content {
+        .iteam-group {
+          padding-bottom: 12px;
+          display: flex;
+          flex-wrap: wrap;
+
+          .item {
+            width: 192px;
+            height: 90px;
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+            padding-bottom: 6px;
+            padding-right: 6px;
+            padding-left: 12px;
+            border: 2px solid #ECEDF4;
+            box-sizing: border-box;
+            border-radius: 12px;
+            margin-right: 12px;
+            margin-top: 11px;
+
+            .data {
+              width: 116px;
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              flex-direction: column;
+              margin-right: 6px;
+              margin-top: 6px;
+
+              .quantity {
+                font-family: "Montserrat", -apple-system, BlinkMacSystemFont, "Segoe UI",
+                Roboto, "Helvetica Neue", Arial, sans-serif;
+                font-weight: 500;
+                font-size: 48px;
+                color: #000000;
+              }
+
+              .subtitle {
+                width: 100%;
+                font-family: "Montserrat", -apple-system, BlinkMacSystemFont, "Segoe UI",
+                Roboto, "Helvetica Neue", Arial, sans-serif;
+                font-weight: 500;
+                font-size: 12px;
+                color: #B1B1BC;
+              }
+            }
+
+            .icon {
+              font-family: "Montserrat", -apple-system, BlinkMacSystemFont, "Segoe UI",
+              Roboto, "Helvetica Neue", Arial, sans-serif;
+              font-weight: 500;
+              font-size: 16px;
+              color: #FFFFFF;
+
+              .circle {
+                width: 50px;
+                height: 50px;
+                border-radius: 50%;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+              }
+            }
+
+            &:nth-child(3n) {
+              margin-right: 0;
+            }
+          }
+        }
+      }
+    }
+
+    .chart-data-min {
+      width: 628px;
+      height: 144px;
+      border: 2px solid #E9E9E9;
+      border-radius: 9px;
+      //margin-bottom: 36px;
+      margin-right: 36px;
+
+      .chart-content {
+        padding: 0 12px;
+        display: flex;
+        flex-wrap: wrap;
+
+        .iteam-group {
+          display: flex;
+          flex-wrap: wrap;
+
+          .item {
+            width: 192px;
+            height: 90px;
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+            padding-bottom: 6px;
+            padding-right: 6px;
+            padding-left: 12px;
+            border: 2px solid #ECEDF4;
+            box-sizing: border-box;
+            border-radius: 12px;
+            margin-right: 12px;
+            margin-top: 11px;
+
+            .data {
+              width: 116px;
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              flex-direction: column;
+              margin-right: 6px;
+              margin-top: 6px;
+
+              .quantity {
+                height: 60px;
+                text-align: center;
+                display: flex;
+                align-items: center;
+                font-family: "Montserrat", -apple-system, BlinkMacSystemFont, "Segoe UI",
+                Roboto, "Helvetica Neue", Arial, sans-serif;
+                font-weight: 500;
+                font-size: 24px;
+                color: #000000;
+              }
+
+              .subtitle {
+                width: 100%;
+                font-family: "Montserrat", -apple-system, BlinkMacSystemFont, "Segoe UI",
+                Roboto, "Helvetica Neue", Arial, sans-serif;
+                font-weight: 500;
+                font-size: 12px;
+                color: #B1B1BC;
+              }
+            }
+
+            .icon {
+              width: 50px;
+              height: 50px;
+              border-radius: 50%;
+              background-image: url("~assets/img/lightning.png");
+              background-repeat: no-repeat;
+              background-position: center;
+              background-size: contain;
+
+              .circle {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+              }
+            }
+
+            .iconLast {
+              width: 50px;
+              height: 50px;
+              border-radius: 50%;
+              background-image: url("~assets/img/fire.png");
+              background-repeat: no-repeat;
+              background-position: center;
+              background-size: contain;
+
+              .circle {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+              }
+            }
+
+            &:nth-child(3n) {
+              margin-right: 0;
+            }
+          }
+        }
+      }
+    }
+
+    .consumption {
+      .chart-content {
+        padding: 0 12px;
+        display: flex;
+        flex-wrap: wrap;
+
+        .item {
+          width: 192px;
+          height: 90px;
+          display: flex;
+          flex-direction: row;
+          justify-content: center;
+          align-items: center;
+          padding-bottom: 6px;
+          padding-right: 6px;
+          padding-left: 12px;
+          border: 2px solid #ECEDF4;
+          box-sizing: border-box;
+          border-radius: 12px;
+          margin-right: 12px;
+          margin-top: 11px;
+
+          .data {
+            width: 116px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            margin-right: 6px;
+            margin-top: 6px;
+
+            .quantity {
+              font-family: "Montserrat", -apple-system, BlinkMacSystemFont, "Segoe UI",
+              Roboto, "Helvetica Neue", Arial, sans-serif;
+              font-weight: 500;
+              font-size: 48px;
+              color: #000000;
+            }
+
+            .subtitle {
+              width: 100%;
+              font-family: "Montserrat", -apple-system, BlinkMacSystemFont, "Segoe UI",
+              Roboto, "Helvetica Neue", Arial, sans-serif;
+              font-weight: 500;
+              font-size: 12px;
+              color: #B1B1BC;
+            }
+          }
+
+          .icon {
+            .circle {
+              width: 50px;
+              height: 50px;
+              border-radius: 50%;
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              flex-direction: column;
+
+              .title {
+                font-family: "Montserrat", -apple-system, BlinkMacSystemFont, "Segoe UI",
+                Roboto, "Helvetica Neue", Arial, sans-serif;
+                font-weight: 500;
+                font-size: 16px;
+                color: #FFFFFF;
+                text-align: center;
+              }
+
+              .subtitle {
+                font-family: "Montserrat", -apple-system, BlinkMacSystemFont, "Segoe UI",
+                Roboto, "Helvetica Neue", Arial, sans-serif;
+                font-weight: 500;
+                font-size: 12px;
+                color: #FFFFFF;
+                text-align: center;
+              }
+            }
+          }
+
+          &:nth-child(3n) {
+            margin-right: 0;
+          }
+        }
+      }
+    }
+
+    .comparison-module {
+      font-size: 14px;
+
+      .chart-content {
+        display: flex;
+        width: 100%;
+        height: calc(100% - 21px);
+        padding: 6px 3px;
+
+        .content-box {
+          width: 50%;
+          height: 100%;
+          margin-right: 3px;
+          border-right: 1px solid #E9E9E9;
+
+          .calendar-period {
+            padding: 6px 0;
+
+            .select-date {
+              height: 20px;
+              margin-left: 12px;
+              font-weight: 600;
+              font-size: 12px;
+              line-height: 15px;
+              text-align: left;
+              color: #9098AF;
+            }
+
+            .select-date input {
+              height: 20px;
+              padding-left: 3px;
+              outline: none;
+              font-weight: normal;
+              font-size: 12px;
+              line-height: 15px;
+              color: #9098AF;
+              border: 1px solid #9098AF;
+              border-radius: 4px;
+            }
+          }
+
+          .period {
+            btn.text {
+              margin-right: 6px;
+            }
+            button:last-child {
+              margin-right: 3px;
+            }
+          }
+        }
+      }
+
+      .content-box:last-child {
+        border-right: none;
+        margin-right: 0;
+      }
+    }
+  }
+}
+
+.data {
+  display: flex;
+
+  .index {
+    margin-right: 4px;
+  }
+}
+
+.chart-data {
+  width: 628px;
+  height: 246px;
+  border: 2px solid #E9E9E9;
+  border-radius: 9px;
+  //margin-bottom: 37px;
+  //margin-right: 48px;
+  margin-right: 36px;
+}
+
+.resul {
+  .result-ok {
+    font-family: "Montserrat", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 14px;
+    color: #7CD420;
+  }
+
+  .result-minus {
+    font-family: "Montserrat", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 14px;
+    color: #F3345D;
+  }
+
+  .result-null {
+    font-family: "Montserrat", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 14px;
+    color: #96A2B0;
+  }
+}
+
+.btn-group {
+
+  main {
+    width: 100%;
+    height: 100%;
+  }
+
+  .btn-rnd {
+    outline: none;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    border: 2px #FF7167 solid;
+    cursor: pointer;
+    background: #FFFFFF;
+    color: #FF7167;
+    font-weight: 500;
+    font-size: 48.4615px;
+    line-height: 81px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    text-transform: uppercase;
+
+    position: absolute;
+    bottom: 48px;
+    right: 48px;
+    z-index: 2;
+
+    &.btn-close {
+      transform: rotate(45deg);
+      background: #FF7167;
+      color: #FFFFFF;
+    }
+  }
+
+  .btn-rnd:hover {
+    background: #FF7167;
+    color: #FFFFFF;
+    transition: 0.2s linear;
+  }
+
+  .plus-form {
+    width: 244px;
+    height: auto;
+    background: #FFFFFF;
+    border: 2px solid #F3F3F3;
+    border-radius: 5px;
+
+    position: absolute;
+    bottom: 112px;
+    right: 48px;
+
+    z-index: 2;
+
+    .plus-form-item {
+      cursor: pointer;
+      height: 36px;
+      padding-left: 24px;
+      padding-right: 24px;
+      font-weight: 500;
+      font-size: 12px;
+      line-height: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      color: #BABABA;
+      border-bottom: 2px solid #F3F3F3;
+
+      &:hover {
+        color: #727272;
+        transition: 0.2s linear;
+      }
+    }
+
+    .plus-form-item:last-child {
+      border-bottom: none;
+    }
+  }
+}
+
+.chart-content {
+  position: relative;
+}
+
+.menu-bul {
+  -moz-user-select: none;
+  -khtml-user-select: none;
+  user-select: none;
   position: absolute;
-  padding-top: 96px;
-  left: 0;
   top: 0;
-  z-index: 5;
-  box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.25);
-  background-color: #edf2f8;
+  right: 0;
+  height: auto;
+  width: 110px;
   display: flex;
   flex-direction: column;
-  width: 120px;
-  height: 100vh;
-}
+  background: #F7F8FA;
+  box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.25);
+  border-radius: 4px 0px 4px 4px;
+  z-index: 50;
 
+  .btn-bul {
+    cursor: pointer;
+    position: relative;
+    width: 100%;
+    height: 40px;
+    padding-left: 32px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    font-weight: 500;
+    font-size: 10px;
+    line-height: 12px;
+    color: #BABABA;
+
+    &:hover {
+      color: #727272;
+      transition: 0.2s linear;
+
+      .show {
+        background-image: url('https://api.iconify.design/ant-design:eye-invisible-outlined.svg?color=%23727272');
+      }
+
+      .new {
+        background-image: url('https://api.iconify.design/ic:baseline-update.svg?color=%23727272');
+      }
+    }
+  }
+
+  .show {
+    position: absolute;
+    top: 50%;
+    left: 12px;
+    transform: translateY(-50%);
+    width: 14px;
+    height: 14px;
+    background-image: url('https://api.iconify.design/ant-design:eye-invisible-outlined.svg?color=%23BABABA');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+  }
+
+  .new {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 12px;
+    transform: translateY(-50%);
+    width: 14px;
+    height: 14px;
+    background-image: url('https://api.iconify.design/ic:baseline-update.svg?color=%23BABABA');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+  }
+}
 </style>

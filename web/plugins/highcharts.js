@@ -4,11 +4,16 @@ import HighchartsVue from "highcharts-vue";
 import stockInit from "highcharts/modules/stock";
 import xrangeInit from "highcharts/modules/xrange";
 import exportingInit from "highcharts/modules/exporting";
+import highchartsMoreInit from "highcharts/highcharts-more";
+import solidGaugeInit from "highcharts/modules/solid-gauge";
+
 
 if (typeof Highcharts === "object") {
   stockInit(Highcharts);
   exportingInit(Highcharts);
   xrangeInit(Highcharts);
+  highchartsMoreInit(Highcharts);
+  solidGaugeInit(Highcharts);
 
   Highcharts.setOptions({
     lang: {
@@ -25,7 +30,8 @@ if (typeof Highcharts === "object") {
         downloadJPEG: 'Скачать JPEG',
         downloadPDF: 'Скачать PDF',
         downloadSVG: 'Скачать SVG',
-        printChart: 'Напечатать график'   
+        printChart: 'Напечатать график'  ,
+        resetZoom: "Сбросить" 
     },
     // useUTC:true,
 });

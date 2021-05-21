@@ -1,8 +1,8 @@
 <template>
   <div class="overlay" v-on:click="$emit('changeShow')">
     <div class="aboutuser" v-on:click.stop="noChange">
-      <button class="btn_icon">
-        <img
+      <button class="btn_close">
+        <img 
           v-on:click="$emit('changeShow')"
           src="../assets/svg/clear_24px.svg"
           alt
@@ -76,7 +76,7 @@ export default {
       try {
         await this.$auth.logout();
       } catch (e) {
-        console.log(e);
+      
       }
     },
   },
@@ -88,7 +88,7 @@ export default {
   width: 100vw;
   height: 100vh;
   background-color: rgba(0, 0, 0, 0.062);
-  z-index: 19;
+  z-index: 100;
   position: absolute;
   top: 0;
   right: 0;
@@ -99,7 +99,7 @@ export default {
   padding: 0 12px;
   background-color: #f7f8fa;
 
-  z-index: 10;
+  z-index: 25;
 
   position: absolute;
   top: 50px;
@@ -107,13 +107,15 @@ export default {
   box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.25);
 }
 
-.btn_icon {
+.btn_close {
   cursor: pointer;
   position: absolute;
-  top: -6px;
-  right: 355px;
+  top: -7px;
+  right: 353px;
 }
-
+.img:hover {
+  background: center no-repeat url("~assets/svg/iconControlModal.svg");
+}
 div {
   padding: 6px 0;
 }

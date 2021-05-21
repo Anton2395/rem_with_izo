@@ -94,18 +94,9 @@ export default {
   data() {
     return {
       headerTabs: [
-        // { name: "HOME", link: "" },
-        // { name: "OEE", link: "Charts" },
-        // { name: "VIBRO", link: "vibro" },
-        // { name: "PROFILER", link: "profiler" },
-        // { name: "REPAIRS", link: "repairs" },
-        // { name: "RECORDER", link: "recorder" }
         { name: "HOME", link: "" },
-        { name: "OEE", link: "" },
-        { name: "VIBRO", link: "" },
-        { name: "PROFILER", link: "" },
-        { name: "REPAIRS", link: "" },
         { name: "RECORDER", link: "recorder" },
+      
       ],
 
       showUser: false,
@@ -211,7 +202,7 @@ export default {
   font-weight: 500;
   font-size: 16px;
   line-height: 20px;
-
+  outline: none;
   margin-right: 24px;
 }
 

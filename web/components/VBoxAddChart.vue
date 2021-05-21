@@ -33,57 +33,63 @@
               type="color"
               v-model="addVarible.color"
             />
-            <button class="addChart"
-            @click="addLineChart"></button>
+            <button class="addChart" @click="addLineChart"></button>
           </div>
         </div>
 
         <div class="add_grafik">
-          <div class="head_head">
-            <table class="tab1" rules="all">
-              <td style="width: 308px">Название графика</td>
-              <td style="width: 154px">Единицы измерения</td>
-              <td style="width: 158px">Позиционное обозначение</td>
-              <td style="width: 70px">Цвет</td>
-            </table>
-          </div>
-
-          <div class="body_tabl" style="overflow-y:auto;">
+          <div class="body_tabl" style="overflow-y: auto">
             <table style="border-collapse: collapse" class="tab2">
-              <tr v-for="item in form.data" :key="item.value">
-                <td style="width: 308px" :style="{ color: item.color }">
-                  {{ item.name }}
-                </td>
-                <td style="width: 154px">
-                  {{ item.unit }}
-                </td>
-                <td style="width: 158px">
-                  {{ item.designation }}
-                </td>
-                <td style="width: 70px">
-                  <div>
-                    <div class="row">
-                      <input
-                        class="colorPicker"
-                        type="color"
-                        v-model="item.color"
-                      />
+              <thead>
+                <tr>
+                  <th style="width: 308px">Название графика</th>
+                  <th style="width: 154px">Единицы измерения</th>
+                  <th style="width: 158px">Позиционное обозначение</th>
+                  <th style="width: 70px">Цвет</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="item in form.data" :key="item.value">
+                  <td style="width: 308px" :style="{ color: item.color }">
+                    {{ item.name }}
+                  </td>
+                  <td style="width: 154px">
+                    {{ item.unit }}
+                  </td>
+                  <td style="width: 158px">
+                    {{ item.designation }}
+                  </td>
+                  <td style="width: 70px">
+                    <div>
+                      <div class="row">
+                        <input
+                          class="colorPicker"
+                          type="color"
+                          v-model="item.color"
+                        />
+                      </div>
                     </div>
-                  </div>
-
-                  <!-- <div id="rectangle"></div> -->
-                </td>
-                <td class="carbon_close" style="width: 24px" @click="deleteLineChart(item.value)">
-                  <!-- <button
+                  </td>
+                  <td
+                    class="carbon_close"
+                    style="width: 24px"
+                    @click="deleteLineChart(item.value)"
+                  >
+                    <!-- <button
                   @click="deleteLineChart(item.value)"></button> -->
-                </td>
-              </tr>
+                  </td>
+                </tr>
+              </tbody>
             </table>
           </div>
         </div>
         <div class="r_footer">
-          <button class="btn_left_del" to="#">Удалить область</button>
-          <button class="btn_right_done" @click="SetNewWorkArea">Применить</button>
+          <button class="btn_left_del" @click="deleteWorkarea">
+            Удалить область
+          </button>
+          <button class="btn_right_done" @click="SetNewWorkArea">
+            Применить
+          </button>
         </div>
       </div>
     </div>
@@ -96,17 +102,17 @@
 
 export default {
   name: "VBoxAddChart",
-  props: ["Vdata"],
+  props: ["Vdata", "workspaces"],
   data() {
     return {
       lists: {
         varibles: [],
       },
       addVarible: {
-        color: "#000",
+        color: "#000000",
         varible: "0",
       },
-      
+
       form: {
         name: this.Vdata.name,
         parent: this.$parent.$parent.actualWorkspace.id,
@@ -121,49 +127,63 @@ export default {
   },
   computed: {},
   methods: {
-    addLineChart(){
-      try{
+    addLineChart() {
+      try {
         // debugger;
-      if ((this.addVarible.varible!="0") && (this.form.data.filter((item)=>{return item.value==this.addVarible.varible}).length==0)){
-        
-        let tempObj=this.lists.varibles.filter((item,i)=>{
-          return item.id==this.addVarible.varible;
-        })
-        this.form.data.push({
-          color:this.addVarible.color=="#000"?"#"+Math.floor(Math.random()*16777215).toString(16):this.addVarible.color,
-          designation:tempObj[0].parents.designation,
-          name:tempObj[0].name,
-          unit:tempObj[0].unit,
-          value:tempObj[0].id,
-        })
-      }}
-      catch(e){
-        console.log(e);
-      }
+        if (
+          this.addVarible.varible != "0" &&
+          this.form.data.filter((item) => {
+            return item.value == this.addVarible.varible;
+          }).length == 0
+        ) {
+          let tempObj = this.lists.varibles.filter((item, i) => {
+            return item.id == this.addVarible.varible;
+          });
+          this.form.data.push({
+            color:
+              this.addVarible.color == "#000000"
+                ? "#" + Math.floor(Math.random() * 16777215).toString(16)
+                : this.addVarible.color,
+            designation: tempObj[0].parents.designation,
+            name: tempObj[0].name,
+            unit: tempObj[0].unit,
+            value: tempObj[0].id,
+          });
+        }
+      } catch (e) {}
     },
-    deleteLineChart(id){
+    async deleteWorkarea() {
       // debugger;
-      let findIndex = this.form.data.findIndex((el)=>{
-        return id==el.value
-      })
-      this.form.data.splice(findIndex,1);
+      // let index = this.$store.state.selectedWorkarea.workarea.workares.findIndex(
+      //   (el) => {
+      //     return this.Vdata.id == el.id;
+      //   }
+      // );
+      // this.$store.state.selectedWorkarea.workarea.workares.splice(index, 1);
+      this.$store.dispatch("selectedWorkarea/DeleteActiveWorkarea",this.Vdata);
+      await this.$axios.$delete(
+        `/recorder/structure/Workarea/${this.Vdata.id}`
+      );
+    },
+    deleteLineChart(id) {
+      // debugger;
+      let findIndex = this.form.data.findIndex((el) => {
+        return id == el.value;
+      });
+      this.form.data.splice(findIndex, 1);
     },
     async getVaribles() {
       await this.$axios
         .$get(`/recorder/structure/ValueSensor/`)
         .then((data) => {
-          console.log(data);
           this.lists.varibles = data;
         })
-        .catch((e) => {
-          console.log(e);
-        });
+        .catch((e) => {});
     },
     async getDataWorkArea() {
       await this.$axios
         .$get(`/recorder/structure/Workarea/${this.Vdata.id}`)
         .then((data) => {
-          console.log(data);
           this.form.data = data.child.map((el, i) => {
             let newObj = {
               name: el.sensors_data.name,
@@ -175,40 +195,58 @@ export default {
             return newObj;
           });
         })
-        .catch((e) => {
-          console.log(e);
-        });
+        .catch((e) => {});
     },
 
-    async SetNewWorkArea(){
-      try{
-        if (this.form.data){
-          
-
-          this.form.data.map((el)=>{
+    async SetNewWorkArea() {
+      // debugger;
+      try {
+        if (this.form.data.length>0) {
+          this.form.data.map((el) => {
             delete el.designation;
             delete el.unit;
             delete el.name;
           });
-          debugger;
-          await this.$axios.$put(`/recorder/structure/Workarea/${this.Vdata.id}/`,this.form)
-        .then((data) => {
-          // console.log(data);
-          
-          this.$emit('closeForm');
-          this.$parent.getData();
-        })
-        .catch((e) => {
-          console.log(e);
-        });
-        }
-      }
-      catch(e){
-        console.log(e);
-      }
-      // console.log(this);
-    }
+        };
+          // debugger;
+          await this.$axios
+            .$put(`/recorder/structure/Workarea/${this.Vdata.id}/`, this.form)
+            .then((data) => {
+              this.$emit("closeForm");
+              if (this.$parent.setRangeVar != null) {
+                this.$parent.getData(this.$parent.setRangeVar);
+                // console.log(this.$parent.setRangeVar, 'button');
+                this.$parent.graphObjectLastZoom = null;
+              }
 
+              if (this.$parent.graphObjectLastZoom != null) {
+                //  console.log(this.$parent.graphObjectLastZoom, 'graph obj');
+                this.$parent.getFromChildDate();
+              }
+              if (
+                this.$parent.setRangeVar == null &&
+                this.$parent.graphObjectLastZoom == null
+              ) {
+                this.$parent.getData();
+              }
+              // debugger;
+                      // this.$parent.$parent.actualWorkspace.workares[
+                      //   this.$parent.$parent.actualWorkspace.workares.findIndex(
+                      //     (el) => {
+                      //       return this.Vdata.id == el.id;
+                      //     }
+                      //   )
+                      // ].name = data.name;
+                      this.$store.dispatch("selectedWorkarea/RenameWorkArea",{
+                        id:this.Vdata.id,
+                        parent:this.form.parent,
+                        name:this.form.name
+                      })
+            })
+            .catch((e) => {});
+        
+      } catch (e) {}
+    },
   },
   mounted() {
     this.getVaribles();
@@ -330,7 +368,8 @@ export default {
   font-family: "Montserrat";
 }
 
-.tab1 td {
+.tab1 td,
+th {
   font-family: "Montserrat";
   font-style: normal;
   font-weight: 600;
@@ -338,7 +377,8 @@ export default {
   line-height: 12px;
 }
 
-td {
+td,
+th {
   vertical-align: middle;
   border: 1px solid grey;
   font-family: "Montserrat";
@@ -349,6 +389,10 @@ td {
   color: #4a627a;
   border-spacing: 6px;
   height: 24px;
+}
+
+th {
+  margin-bottom: 10px;
 }
 
 .rentv {
@@ -404,6 +448,7 @@ td {
 }
 
 .perecl {
+  outline: none;
   width: 24px;
   height: 24px;
   padding: 0;
@@ -458,13 +503,22 @@ input[type="color"]::-webkit-color-swatch-wrapper {
   background-repeat: no-repeat;
   background-size: contain;
 }
+.btn_close:hover {
+  background: center no-repeat url("~assets/svg/iconControlModal.svg");
+  display: block;
+  width: 24px;
+  height: 24px;
+  border: none;
+  outline: none;
+}
 .addChart {
+  outline: none;
   width: 24px;
   height: 24px;
   background-image: url("~assets/svg/recorder/addChart.svg");
 }
 .addChart:hover {
-  /* background-image: url("~assets/svg/recorder/hovaddChart.svg");*/
+  /* background-image: url("~assets/svg/recorder/hovaddChart.svg"); */
 }
 .inputRename {
   width: 484px;

@@ -1,6 +1,6 @@
 <template>
   <div class="overlay" @click="$emit('changeShow')">
-    <div class="settings-charts" v-on:click.stop="noChange">
+    <div class="settings-charts" v-on:click.stop="">
 
       <div class="tabhead">
         <button class="btn_icon">
@@ -10,7 +10,7 @@
       </div>
 
 
-      <div class="switchBox">
+      <!-- <div class="switchBox">
         <div class="switchOn" v-on:click="toggleSwitchOn">{{ content.selectLeft }}</div>
         <div class="switchcheck" v-on:click="toggleSwitch">
 
@@ -21,7 +21,7 @@
 
         </div>
         <div class="switchOff" v-on:click="toggleSwitchOff">{{ content.selectRight }}</div>
-      </div>
+      </div> -->
 
       <div class="select-date-title">Задать период времени</div>
       <div class="select-date">
@@ -83,18 +83,12 @@ export default {
       this.updateIsChartOne(false)
     },
     noChange() {
-      console.log("change");
+    
     },
     loadData() {
-      // this.content.opt.smena = 0;
-      // this.content.opt.start = parseInt(new Date(this.start).getTime()/1000);
-      // this.content.opt.end = parseInt(new Date(this.end).getTime()/1000);
-      // this.getTimeStatus(this.content.opt);
-      // this.getReason(this.content.opt);
-      // this.getBasicData(this.content.opt);
-      // this.getTableOEE(this.content.opt);
+  
       let min = this.start.replace("T"," "), max = this.end.replace("T"," ");
-      // console.log("min %s  max %s",min.replace("T"," "),max.replace("T"," "));
+     
       if (min.length<=16){
         min = min +":00";
       };
@@ -131,7 +125,7 @@ export default {
   box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.25);
 
   width: 466px;
-  height: 302px;
+  height: 180px;
   z-index: 110;
 
   position: absolute;
@@ -150,6 +144,9 @@ export default {
   justify-content: baseline;
   outline: none;
 }
+/* .btn_icon:hover{
+background: center no-repeat  url('~assets/svg/iconControlModal.svg');
+} */
 
 .tabhead_title {
   font-weight: 500;
@@ -242,10 +239,10 @@ export default {
 
 
 .tabfoot {
-  margin-top: 120px;
+  margin-top: 45px;
   width: 466px;
   display: flex;
-  flex-direction: row;
+
 }
 
 .tabfoot button {

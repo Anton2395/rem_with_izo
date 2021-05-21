@@ -6,7 +6,7 @@
 
       <div class="tabhead" >
         <button class="btn_icon">
-          <img v-on:click=" $emit('changeShow')" src="../assets/svg/clear_24px.svg" alt />
+          <img class="msg_close" v-on:click=" $emit('changeShow')" src="../assets/svg/clear_24px.svg" alt />
           <div class="tabhead_title">Сообщения</div>
         </button>
       </div>
@@ -57,7 +57,7 @@ export default {
       DevMsgs: "currentMessages"
     }),
     dataHead() {
-       console.log("---------------------------");
+     
       let statusDev = "ok";
       if (this.DevMsgs.length){
       let alertDev = this.DevMsgs.filter(item => item[4] == "alarm");
@@ -67,7 +67,7 @@ export default {
       } else if (alertDev !== undefined) {
         statusDev = "alert";
       }
-      console.log(alertDev);
+     
       return { title: ``, status: statusDev };
       }
     }
@@ -248,5 +248,8 @@ td .block{
 .ok {
   background: #d4edda;
   color: #155724;
+}
+.msg_close{
+  padding-left: 2px;
 }
 </style>

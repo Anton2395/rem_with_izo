@@ -22,11 +22,11 @@ export default {
             },
         },
         comparisonModule: {
-            suitable1: 0,
-            change_suitable1: 0,
-            suitable2: 0,
-            substandard1: 0,
-            change_substandard1: 0,
+            suitable1: 5,
+            change_suitable1: 6,
+            suitable2: 7,
+            substandard1: 12,
+            change_substandard1: 9,
             substandard2: 0,
             defect1: 0,
             change_defect1: 0,
@@ -45,32 +45,32 @@ export default {
             gas: 0,
         },
         totalConsumption: {
-            iso: 0,
-            pol: 0,
-            pen: 0,
-            kat1: 0,
-            kat2: 0,
-            kat3: 0,
+            iso: 55,
+            pol: 3,
+            pen: 58,
+            kat1: 90,
+            kat2: 12,
+            kat3: 440,
         },
         specificConsumption: {
-            iso: 0,
-            pol: 0,
-            pen: 0,
-            kat1: 0,
-            kat2: 0,
-            kat3: 0,
+            iso: 1,
+            pol: 2,
+            pen: 3,
+            kat1: 9,
+            kat2: 8,
+            kat3: 7,
         },
         panelRelease: {
-            suitable: 0,
-            change_suitable: 0,
-            substandard: 0,
-            change_substandard: 0,
-            defect: 0,
-            change_defect: 0,
-            flooded: 0,
-            change_flooded: 0,
-            sum: 0,
-            change_sum: 0,
+            suitable: 3,
+            change_suitable: 1,
+            substandard: 7,
+            change_substandard: 5,
+            defect: 8,
+            change_defect: 2,
+            flooded: 5,
+            change_flooded: 4,
+            sum: 1,
+            change_sum: 1,
         }
     }),
     getters: {
@@ -134,7 +134,7 @@ export default {
         async getLineDataFirst(store, option) {
             let data = {
                 interval: [],
-                sum: 0,
+                sum: 22,
             };
 
             try {
@@ -169,7 +169,6 @@ export default {
             store.commit('setLineDataFirst', data);
         },
         async getComparisonModule(store, option) {
-            debugger
             let data = null;
             try {
                 if (option.id1 && option.id2)
@@ -223,10 +222,10 @@ export default {
         },
         async getEnergyConsumption(store, option) {
             let data = {
-                    input1: 0,
-                    input2: 0,
-                    gas: 0,
-                };
+                input1: 2,
+                input2: 5,
+                gas: 6,
+            };
 
             try {
                 if (option.id1)
@@ -256,13 +255,13 @@ export default {
         },
         async getTotalConsumption(store, option) {
             let data = {
-                    iso: 0,
-                    pol: 0,
-                    pen: 0,
-                    kat1: 0,
-                    kat2: 0,
-                    kat3: 0,
-                };
+                iso: 5,
+                pol: 6,
+                pen: 9,
+                kat1: 440,
+                kat2: 6,
+                kat3: 1,
+            };
             try {
                 if (option.id1)
                     data = await this.$axios.$get(`/dashboard/sumexpense/${formatDate(option.date)}/shift/${option.id1}/`);
@@ -276,30 +275,19 @@ export default {
             } catch (e) {
                 console.error("getTotalСonsumption axios");
 
-                //latter remove
-                //start block
-                // data = {
-                //     iso: getRandomInt(300) + 200,
-                //     pol: getRandomInt(300) + 200,
-                //     pen: getRandomInt(300) + 200,
-                //     kat1: getRandomInt(50) + 50,
-                //     kat2: getRandomInt(50) + 50,
-                //     kat3: getRandomInt(50) + 50,
-                // };
-                //end block
             }
 
             store.commit('setTotalConsumption', data);
         },
         async getSpecificConsumption(store, option) {
             let data = {
-                    iso: 0,
-                    pol: 0,
-                    pen: 0,
-                    kat1: 0,
-                    kat2: 0,
-                    kat3: 0,
-                };
+                iso: 2,
+                pol: 3,
+                pen: 4,
+                kat1: 5,
+                kat2: 6,
+                kat3: 0,
+            };
 
             try {
                 if (option.id1)
@@ -332,14 +320,14 @@ export default {
         },
         async getStockBalances(store, option) {
             let data = {
-                    storehouse: [],
-                    "in_total": {
-                        "iso": 0,
-                        "pol": 0,
-                        "pen": 0,
+                storehouse: [],
+                "in_total": {
+                    "iso": 15,
+                    "pol": 3,
+                    "pen": 55,
 
-                    }
-                };
+                }
+            };
             try {
                 data = await this.$axios.$get(`/dashboard/remainder/${formatDate(option.date)}/`);
                 if (!data)
@@ -384,17 +372,17 @@ export default {
         },
         async getPanelRelease(store, option) {
             let data = {
-                    suitable: 0,
-                    change_suitable: 0,
-                    substandard: 0,
-                    change_substandard: 0,
-                    defect: 0,
-                    change_defect: 0,
-                    flooded: 0,
-                    change_flooded: 0,
-                    sum: 0,
-                    change_sum: 0,
-                };
+                suitable: 55,
+                change_suitable: 6,
+                substandard: 34,
+                change_substandard: 43,
+                defect: 12,
+                change_defect: 4,
+                flooded: 12,
+                change_flooded: 11,
+                sum: 66,
+                change_sum: 60,
+            };
             try {
                 if (option.id1)
                     data = await this.$axios.$get(`/dashboard/edition/${formatDate(option.date)}/shift/${option.id1}/`);

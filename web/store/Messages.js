@@ -52,7 +52,7 @@ export default {
   mutations: {
     updateCurrentDevMessages(state, payload) {
       state.currentDevMessages = payload;
-      console.log("currentDevMessages", state.currentDevMessages);
+    
     },
     
     updateCurrentMessages(state, payload) {

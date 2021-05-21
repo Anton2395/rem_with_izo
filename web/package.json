@@ -1,7 +1,7 @@
 {
-  "name": "TDF-Monitor",
+  "name": "IZOSPAN-Monitor",
   "version": "0.1.0",
-  "description": "TDF Monitor",
+  "description": "IZOSPAN Monitor",
   "author": "LLC MVLAB",
   "private": true,
   "scripts": {

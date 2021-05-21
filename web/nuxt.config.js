@@ -28,8 +28,8 @@ export default {
         ],
         link: [{
             rel: 'icon',
-            type: 'image/x-icon',
-            href: './favicon.ico'
+            type: 'image/png',
+            href: './favicon.png'
         }]
     },
     /*
@@ -84,9 +84,10 @@ export default {
         // baseURL: 'http://192.168.0.6:8000/',
         // baseURL: 'http://172.20.10.2:8001',
         // baseURL: 'http://128.65.54.166:8082',
-        // baseURL:  'http://128.65.54.166:8082',
-        baseURL:  'http://localhost:50001',
-        
+
+        // baseURL:  'http://localhost:50001/',
+        baseUrl: 'http://remeza-monitor.ddns.net:50001',
+
         proxy: false,
     },
     router: {

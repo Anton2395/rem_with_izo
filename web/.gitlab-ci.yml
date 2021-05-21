@@ -1,0 +1,86 @@
+# before_script:
+# - sudo pkill node || echo "No NODE JS"
+#   # - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client git -y )'
+#   # - eval $(ssh-agent -s)
+#   # - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+#   # - mkdir -p ~/.ssh
+#   # - chmod 700 ~/.ssh
+#   # - ssh-keyscan gitlab.com >> ~/.ssh/known_hosts
+#   # - chmod 644 ~/.ssh/known_hosts
+#   # - git config --global user.email "m.rysnik.42@gmail.com"
+#   # - git config --global user.name "RysnikM"
+
+stages:
+  - pull_projekt
+  - deploy_dev_server
+  - chech_connection
+  - deploy_prod_server
+
+
+
+PULL:
+  stage: pull_projekt
+  script:
+    - git clone git@gitlab.com:RysnikM/tdfmonitor.git --branch web
+    - rm -rf ~/web/tdfmonitor/dist
+    - rm -rf ~/web/tdfmonitor/.nuxt
+    - cp -rf tdfmonitor ~/web
+    - ls -lah ~/web/tdfmonitor
+  tags:
+    - s001
+  only:
+    # - merge_request
+    - pushes
+
+Presettings:
+  stage: deploy_dev_server
+  script:
+    - cd ~/web/tdfmonitor
+    - ls -lah
+    - npm install
+    - npm run build
+    - npm run generate
+  tags:
+    - s001
+  only:
+    # - merge_request
+    - pushes
+
+chech_connection:
+  stage: chech_connection
+  script:
+    - ssh mvlab@128.65.54.166 -p202 'cat /etc/os-release && date'
+  # when: manual
+  tags:
+    - s001
+  only:
+    # - merge_request
+    - pushes
+
+deploy_prod_server:
+  stage: deploy_prod_server
+  needs:
+    - chech_connection
+  script:
+    - ssh mvlab@128.65.54.166 -p202 'git --version && node --version && npm --version && sudo lsof -i :80'
+    - ssh mvlab@128.65.54.166 -p202 'cd /home/mvlab/web && rm -rf tdfmonitor && ls -lah && git clone git@gitlab.com:RysnikM/tdfmonitor.git --branch web && cd tdfmonitor && ls -lah && npm install && npm run build && npm run generate'
+    # - ssh mvlab@128.65.54.166 -p202 'cd /home/mvlab/web/tdfmonitor && ls -l && git pull && npm install && npm run build && npm run generate'
+  tags:
+    - s001
+  only:
+    # - merge_request
+    - pushes
+  when: manual
+
+deploy_prod_server_docker:
+  stage: deploy_prod_server
+  needs:
+    - chech_connection
+  script:
+    - ssh mvlab@128.65.54.166 -p202 'docker --version && docker images &&  docker container ls && docker ps && docker volume ls'
+  tags:
+    - s001
+  only:
+    # - merge_request
+    - pushes
+  when: manual

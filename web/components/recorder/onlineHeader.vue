@@ -2,92 +2,43 @@
   <div>
     <div class="title-panel">
       <div class="headMenu">
-        <!-- <button class="btn-workspace-green" @click="addTab">
+        <button class="btn-workspace-green" @click="addWorkSpace">
           Добавить рабочее пространство
-        </button> -->
-        <!-- <button class="btn-workspace-blue">Добавить рабочую область</button> -->
-        <!-- <select v-model ="selectedfactory" class="headMenu_item btn_icon">
-          <option
-              v-for="factory in factories"
-              :key="factory.factoryid"
-              :value="factory"
-          >{{ factory.name }}</option>
-        </select> -->
-      </div>
+        </button>
+        <button @click="addWorkArea" class="btn-workspace-blue">
+          Добавить рабочую область
+        </button>
 
-      <div class="select-period">
-        <button
-          v-on:click="setRange({ period: 'hour', id: 0 })"
-          class="btn-period"
-          :class="{ active: periodActive[0] }"
-        >
-          час
-        </button>
-        <button
-          v-on:click="setRange({ period: 'shift', id: 1 })"
-          class="btn-period"
-          :class="{ active: periodActive[1] }"
-        >
-          смена
-        </button>
-        <button
-          v-on:click="setRange({ period: 'day', id: 2 })"
-          class="btn-period"
-          :class="{ active: periodActive[2] }"
-        >
-          день
-        </button>
-        <button
-          v-on:click="setRange({ period: 'week', id: 3 })"
-          class="btn-period"
-          :class="{ active: periodActive[3] }"
-        >
-          неделя
-        </button>
-        <button
-          v-on:click="setRange({ period: 'month', id: 4 })"
-          class="btn-period"
-          :class="{ active: periodActive[4] }"
-        >
-          месяц
-        </button>
+        <!-- <select v-model="selectedfactory" class="headMenu_item btn_icon">
+          <option
+            v-for="factory in factories"
+            :key="factory.factoryid"
+            :value="factory"
+          >
+            {{ factory.name }}
+          </option>
+        </select> -->
       </div>
 
       <div>
         <button @click="openHideChart(false)" class="btn_icon btn-submenu">
-          <IconifyIcon
-            icon="baselineViewHeadline"
-            :style="{ fontSize: '30px' }"
-          />
+          <img class="hideCharts" src="~assets/svg/hideCharts.svg" />
         </button>
       </div>
       <div>
-        <!-- <button v-on:click="showedCharts" class="btn_icon btn-submenu"> БЫЛО МАРГАРИТЫ -->
         <button @click="openHideChart(true)" class="btn_icon btn-submenu">
-          <IconifyIcon
-            icon="baselineViewStream"
-            :style="{ fontSize: '30px' }"
-          />
+          <img class="rollCharts" src="~assets/svg/rollCharts.svg" />
         </button>
       </div>
       <div class="select-showing">
-        <!-- <button v-on:click="showVchartBoxVisible" class="btn_icon btn-submenu"> БЫЛО МАРГАРИТОЙ -->
         <button class="btn_icon btn-submenu" @click="visibleVBox = true">
-          <IconifyIcon icon="baselineExtension" :style="{ fontSize: '30px' }" />
+          <img class="moreCharts" src="~assets/svg/puzzle.svg" />
+
+          <!-- <IconifyIcon icon="baselineExtension" :style="{ fontSize: '30px' }" /> -->
         </button>
       </div>
     </div>
-    <!-- <div class="sub-panel">
-      <div class="subMenu" v-for="shop in selectedshops" :key="shop.shopid">
-        <button href="#"
-                class="subMenu_item btn_icon"
-                :class="{ actived: shop.shopid == activeshop.shopid }"
-                @click="setActiveshop(shop)"
-        >
-          {{shop.name}}
-        </button>
-      </div>
-    </div>  -->
+
     <VchartBox
       v-show="visibleVBox"
       @changeShow="visibleVBox = false"
@@ -97,111 +48,142 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from "vuex";
-import VchartBox from "@/components/VchartBox";
+import { mapActions, mapGetters } from 'vuex'
+import VchartBox from '@/components/VchartBox'
 
 export default {
-  name: "onlineHeader",
+  name: 'onlineHeader',
   data() {
     return {
       visibleVBox: false,
       periodActive: [false, false, false, false, false],
-    };
+    }
   },
-
+  props: ['workspacesData'],
   components: {
     VchartBox: VchartBox,
   },
 
   computed: {
-    ...mapGetters("oeecharts", {
-      selectedshops: "selectedshops",
-      factories: "factories",
-      shops: "shops",
-      activeshop: "activeshop",
-    }),
+    // ...mapGetters('oeecharts', {
+    //   selectedshops: 'selectedshops',
+    //   factories: 'factories',
+    //   shops: 'shops',
+    //   activeshop: 'activeshop',
+    // }),
 
-    selectedfactory: {
-      get() {
-        let item = this.$store.getters["oeecharts/selectedfactory"];
-        return item;
-      },
-      set(value) {
-        console.log(value);
-        this.$store.dispatch("oeecharts/setSelectedfactory", value);
-      },
-    },
+    // selectedfactory: {
+    //   get() {
+    //     let item = this.$store.getters['oeecharts/selectedfactory']
+    //     return item
+    //   },
+    //   set(value) {
+    //     console.log(value)
+    //     this.$store.dispatch('oeecharts/setSelectedfactory', value)
+    //   },
+    // },
     content: function () {
       return {
         // fist: this.fistDate,
-        // last: this.lastDate,
-        title: "Настройка отображения графиков",
-        btnLeft: "Экспорт",
-        btnRight: "Обновить",
-        selectLeft: "Графики - все подряд",
-        selectRight: "Графики - группировать по группам",
-      };
+        // // last: this.lastDate,
+        // title: 'Настройка отображения графиков',
+        // btnLeft: 'Экспорт',
+        // btnRight: 'Обновить',
+        // selectLeft: 'Графики - все подряд',
+        // selectRight: 'Графики - группировать по группам',
+      }
     },
   },
 
   getters: {
     factories(state) {
-      return state.factories;
+      return state.factories
     },
   },
 
   methods: {
-    ...mapActions("recorder", {
-      addTab: "addTabs",
+      addWorkSpace() {
+      this.$axios
+        .post('/recorder/structure/Workspace/', {
+          name: 'Новое рабочее пространство',
+        })
+        .then((data) => {
+          // console.log(this.$parent);
+          this.workspacesData.push(data.data)
+          this.$emit('closeForm')
+        })
+        .catch((e) => {
+          console.log(e)
+        })
+    },
+    addWorkArea() {
+      try{let id = this.$store.state.selectedWorkarea.workarea.id
+      // console.log(this.$store.state.selectedWorkarea.workarea)
+      this.$axios
+        .post(`/recorder/structure/Workarea/`, {
+          name: 'Новая рабочая область',
+          parent: id,
+          data: [],
+        })
+        .then((data) => {
+          // this.workspacesData.find(function (x) {
+          //   if (x.id == id) {
+          //     x.workares.push(data.data);
+          //   }
+          // });
+          // console.log(data);
+          
+          this.$store.dispatch('selectedWorkarea/AddEmptyWorkArea', {
+            id: data.data.id,
+            name: data.data.name,
+          })
+          // this.$emit("closeForm");
+        })
+        .catch((e) => {})
+      }
+      catch(e){
+        // console.log(e);
+      }
+    },
+  
+    ...mapActions('recorder', {
+      addTab: 'addTabs',
     }),
 
-    ...mapActions("oeecharts", {
-      setSelectedfactory: "setSelectedfactory",
-      setActiveshop: "setActiveshop",
-      setChart: "setChart",
-      setshowCharts: "setshowCharts",
+    ...mapActions('oeecharts', {
+      setSelectedfactory: 'setSelectedfactory',
+      setActiveshop: 'setActiveshop',
+      setChart: 'setChart',
+      setshowCharts: 'setshowCharts',
     }),
-    ...mapActions("users", {
-      setActiveTabHeader: "setActiveTabHeader",
-      setActiveTabSidebar: "setActiveTabSidebar",
+    ...mapActions('users', {
+      setActiveTabHeader: 'setActiveTabHeader',
+      setActiveTabSidebar: 'setActiveTabSidebar',
     }),
 
     setRange(sel) {
-      this.periodActive = this.periodActive.map((item) => false);
-      this.periodActive.splice(sel.id, 1, true);
+      this.periodActive = this.periodActive.map((item) => false)
+      this.periodActive.splice(sel.id, 1, true)
       // debugger;
-      this.periodActive[sel.id] = true;
+      this.periodActive[sel.id] = true
 
       for (let el of this.$parent.$children[1].$children[0].$children) {
-        el.setRange(sel);
+        el.setRange(sel)
       }
     },
 
-    // this.range = sel.period * 1000 * 3600;
-    // this.periodActive = this.periodActive.map((item) => false);
-    // this.periodActive.splice(sel.id, 1, true);
-
-    // this.opt.start = this.opt.end - sel.period * 3600;
-    // if (sel.period === 8)
-    //   this.opt.smena = 1;
-    // else
-    //   this.opt.smena = 0;
-    // this.getTimeStatus(this.opt);
-    // this.getReason(this.opt);
-    // this.getBasicData(this.opt);
-    // this.getTableOEE(this.opt);
     openHideChart(status) {
       for (let el of this.$parent.$children[1].$children[0].$children) {
-        el.openedAccordion = status;
+        el.openedAccordion = status
       }
     },
 
     hideCharts() {
-      let arrShow = this.showCharts.map((item) => false);
-      this.setshowCharts(arrShow);
+      let arrShow = this.showCharts.map((item) => false)
+      this.setshowCharts(arrShow)
     },
   },
-};
+}
 </script>
 
 <style lang="scss" scoped>
@@ -209,7 +191,7 @@ export default {
   background-repeat: no-repeat;
   border-bottom: 1px solid hsl(220, 33%, 88%);
   background: #f9fafc;
-  z-index: 1000;
+  z-index: 4;
   font-weight: 500;
   font-size: 14px;
   line-height: 17px;
@@ -246,7 +228,7 @@ export default {
       display: flex;
       align-items: center;
       text-align: center;
-
+      outline: none;
       margin-right: 24px;
       padding: 2px 12px;
       border: 1px solid #01c587;
@@ -257,11 +239,28 @@ export default {
       line-height: 10px;
       color: #01c587;
     }
-
-    .btn-workspace-blue {
+    .btn-workspace-green:hover {
       width: 148px;
       height: 26px;
 
+      display: flex;
+      align-items: center;
+      text-align: center;
+      outline: none;
+      margin-right: 24px;
+      padding: 2px 12px;
+      border: 1px solid #01c587;
+      background: #01c587;
+
+      font-weight: normal;
+      font-size: 10px;
+      line-height: 10px;
+      color: #ffffff;
+    }
+    .btn-workspace-blue {
+      width: 148px;
+      height: 26px;
+      outline: none;
       display: flex;
       align-items: center;
       text-align: center;
@@ -274,6 +273,56 @@ export default {
       font-size: 10px;
       line-height: 10px;
       color: #00b0ff;
+    }
+    .btn-workspace-blue:hover {
+      outline: none;
+      width: 148px;
+      height: 26px;
+
+      display: flex;
+      align-items: center;
+      text-align: center;
+
+      padding: 2px 12px;
+      border: 1px solid #00b0ff;
+      background: #00b0ff;
+
+      font-weight: 500;
+      font-size: 10px;
+      line-height: 10px;
+      color: #ffff;
+    }
+    .btn-workspace-dowland {
+      margin-left: 25px;
+      width: 100px;
+      height: 26px;
+      outline: none;
+      display: flex;
+      align-items: center;
+      text-align: center;
+
+      padding: 2px 12px;
+      border: 1px solid #00b0ff;
+      background: #ffffff;
+
+      font-weight: 500;
+      font-size: 10px;
+      line-height: 10px;
+      color: #00b0ff;
+    }
+    .btn-workspace-dowland:hover {
+      display: flex;
+      align-items: center;
+      text-align: center;
+
+      padding: 2px 12px;
+      border: 1px solid #00b0ff;
+      background: #00b0ff;
+
+      font-weight: 500;
+      font-size: 10px;
+      line-height: 10px;
+      color: #ffff;
     }
   }
 
@@ -388,7 +437,7 @@ export default {
     }
 
     .subMenu_item:hover:before {
-      content: "";
+      content: '';
       width: 100%;
       border-bottom: 1px solid #2dc2fa;
       position: absolute;
@@ -396,7 +445,7 @@ export default {
       left: 0;
     }
     .subMenu_item.actived:before {
-      content: "";
+      content: '';
       width: 100%;
       border-bottom: 1px solid #2dc2fa;
       position: absolute;
@@ -405,4 +454,18 @@ export default {
     }
   }
 }
+
+.moreCharts {
+  width: 35px;
+}
+// .moreCharts:hover {
+
+//   background-image: url("~assets/svg/hovPuzzle.svg");
+// }
+// .rollCharts:hover{
+//   background-image: url("~assets/svg/hovRoll.svg");
+// }
+// .hideCharts:hover{
+//   background-image: url("~assets/svg/hovHead.svg");
+// }
 </style>

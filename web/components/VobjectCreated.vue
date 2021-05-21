@@ -316,17 +316,7 @@ export default {
         }
       } else {
         if (this.currentStructureObject.indexOf(8) > -1) {
-          // let updateClientData = {};
-          // updateClientData.name = this.currentProject.projectName;
-          // updateClientData.customer = this.currentProject.clientName;
-          // updateClientData.contract = this.currentProject.clientContract;
-          // updateClientData.structure = {};
-          // this.currentStructureObject.forEach((el, i, arr) => {
-          //   updateClientData.structure["levlel_" + i] = el - 1;
-          // });
-          // console.log(updateClientData);
-          // this.$axios.$post(`/settings/wizard/step1/`, updateClientData);
-          
+     
           this.updateClientsObject({
             currentProject: this.currentProject,
             currentStructureObject: this.currentStructureObject,

@@ -1,8 +1,8 @@
 <template>
   <div>
-    <onlinePeriod />
+    <onlinePeriod :workspacesData.sync = "workspaces" />
 
-    <workSpaceId></workSpaceId>
+    <workSpaceId @workspaces='workspacesUpd'></workSpaceId>
   </div>
 </template>
 <script>
@@ -10,7 +10,7 @@ import { mapActions } from "vuex";
 import OnlineHeader from "/components/recorder/onlineHeader";
 import RecorderChart from "/components/recorder/recorderChart";
 import Chart from "/components/chart/chart.vue";
-import menuTypeLine from "/components/menuTypeLine/menuTypeLine.vue";
+
 import workSpaceId from "/pages/recorder/_id.vue";
 var nowDate = new Date();
 
@@ -21,18 +21,20 @@ export default {
     onlinePeriod: OnlineHeader,
     recorderChart: RecorderChart,
     highcharts: Chart,
-    menuTypeLine,
+   
     workSpaceId,
   },
 
-  // data() {
-  //   return {
-  //     tabs: [],
-  //     visiable: false,
-  //   };
-  // },
+  data() {
+    return {
+     workspaces:[],
+    };
+  },
 
   methods: {
+    workspacesUpd(data){
+      this.workspaces = data;
+    },
     ...mapActions("users", {
       setActiveTabHeader: "setActiveTabHeader",
     }),
@@ -114,6 +116,6 @@ export default {
   color: hsl(231, 48%, 45%);
 }
 .btn_icon btn-submenu {
-  z-index: 1000;
+  z-index: 10;
 }
 </style>

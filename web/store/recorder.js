@@ -8,8 +8,10 @@ export default {
         tabs: [],
         arrPoint: [],
         clickHour: false,
-    }),
+     
 
+
+    }),
     getters: {
         getTabs(state) {
             return state.tabs;
@@ -37,7 +39,7 @@ export default {
         },
         setclickHour(state) {
             state.clickHour = true;
-            console.log('fff');
+           
         },
         removePoint(state, point) {
             let indexPoint = state.arrPoint.findIndex(state => state.id == point.id);

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <workSpace ></workSpace>
+    <workSpace @changeworkspaces="workaspecesNew"></workSpace>
   </div>
 </template>
 
@@ -21,6 +21,11 @@ export default {
       visiable: false,
     };
   },
+  methods:{
+    workaspecesNew(data){
+      this.$emit('workspaces',data);
+    }
+  }
 
   // setRange(sel) {
   //     this.range = 0;

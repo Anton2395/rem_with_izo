@@ -97,7 +97,7 @@ export default {
       this.getStockBalances(this.option);
     },
     noChange() {
-      console.log('change');
+     
     },
   },
   computed: {

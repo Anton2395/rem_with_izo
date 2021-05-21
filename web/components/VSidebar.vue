@@ -20,6 +20,15 @@
         </button>
       </nuxt-link>
     </div>
+    <!-- <div>
+      <img class="imgreport" style="margin-left: 42px;
+    margin-top: 10px;" 
+    src="@/assets/svg/carbon_report.png" />
+      <a style="outline: none;" href="/report.xls" download class="btn-workspace-dowland">
+
+        <div>Скачать отчет</div>
+      </a>
+    </div> -->
   </div>
 </template>
 <script>
@@ -42,28 +51,29 @@ export default {
             img: "Archive_Event",
             icon: "calendar4Event",
           },
-          { name: "Admin", link: "", img: "Admin", icon: "guyUser" },
+
+          // { name: "Admin", link: "", img: "Admin", icon: "guyUser" },
         ],
-        OEE: [
-          {
-            name: "Online",
-            link: "Charts",
-            img: "feather_monitor",
-            icon: "monitorIcon",
-          },
-          {
-            name: "Report",
-            link: "",
-            img: "carbon_report",
-            icon: "reportIcon",
-          },
-          {
-            name: "Setting",
-            link: "Projects",
-            img: "carbon_data-structured",
-            icon: "dataStructured",
-          },
-        ],
+        // OEE: [
+        //   {
+        //     name: "Online",
+        //     link: "Charts",
+        //     img: "feather_monitor",
+        //     icon: "monitorIcon",
+        //   },
+        //   {
+        //     name: "Report",
+        //     link: "",
+        //     img: "carbon_report",
+        //     icon: "reportIcon",
+        //   },
+        //   {
+        //     name: "Setting",
+        //     link: "Projects",
+        //     img: "carbon_data-structured",
+        //     icon: "dataStructured",
+        //   },
+        // ],
         // VIBRO: [
         //   { name: "Dashboard", link: "", img: "Dashboard", icon: "dashboard3Line" },
         //   { name: "Archive Event", link: "", img: "Archive_Event", icon: "calendar4Event" },
@@ -86,15 +96,15 @@ export default {
             img: "feather_monitor",
             icon: "monitorIcon",
           },
-          {
-            name: "Report",
-            link: "",
-            img: "carbon_report",
-            icon: "reportIcon",
-          },
+          // {
+          //   name: "Report",
+          //   link: "",
+          //   img: "carbon_report",
+          //   icon: "reportIcon",
+          // },
           {
             name: "Setting",
-            link: "Projects",
+            link: "settingsGlobal",
             img: "carbon_data-structured",
             icon: "dataStructured",
           },
@@ -193,7 +203,38 @@ export default {
 .item:hover {
   color: #ff7167;
 }
+.btn-workspace-dowland {
 
+  margin-left: 10px;
+margin-right: 10px;
+  outline: none;
+  display: flex;
+  align-items: center;
+  text-align: center;
+
+  padding: 2px 12px;
+  border: 1px solid #9aaaba;
+  background: #edf2f8;
+
+  font-weight: 500;
+  font-size: 10px;
+  line-height: 10px;
+  color: #9aaaba;
+}
+.btn-workspace-dowland:hover {
+  display: flex;
+  align-items: center;
+  text-align: center;
+
+  padding: 2px 12px;
+  border: 1px solid #ff7167;
+  background: #ff7167;
+
+  font-weight: 500;
+  font-size: 10px;
+  line-height: 10px;
+  color: #ffff;
+}
 .item.active {
   background-color: #eaeef7;
   border-left: 3px solid #ff7167;
@@ -226,4 +267,5 @@ export default {
 img {
   align-self: center;
 }
+
 </style>

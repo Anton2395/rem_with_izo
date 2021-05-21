@@ -12,21 +12,12 @@
           </div>
           <div
               class="menu-bul"
-              v-if="card.modalBul"
+             
           >
-            <div
-                class="btn-bul"
-                @click="$parent.$emit('hideCartItem','DurationWork')"
-              ><span class="show"></span>
-              <span>Скрыть</span>
-            </div>
-            <div class="btn-bul" @click="update">
-              <span class="new"></span>
-              <span>Обновить</span>
-            </div>
+          
           </div>
         </div>
-        <div class="period">
+        <!-- <div class="period">
           <button
               v-on:click="setPeriod(0)"
               class="btn text"
@@ -57,7 +48,7 @@
               :class="{active: periodActive[3]}"
           >3
           </button>
-        </div>
+        </div> -->
       </div>
       <div class="chart-content">
         <div class="line" v-for="(item, id) in lineDataFirst.interval">

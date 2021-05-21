@@ -1,50 +1,27 @@
 <template>
   <div>
-    <!-- <div>
-        <button v-on:click="hideCharts" class="btn_icon btn-submenu">
-          <IconifyIcon
-            icon="baselineViewHeadline"
-            :style="{ fontSize: '30px' }"
-          />
-        </button>
-      </div>
-      <div>
-        <button v-on:click="showedCharts" class="btn_icon btn-submenu">
-          <IconifyIcon
-            icon="baselineViewStream"
-            :style="{ fontSize: '30px' }"
-          />
-        </button>
-      </div>
-      <div class="select-showing">
-        <button v-on:click="showVchartBoxVisible" class="btn_icon btn-submenu">
-          <IconifyIcon icon="baselineExtension" :style="{ fontSize: '30px' }" />
-        </button>
-      </div> -->
-<!-- вкладки с рабочими областями -->
-    <!-- <div class="recorder-items">
-      <div v-for="(tab, index) in workspaces" :key="tab.name">
-        <div class="recorder-space">
-          <button @click="redrawGraphics(index)">
-            <span>{{ tab.name }}</span>
-          </button>
-        </div>
-      </div>
-    </div> -->
     <div class="sub-panel">
       <div class="subMenu" v-for="(tab, index) in workspaces" :key="tab.id">
         <button
-        style="margin: auto;"
+          style="margin: auto"
           class="subMenu_item btn_icon"
-          :class="{ actived: tab.id == actualWorkspace.id}"
+          :class="{ actived: activeIdFix(tab)}"
           @click="redrawGraphics(index)"
         >
           {{ tab.name }}
         </button>
+        <div style="width: 25px; z-index: 3">
+          <button class="perecl" @click="modalRenameWorkspace(tab)"></button>
+          <button
+            class="removeWorkSpace"
+            @click="deletedWorkspaceFunc(tab)"
+          ></button>
+        </div>
       </div>
     </div>
-    <div style="margin-top: 100px;padding-bottom:12px;" v-if="actualWorkspace">
+    <div style="margin-top: 100px; padding-bottom: 12px" v-if="actualWorkspace">
       <highcharts
+        :workspaces.sync="workspaces"
         v-for="workareaId in actualWorkspace.workares"
         :key="workareaId.id"
         :baseUrl="'/recorder/chart/workarea/?id=' + workareaId.id"
@@ -52,120 +29,168 @@
         :id="workareaId.id"
       />
     </div>
-    
-    
-    <!-- <menuTypeLine></menuTypeLine> -->
+
+    <RenameWorkSpace
+      v-if="openRenameWorkSpace"
+      @closeForm="openRenameWorkSpace = false"
+      @changeNameInParent="changeNameInParent"
+      :name.sync="clickRenameWorksape"
+    />
+    <WorkSpaceDel
+      v-if="openWorkSpaceDel"
+      @closeForm="openWorkSpaceDel = false"
+      del="Удаление рабочего пространства"
+      :whtdel="actualWorkspace.name"
+      :deletedWorkspace="deletedWorkspace"
+    />
   </div>
 </template>
 <script>
-import { mapActions } from "vuex";
-import { mapGetters } from "vuex";
+import { mapActions } from 'vuex'
+import { mapGetters } from 'vuex'
 
 // import OnlineHeader from "/components/recorder/onlineHeader";
-import RecorderChart from "/components/recorder/recorderChart";
-import Chart from "/components/chart/chart.vue";
-import menuTypeLine from "/components/menuTypeLine/menuTypeLine.vue";
+import RecorderChart from '/components/recorder/recorderChart'
+import Chart from '/components/chart/chart.vue'
+import RenameWorkSpace from '/components/RenameWorkSpace.vue'
+import WorkSpaceDel from '/components/WorkSpaceDel.vue'
 
-var nowDate = new Date();
+var nowDate = new Date()
 
 export default {
-  layout: "header_footer",
+  layout: 'header_footer',
 
   data() {
     return {
+      deletedWorkspace: {},
       result: [],
       workspaces: [],
       actualWorkspace: null,
-    };
+      clickRenameWorksape: {},
+      openRenameWorkSpace: false,
+      openWorkSpaceDel: false,
+    }
   },
+
   components: {
     // onlinePeriod: OnlineHeader,
     recorderChart: RecorderChart,
     highcharts: Chart,
-    menuTypeLine,
+    RenameWorkSpace,
+    WorkSpaceDel,
   },
 
   computed: {
-    ...mapGetters("recorder", {
-      tabs: "getTabs",
+    ...mapGetters('recorder', {
+      tabs: 'getTabs',
     }),
   },
 
   created() {
-    this.setActiveTabHeader("RECORDER");
+    this.setActiveTabHeader('RECORDER')
 
-    this.setActiveTabSidebar("Online");
+    this.setActiveTabSidebar('Online')
   },
-  async mounted() {
-    let a = await this.$axios.get("/recorder/structure/Workspace/");
-    this.workspaces = a.data;
-    this.actualWorkspace = this.workspaces[0];
-    // debugger;
-    console.log(this.workspaces);
-    console.log(this.result);
+  mounted() {
+    this.getWorkspaces()
   },
 
   methods: {
-    ...mapActions("users", {
-      setActiveTabHeader: "setActiveTabHeader",
-      setActiveTabSidebar: "setActiveTabSidebar",
+    activeIdFix(tabs){
+      try{
+        if (this.actualWorkspace.id){
+          return tabs.id == this.actualWorkspace.id;
+        }
+      }
+      catch(e){
+        // console.log(e);
+        return false;
+      }
+    },
+    changeNameInParent(name) {
+     
+      let indexFind = this.workspaces.findIndex((el) => {
+        return el.id == this.clickRenameWorksape.id;
+      })
+
+      // this.workspaces[indexFind].name = name;
+      this.$store.dispatch("selectedWorkarea/FixRenameWorkSpace",name);
+      // this.$emit('changeworkspaces', this.workspaces);
+    },
+    modalRenameWorkspace(workspace) {
+      this.clickRenameWorksape = workspace
+      this.openRenameWorkSpace = !this.openRenameWorkSpace
+    },
+    async getWorkspaces() {
+      let a = await this.$axios.get('/recorder/structure/Workspace/')
+      this.workspaces = a.data.sort((a, b) => a.id - b.id)
+      this.actualWorkspace = this.workspaces[0]
+      this.$store.commit('selectedWorkarea/setWorkarea', this.actualWorkspace)
+      this.$emit('changeworkspaces', this.workspaces)
+    },
+    deletedWorkspaceFunc(deletedWorkspace) {
+      this.deletedWorkspace = deletedWorkspace
+      this.openWorkSpaceDel = !this.openWorkSpaceDel
+    },
+    ...mapActions('users', {
+      setActiveTabHeader: 'setActiveTabHeader',
+      setActiveTabSidebar: 'setActiveTabSidebar',
     }),
     redrawGraphics(i) {
-      this.actualWorkspace = this.workspaces[i];
+      this.actualWorkspace = this.workspaces[i]
+      this.$store.commit('selectedWorkarea/setWorkarea', this.actualWorkspace)
     },
   },
-};
+}
 </script>
 
 <style lang="scss" scoped>
-
 .chart {
   margin-top: 90px;
 }
-.headmenu{
+.headmenu {
+  display: flex;
+  margin-left: 150px;
+  margin-right: auto;
+  .btn-workspace-blue {
+    width: 148px;
+    height: 26px;
+
     display: flex;
-    margin-left: 150px;
-    margin-right: auto;
-    .btn-workspace-blue {
-      width: 148px;
-      height: 26px;
+    align-items: center;
+    text-align: center;
 
-      display: flex;
-      align-items: center;
-      text-align: center;
+    padding: 2px 12px;
+    border: 1px solid #00b0ff;
+    background: #ffffff;
 
-      padding: 2px 12px;
-      border: 1px solid #00B0FF;
-      background: #FFFFFF;
+    font-weight: 500;
+    font-size: 10px;
+    line-height: 10px;
+    color: #00b0ff;
+  }
+  .btn-workspace-green {
+    width: 148px;
+    height: 26px;
 
-      font-weight: 500;
-      font-size: 10px;
-      line-height: 10px;
-      color: #00B0FF;
-    }
-    .btn-workspace-green {
-      width: 148px;
-      height: 26px;
+    display: flex;
+    align-items: center;
+    text-align: center;
 
-      display: flex;
-      align-items: center;
-      text-align: center;
+    margin-right: 24px;
+    padding: 2px 12px;
+    border: 1px solid #01c587;
+    background: #ffffff;
 
-      margin-right: 24px;
-      padding: 2px 12px;
-      border: 1px solid #01C587;
-      background: #FFFFFF;
-
-      font-weight: normal;
-      font-size: 10px;
-      line-height: 10px;
-      color: #01C587;
-    }
-
+    font-weight: normal;
+    font-size: 10px;
+    line-height: 10px;
+    color: #01c587;
+  }
 }
 
 .recorder-items {
-  z-index: 10000;
+  z-index: 100;
   padding-top: 96px;
   padding-left: 12px;
   padding-right: 24px;
@@ -179,7 +204,7 @@ export default {
     float: left;
   }
   .recorder-space:hover:before {
-    content: "";
+    content: '';
     width: 100%;
     border-bottom: 1px solid #2dc2fa;
     position: absolute;
@@ -187,7 +212,7 @@ export default {
     left: 0;
   }
   .recorder-space.actived:before {
-    content: "";
+    content: '';
     width: 100%;
     border-bottom: 1px solid #2dc2fa;
     position: absolute;
@@ -226,67 +251,67 @@ export default {
       }
 
       .type {
-        background-image: url("~assets/svg/recorder/typeGraph.svg");
+        background-image: url('~assets/svg/recorder/typeGraph.svg');
         background-position: center;
         background-repeat: no-repeat;
         background-size: contain;
 
         &:hover {
-          background-image: url("~assets/svg/recorder/hovTypeGraph.svg");
+          background-image: url('~assets/svg/recorder/hovTypeGraph.svg');
         }
       }
 
       .online {
-        background-image: url("~assets/svg/recorder/onlinePlay.svg");
+        background-image: url('~assets/svg/recorder/onlinePlay.svg');
         background-position: center;
         background-repeat: no-repeat;
         background-size: contain;
 
         &:hover {
-          background-image: url("~assets/svg/recorder/hovOnlinePlay.svg");
+          background-image: url('~assets/svg/recorder/hovOnlinePlay.svg');
         }
       }
 
       .gannt {
-        background-image: url("~assets/svg/recorder/DiagrGannt.svg");
+        background-image: url('~assets/svg/recorder/DiagrGannt.svg');
         background-position: center;
         background-repeat: no-repeat;
         background-size: contain;
 
         &:hover {
-          background-image: url("~assets/svg/recorder/hovDiagrammGrannt.svg");
+          background-image: url('~assets/svg/recorder/hovDiagrammGrannt.svg');
         }
       }
 
       .formule {
-        background-image: url("~assets/svg/recorder/formule.svg");
+        background-image: url('~assets/svg/recorder/formule.svg');
         background-position: center;
         background-repeat: no-repeat;
         background-size: contain;
 
         &:hover {
-          background-image: url("~assets/svg/recorder/hovFormule.svg");
+          background-image: url('~assets/svg/recorder/hovFormule.svg');
         }
       }
 
       .resize {
-        background-image: url("~assets/svg/recorder/resizeGraph.svg");
+        background-image: url('~assets/svg/recorder/resizeGraph.svg');
         background-position: center;
         background-repeat: no-repeat;
         background-size: contain;
 
         &:hover {
-          background-image: url("~assets/svg/recorder/hovResizeGraph.svg");
+          background-image: url('~assets/svg/recorder/hovResizeGraph.svg');
         }
       }
       .bulity {
-        background-image: url("~assets/svg/recorder/menu.svg");
+        background-image: url('~assets/svg/recorder/menu.svg');
         background-position: center;
         background-repeat: no-repeat;
         background-size: contain;
 
         &:hover {
-          background-image: url("~assets/svg/recorder/hovAddicationMenu.svg");
+          background-image: url('~assets/svg/recorder/hovAddicationMenu.svg');
         }
       }
     }
@@ -302,7 +327,7 @@ export default {
 .sub-panel {
   background-repeat: no-repeat;
   border-bottom: 1px solid hsl(220, 33%, 88%);
-  background: #f9fafc; 
+  background: white;
 
   font-weight: 500;
   font-size: 14px;
@@ -326,7 +351,7 @@ export default {
   top: 96px;
   left: 0;
 
-  z-index: 80;
+  z-index: 3;
 }
 .subMenu {
   width: 140px;
@@ -337,7 +362,7 @@ export default {
   display: flex;
   align-items: center;
   text-align: center;
-  
+
   color: #49617b;
 
   position: relative;
@@ -349,7 +374,7 @@ export default {
 }
 
 .subMenu_item:hover:before {
-  content: "";
+  content: '';
   width: 100%;
   border-bottom: 1px solid #2dc2fa;
   position: absolute;
@@ -357,7 +382,7 @@ export default {
   left: 0;
 }
 .subMenu_item.actived:before {
-  content: "";
+  content: '';
   width: 100%;
   border-bottom: 1px solid #2dc2fa;
   position: absolute;
@@ -379,6 +404,33 @@ export default {
 }
 .btn-submenu:hover {
   color: hsl(231, 48%, 45%);
+}
+.perecl {
+  outline: none;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: none;
+  background: none;
+  margin: 4px 6px 0px 0px;
+  background: center no-repeat url('~assets/svg/perecl.svg');
+  /* background: center no-repeat url("~assets/svg/clear.svg"); */
+}
+.removeWorkSpace {
+  outline: none;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: none;
+  background: none;
+  margin: -2px 6px 0px 0px;
+  background: center no-repeat url('~assets/svg/recorder/remove.svg');
+}
+.perecl:hover {
+  background: center no-repeat url('~assets/svg/hovRename.svg');
+}
+.removeWorkSpace:hover {
+  background: center no-repeat url('~assets/svg/hovRemove.svg');
 }
 </style>
 
