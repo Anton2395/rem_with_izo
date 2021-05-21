@@ -4,8 +4,6 @@ from multiprocessing import Process
 from typing import Optional
 
 from cprint import cprint
-
-import data
 from core.processor import StartProcessOpcForConnectToPLC
 
 # from core.socket_server import start_socket

@@ -52,7 +52,10 @@ class ListValue(base):
     if_change = Column(Boolean, default=False)
     byte_bind = Column(Integer, nullable=False)
     bit_bind = Column(Integer, nullable=False)
-    alarms_id = Column(Integer, ForeignKey('alarms.id'), nullable=True)
+    alarms = relationship("Alarms", cascade="all, delete")
+    polling_time = Column(Integer, nullable=True, default=1)
+    rewrite_time = Column(Integer, nullable=True, default=10)
+
 
     def get_name_alarm(self):
         session = Session()
@@ -69,6 +72,7 @@ class Alarms(base):
     __tablename__ = 'alarms'
 
     id = Column(Integer, primary_key=True)
+    value_list_id = Column(Integer, ForeignKey('listvalue.id'))
     bit = Column(Integer, nullable=False)
     text_alarm_id = Column(Integer, ForeignKey('text_alarm.id'))
     Value = relationship('ListValue', cascade='save-update')
@@ -333,14 +337,10 @@ def del_connections():
 @login_required
 def value_list(id):
     session = Session()
-    a = session.query(ListValue).filter_by(connections_id=id)
+    a = session.query(ListValue).filter_by(connections_id=id).order_by(ListValue.id)
     b = session.query(Connections).get(id).name
     array = []
     for i in a:
-        if i.alarms_id == "None":
-            name_alarm = ''
-        else:
-            name_alarm = i.get_name_alarm()
         c = {
             "id": i.id,
             "name": i.name,
@@ -351,8 +351,7 @@ def value_list(id):
             "divide": i.divide,
             "if_change": i.if_change,
             "byte_bind": i.byte_bind,
-            "bit_bind": i.bit_bind,
-            "name_alarm": name_alarm
+            "bit_bind": i.bit_bind
         }
         array.append(c)
     data = {
@@ -367,10 +366,13 @@ def value_list(id):
 @login_required
 def add_value_list(id):
     session = Session()
-    a = session.query(Alarms).all()
+    alarm = session.query(Text_Alarm).filter_by(type="alarm")
+    warning = session.query(Text_Alarm).filter_by(type="warning")
+
     data = {
         "id": id,
-        "array": a
+        "alarm": alarm,
+        "warning": warning
     }
     return render_template('add_value_list.html', data=data)
 
@@ -378,10 +380,21 @@ def add_value_list(id):
 @app.route('/value_list/<int:id>/add_value_list', methods=['POST'])
 @login_required
 def add_value(id):
+    session = Session()
     name = request.form['name']
     start = request.form['start']
     type_value = request.form['type_value']
     type_table = request.form['type_table']
+    try:
+        rewrite_time = request.form['rewrite_time']
+    except:
+        rewrite_time = 600
+    try:
+        polling_time = request.form['polling_time']
+    except:
+        polling_time = 1
+    if polling_time == None:
+        polling_time = 1
     try:
         if request.form['divide'] == 'True':
             divide = 1
@@ -398,9 +411,7 @@ def add_value(id):
         if_change = 0
     byte_bind = request.form['byte_bind']
     bit_bind = request.form['bit_bind']
-    alarm = request.form['alarm']
-    if alarm == 'Null':
-        alarm = None
+    print(polling_time)
     a = ListValue(name=name,
                   start=start,
                   type_value=str(type_value),
@@ -411,11 +422,26 @@ def add_value(id):
                   if_change=if_change,
                   byte_bind=byte_bind,
                   bit_bind=bit_bind,
-                  alarms_id=alarm
+                  polling_time=polling_time,
+                  rewrite_time=rewrite_time
                   )
-    session = Session()
     session.add(a)
     session.commit()
+    if type_value == "bool":
+        bit_bool = request.form['bit_bool']
+        text_alarm_id = request.form['text_alarm']
+        a = session.query(ListValue).filter_by(name=name,
+                  start=start,
+                  type_value=str(type_value),
+                  type_table=str(type_table),
+                  connections_id=id
+                  ).order_by(ListValue.id.desc()).first()
+        alarm = Alarms(bit=bit_bool,
+                text_alarm_id=text_alarm_id,
+                value_list_id=a.id
+                )
+        session.add(alarm)
+        session.commit()
     return redirect(url_for('value_list', id=id))
 
 
@@ -435,8 +461,15 @@ def del_value(id):
 def up_value(id1, id2):
     session = Session()
     a = session.query(ListValue).get(id2)
-    b = session.query(Alarms).get(a.alarms_id)
-    array = session.query(Alarms).all()
+    alarms = session.query(Alarms).filter_by(value_list_id=a.id)
+    alarm = session.query(Text_Alarm).filter_by(type="alarm")
+    warning = session.query(Text_Alarm).filter_by(type="warning")
+    if len(list(alarms)) != 0:
+        alarms = alarms[0]
+        alarm_text = session.query(Text_Alarm).get(alarms.text_alarm_id)
+    else:
+        alarms = None
+        alarm_text = None
     data = {
         "a": a,
         "id1": id1,
@@ -444,10 +477,12 @@ def up_value(id1, id2):
         "real": "real",
         "bool": "bool",
         "double": "double",
-        "b": b,
-        "array": array
+        "alarm": alarm,
+        "warning": warning,
+        "al_id": alarms,
+        "alarm_text": alarm_text
     }
-    return render_template('up_value.html', data=data)
+    return render_template('up_val.html', data=data)
 
 
 @app.route('/value_list/up/<int:id1>/<int:id2>', methods=['POST'])
@@ -459,10 +494,23 @@ def up_value_ch(id1, id2):
     start = request.form['start']
     type_value = request.form['type_value']
     type_table = request.form['type_table']
-    if request.form['divide'] == "True":
-        divide = True
-        divide_number = request.form['divide_number']
-    else:
+    rewrite_time = request.form['rewrite_time']
+    if rewrite_time == '':
+        rewrite_time = 10
+    try:
+        polling_time = request.form['polling_time']
+    except:
+        polling_time = 1
+    if polling_time == None:
+        polling_time = 1
+    try:
+        if request.form['divide'] == "True":
+            divide = True
+            divide_number = request.form['divide_number']
+        else:
+            divide = False
+            divide_number = None
+    except:
         divide = False
         divide_number = None
     if request.form['if_change'] == "True":
@@ -471,9 +519,14 @@ def up_value_ch(id1, id2):
         if_change = False
     byte_bind = request.form['byte_bind']
     bit_bind = request.form['bit_bind']
-    alarm = request.form['alarm']
-    if alarm == 'Null':
-        alarm = None
+    try:
+        bit_bool = request.form['bit_bool']
+        type_iv = request.form['type_ivent']
+        id_text_alarm = request.form['text_alarm']
+    except:
+        bit_bool = 1
+        type_iv = 'alarms'
+        id_text_alarm = 2
     a.name = name
     a.start = start
     a.type_value = type_value
@@ -484,8 +537,13 @@ def up_value_ch(id1, id2):
     a.if_change = if_change
     a.byte_bind = byte_bind
     a.bit_bind = bit_bind
-    a.alarms_id = alarm
+    a.polling_time = polling_time
+    a.rewrite_time = rewrite_time
     session.commit()
+    # alarm_get = session.query(Alarms).filter_by(value_list_id=a.id).first()
+    # alarm_get.bit = bit_bool
+
+
     return redirect(url_for('value_list', id=id1))
 
 @app.route('/alarm_text/<int:id_alarm_text>/alarm', methods=['GET'])

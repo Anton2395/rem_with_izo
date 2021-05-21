@@ -6,7 +6,7 @@ export default {
         port: 80
 
     },
-    
+
     mode: 'spa',
     /*
      ** Headers of the page
@@ -61,7 +61,7 @@ export default {
             src: "~/plugins/element-ui",
             ssr: true
         },
-       
+
 
     ],
     /*
@@ -86,7 +86,7 @@ export default {
         // baseURL: 'http://128.65.54.166:8082',
 
         // baseURL:  'http://localhost:50001/',
-        baseUrl: 'http://remeza-monitor.ddns.net:50001',
+        baseUrl: 'http://0.0.0.0:50001',
 
         proxy: false,
     },
@@ -102,7 +102,7 @@ export default {
         },
         strategies: {
             local: {
-                
+
                 endpoints: {
                     login: {url: '/user/login/', method: 'post', propertyName: 'token'},
                     logout: {url: '/user/logout/', method: 'post'},

@@ -29,20 +29,16 @@
                     <th><input type="number" name="start"></th>
                 </tr>
                 <tr>
-                    <th>type_value</th>
-                    <th>
-                        <input class='clInt' type="radio" name="type_value" value="int" checked>int
-                        <input class="clDrug" type="radio" name="type_value" value="real">real
-                        <input class="clDrug" type="radio" name="type_value" value="bool">bool
-                        <input class="clDrug" type="radio" name="type_value" value="double">double
-                    </th>
+                    <th>polling_time</th>
+                    <th><input type="number" name="polling_time" placeholder='Время опроса в "мс"'></th>
                 </tr>
                 <tr class="block-text">
-                    <th>divide</th>
+                    <th>type_value</th>
                     <th>
-                        <input type="radio" name="divide" value="True">True
-                        <input type="radio" name="divide" value="False" checked>False
-                        <input type="number" name="divide_number" placeholder="число деления">
+                        <input class='clInt' type="radio" name="type_value" value="int">int
+                        <input class="clDrug" type="radio" name="type_value" value="real">real
+                        <input class="clBool" type="radio" name="type_value" value="bool">bool
+                        <input class="clDrug" type="radio" name="type_value" value="double">double
                     </th>
                 </tr>
                 <tr>
@@ -62,23 +58,16 @@
                     </th>
                 </tr>
                 <tr>
+                    <th>rewrite_time</th>
+                    <th><input type="number" name="rewrite_time" placeholder='Время перезаписи в "мин"'></th>
+                </tr>
+                <tr>
                     <th>byte_bind</th>
                     <th><input type="number" name="byte_bind"></th>
                 </tr>
-                <tr>
+                <tr class="bit_bind">
                     <th>bit_bind</th>
                     <th><input type="number" name="bit_bind"></th>
-                </tr>
-                <tr>
-                    <th>Alarm bit:</th>
-                    <th>
-                        <select name="alarm">
-                                <option value="Null">Нет связи</option>
-                            {% for i in data.array %}
-                                <option value={{i.id}}>{{i.bit}}</option>
-                            {% endfor %}
-                        </select>
-                    </th>
                 </tr>
             </table>
             <div class="add_value_btn">
@@ -88,14 +77,97 @@
         </div>
     </div>
 <script>
+    var count = 0;
+
     $('input[class="clInt"]').click(function(){
 
-	$('.block-text').html('<th>divide</th><th><input type="radio" name="divide" value="True">True<input type="radio" name="divide" value="False" checked>False<input type="number" name="divide_number" placeholder="число деления"></th>')
+    if (count == 0){
+        $('.block-text').after($(`
+	                <tr class="temp_tr">
+	                    <th>divide</th>
+	                       <th>
+	                            <input type="radio" name="divide" value="True">True
+	                            <input type="radio" name="divide" value="False" checked>False
+	                            <input type="number" name="divide_number" placeholder="число деления">
+	                       </th>
+	                </tr>
+	                `));
+	    count = 1;
+    }
+    $('.bool_bit').remove();
+
+
 });
     $('input[class="clDrug"]').click(function(){
 
-    $('.block-text').html('')
+    $('.bool_bit').remove();
+    $('.temp_tr').remove();
+    count = 0;
+
 });
+
+    $('input[class="clBool"]').click(function(){
+
+    $('.bool_bit').remove();
+
+    $('.bit_bind').after($(`
+                <tr class="bool_bit">
+                    <th>Boolean bit:</th>
+                    <th class="th_type_ivent">
+                        <input type="number" placeholder="бит" name="bit_bool">
+                        <select name="type_ivent" class="type_ivent">
+                                <option value="Null">Тип события</option>
+                                <option value="alarm">Alarm</option>
+                                <option value="warning">Warning</option>
+                        </select>
+                    </th>
+                </tr>
+    `));
+
+    $('.temp_tr').remove();
+    count = 0;
+
+
+    $('.type_ivent').on('change',function(){
+        var value = $(this).val();
+
+        if (value == "alarm"){
+            $('.select_alarm_text').remove();
+            $('.th_type_ivent').after($(`
+                <th class="select_alarm_text">
+                    <select name="text_alarm">
+                        <option>Text alarm</option>
+                        {% for i in data.alarm %}
+                        <option value={{i.id}}>{{i.name}}</option>
+                        {% endfor %}
+                    </select>
+                </th>
+            `));
+        };
+
+        if (value == "warning"){
+            $('.select_alarm_text').remove();
+            $('.th_type_ivent').after($(`
+                    <th class="select_alarm_text">
+                        <select name="text_alarm">
+                            <option>Text warning</option>
+                            {% for i in data.warning %}
+                            <option value={{i.id}}>{{i.name}}</option>
+                            {% endfor %}
+                        </select>
+                    </th>
+                `));
+        };
+
+        if (value == "Null"){
+            $('.select_alarm_text').remove();
+        };
+    });
+
+
+});
+
+$('input[class="clInt"]').click();
 
 </script>
 </body>

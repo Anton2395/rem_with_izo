@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from .models import *
 from .serializer import *
 from users.models import UserP
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, time
 from rest_framework.decorators import permission_classes
 from rest_framework.permissions import IsAuthenticated
 from structure.models import Agreagat
@@ -47,7 +47,12 @@ class DurationIntervalDayViews(APIView):
                     dash = d.name
         try:
             art = globals()[dash].objects.filter(date=date)
+            if len(art) == 0:
+                start = time(0,0,1)
+                end = time(23,59,59)
+                calculate_duration_shift(date, start, end)
             sum = 0
+            art = globals()[dash].objects.filter(date=date)
             format = "%H:%M:%S"
             data1 =[]
             for i in art:
@@ -74,7 +79,8 @@ class DurationIntervalDayViews(APIView):
 @permission_classes([IsAuthenticated])
 class DurationIntervalShiftViews(APIView):
     def get(self, request, date, id):
-        a = Agreagat.objects.get(pk=dist_table['DurationIntervalDay'][1]).parent.shift_set.get(pk=id)
+        a = Agreagat.objects.get(pk=dist_table['DurationIntervalDay'][1]).parent.shift_set.all()#get(pk=id)
+        a = a[id-1]
         if DurationIntervalDay.objects.filter(date=date, start__gte=a.start, end__lte=a.end).exists():
             k = DurationIntervalDay.objects.filter(date=date, start__gte=a.start, end__lte=a.end).order_by('start')
         else:
@@ -305,14 +311,13 @@ class EditionMonthViews(APIView):
 @permission_classes([IsAuthenticated])
 class EditionShiftViews(APIView):
     def get(self, request, date, id):
-        a = Agreagat.objects.get(pk=dist_table['DurationIntervalDay'][1]).parent.shift_set.get(pk=id)
-        k = calculate_edition_shift(date, a.start, a.end)
+        a = Agreagat.objects.get(pk=dist_table['DurationIntervalDay'][1]).parent.shift_set.all()
+        c = a[id-1]
+        k = calculate_edition_shift(date, c.start, c.end)
         if id == 1:
-            id = 4
+            k_pred = calculate_edition_shift(date, a[len(a)-1].start, a[len(a)-1].end)
         else:
-            id = id - 1
-        a = Agreagat.objects.get(pk=dist_table['DurationIntervalDay'][1]).parent.shift_set.get(pk=id)
-        k_pred = calculate_edition_shift(date, a.start, a.end)
+            k_pred = calculate_edition_shift(date, a[id-2].start, a[id-2].end)
 
         if k_pred["suitable"] != 0:
             change_suitable = (((k["suitable"] / k_pred["suitable"]) - 1) * 100)
@@ -326,11 +331,11 @@ class EditionShiftViews(APIView):
             change_defect = (((k["defect"] / k_pred["defect"]) - 1) * 100)
         else:
             change_defect = 0
-        if k["flooded"] != 0:
+        if k_pred["flooded"] != 0:
             change_flooded = (((k["flooded"] / k_pred["flooded"]) - 1) * 100)
         else:
             change_flooded = 0
-        if k["sum"] != 0:
+        if k_pred["sum"] != 0:
             change_sum = (((k["sum"] / k_pred["sum"]) - 1) * 100)
         else:
             change_sum = 0
@@ -435,7 +440,7 @@ class SumexpenseMonthViews(APIView):
 @permission_classes([IsAuthenticated])
 class SumexpenseShiftViews(APIView):
     def get(self, request, date, id):
-        a = Agreagat.objects.get(pk=dist_table['DurationIntervalDay'][1]).parent.shift_set.get(pk=id)
+        a = Agreagat.objects.get(pk=dist_table['DurationIntervalDay'][1]).parent.shift_set.all()[id-1]
         k = calculate_sumexpense_shift(date, a.start, a.end)
         return Response(k)
 
@@ -447,7 +452,6 @@ class SumexpenseShiftViews(APIView):
 @permission_classes([IsAuthenticated])
 class EnergyConsumptionDayViews(APIView):
     def get(self, request, date):
-
         role = UserP.objects.get(id=request.user.pk).role_set.all()
         for r in role:
             for d in r.dashboard.all():
@@ -516,7 +520,7 @@ class EnergyConsumptionMonthViews(APIView):
 @permission_classes([IsAuthenticated])
 class EnergyConsumptionShiftViews(APIView):
     def get(self, request, date, id):
-        a = Agreagat.objects.get(pk=dist_table['DurationIntervalDay'][1]).parent.shift_set.get(pk=id)
+        a = Agreagat.objects.get(pk=dist_table['DurationIntervalDay'][1]).parent.shift_set.all()[id-1]
         k = calculate_energy_consumption_shift(date, a.start, a.end)
         return Response(k)
 
@@ -602,7 +606,7 @@ class SpecificConsumptionMonthViews(APIView):
 @permission_classes([IsAuthenticated])
 class SpecificConsumptionShiftViews(APIView):
     def get(self, request, date, id):
-        a = Agreagat.objects.get(pk=dist_table['DurationIntervalDay'][1]).parent.shift_set.get(pk=id)
+        a = Agreagat.objects.get(pk=dist_table['DurationIntervalDay'][1]).parent.shift_set.all()[id-1]
         k = calculate_specific_shift(date, a.start, a.end)
         return Response(k)
 
@@ -768,8 +772,8 @@ class ComparisonMonthViews(APIView):
 @permission_classes([IsAuthenticated])
 class ComparisonShiftViews(APIView):
     def get(self, request, date1, date2, id1, id2):
-        a1 = Agreagat.objects.get(pk=dist_table['DurationIntervalDay'][1]).parent.shift_set.get(pk=id1)
-        a2 = Agreagat.objects.get(pk=dist_table['DurationIntervalDay'][1]).parent.shift_set.get(pk=id2)
+        a1 = Agreagat.objects.get(pk=dist_table['DurationIntervalDay'][1]).parent.shift_set.all()[id1-1]
+        a2 = Agreagat.objects.get(pk=dist_table['DurationIntervalDay'][1]).parent.shift_set.all()[id2-1]
         k1 = calculate_edition_shift(date1, a1.start, a1.end)
         k2 = calculate_edition_shift(date2, a2.start, a2.end)
         if k2['suitable'] != 0:

@@ -102,12 +102,14 @@ class DurationIntervalDay(models.Model):
             a = cursor.fetchall()[0][0]
         return a
 
-    def save(self):
-        a = self.__exists_table(dist_table['DurationIntervalDay'][0])
-        if a:
-            super(DurationIntervalDay, self).save()
-        else:
-            raise ValidationError('did not find the agreagat table')
+    # def save(self):
+    #     a = self.__exists_table(dist_table['DurationIntervalDay'][0])
+    #     if a:
+    #         super(DurationIntervalDay, self).save()
+    #     else:
+    #         raise ValidationError('did not find the agreagat table')
+
+# def calculate_duration_day()
 
 
 

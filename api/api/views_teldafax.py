@@ -9,7 +9,6 @@ from dashboard.teldefax_dashboard import TransitionReadings, GenerationOfElectri
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
-from project_v_0_0_1.settings import SOCKET_PORT_SEREVER
 
 
 def get_dashboard(data):

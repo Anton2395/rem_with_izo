@@ -1,3 +1,4 @@
+import datetime
 import os
 import struct
 import threading
@@ -158,21 +159,32 @@ class StartProcessOpcForConnectToPLC(Process):
 
     def _thread_for_write_data(self, d):
         value = self.__parse_bytearray(d)
+        now = datetime.datetime.now()
+        timeout_sec = d['time_sleep'] / 1000
         if 'if_change' in d and d['if_change'] and not d['name'] in self.values:
             cprint.cprint.info("create last value in %s " % d['name'])
             self.values[d['name']] = value
             self.__write_to_db(tablename=d['name'], value=value, divide=d['divide'])
+            self.values[f'write_time_{d["name"]}'] = datetime.datetime.now()
             if 'alarms' in d:
                 self.add_to_alarm_new(d)
 
-        if 'if_change' in d and d['if_change'] and self.values[d['name']] != value:
-            self.values[d['name']] = value
-            self.__write_to_db(tablename=d['name'], value=value, divide=d['divide'])
-            if 'alarms' in d:
-                self.add_to_alarm_new(d)
+        if 'if_change' in d and d['if_change'] and (self.values[d['name']] != value or ((now - self.values[f'write_time_{d["name"]}']).total_seconds() > d['rewrite_time']*60)):
+            if (now - self.values[f'write_time_{d["name"]}']).total_seconds() > timeout_sec:
+                self.values[d['name']] = value
+                self.__write_to_db(tablename=d['name'], value=value, divide=d['divide'])
+                self.values[f'write_time_{d["name"]}'] = datetime.datetime.now()
+                if 'alarms' in d:
+                    self.add_to_alarm_new(d)
 
         if 'if_change' in d and not d['if_change']:
-            self.__write_to_db(tablename=d['name'], value=value, divide=d['divide'])
+
+            if not f'write_time_{d["name"]}' in self.values:
+                self.__write_to_db(tablename=d['name'], value=value, divide=d['divide'])
+                self.values[f'write_time_{d["name"]}'] = datetime.datetime.now()
+            elif (now - self.values[f'write_time_{d["name"]}']).total_seconds() > timeout_sec:
+                self.__write_to_db(tablename=d['name'], value=value, divide=d['divide'])
+                self.values[f'write_time_{d["name"]}'] = datetime.datetime.now()
 
     def check_bit_in_int(self, value, bit):
         bits = bin(value)
@@ -213,6 +225,7 @@ class StartProcessOpcForConnectToPLC(Process):
         self.__create_table_if_not_exist()  # создание таблиц если их нет
         while True:
             start_time = time.time()
+
             if (not self.__get_db_data()):
                 self.__reconect_to_plc()
                 self.status[self.count] = 0
@@ -233,6 +246,7 @@ class StartProcessOpcForConnectToPLC(Process):
                     thread.join()
                 self._conn.commit()
                 self.status[self.count] = 1
+
                 # cprint.cprint.info("Данные пришли")
             # cprint.cprint.info("--- %s seconds ---" % (time.time() - start_time))
 

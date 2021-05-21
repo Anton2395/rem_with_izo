@@ -45,12 +45,12 @@ export default {
             gas: 0,
         },
         totalConsumption: {
-            iso: 55,
-            pol: 3,
-            pen: 58,
-            kat1: 90,
-            kat2: 12,
-            kat3: 440,
+            iso: 0,
+            pol: 0,
+            pen: 0,
+            kat1: 0,
+            kat2: 0,
+            kat3: 0,
         },
         specificConsumption: {
             iso: 1,
@@ -255,12 +255,12 @@ export default {
         },
         async getTotalConsumption(store, option) {
             let data = {
-                iso: 5,
-                pol: 6,
-                pen: 9,
-                kat1: 440,
-                kat2: 6,
-                kat3: 1,
+                iso: 0,
+                pol: 0,
+                pen: 0,
+                kat1: 0,
+                kat2: 0,
+                kat3: 0,
             };
             try {
                 if (option.id1)

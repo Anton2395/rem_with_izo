@@ -15,17 +15,17 @@ def get_list_connections():
         k = session.query(ListValue).filter_by(connections_id=i.id)
         value_list = []
         for j in k:
-            alarm = []
-            if j.alarms_id != None:
-                aar = session.query(Alarms).get(j.alarms_id)
-                # print('asdasd' ,aar.text_alarm_id, aar.bit, aar.id)
-                bar = session.query(Text_Alarm).get(aar.text_alarm_id)
-                al = {
-                    "bit": aar.bit,
-                    "text": bar.name + '-' + i.name,
-                    "type": bar.type
-                }
-                alarm.append(al)
+            alarms = []
+            if j.type_value == 'bool':
+                aar = session.query(Alarms).filter_by(value_list_id=j.id)
+                for alarm in aar:
+                    bar = session.query(Text_Alarm).get(alarm.text_alarm_id)
+                    al = {
+                        "bit": alarm.bit,
+                        "text": bar.name + '-' + i.name,
+                        "type": bar.type
+                    }
+                    alarms.append(al)
                 if j.divide == False:
                     val = {
                         "name": j.name,
@@ -36,7 +36,9 @@ def get_list_connections():
                         "if_change": j.if_change,
                         "byte_bind": j.byte_bind,
                         "bit_bind": j.bit_bind,
-                        "alarms": alarm
+                        "alarms": alarms,
+                        "time_sleep": j.polling_time,
+                        "rewrite_time": j.rewrite_time
                     }
                 else:
                     val = {
@@ -49,7 +51,9 @@ def get_list_connections():
                         "if_change": j.if_change,
                         "byte_bind": j.byte_bind,
                         "bit_bind": j.bit_bind,
-                        "alarms": alarm
+                        "alarms": alarms,
+                        "time_sleep": j.polling_time,
+                        "rewrite_time": j.rewrite_time
                     }
             else:
                 if j.divide == False:
@@ -61,7 +65,9 @@ def get_list_connections():
                         "divide": j.divide,
                         "if_change": j.if_change,
                         "byte_bind": j.byte_bind,
-                        "bit_bind": j.bit_bind
+                        "bit_bind": j.bit_bind,
+                        "time_sleep": j.polling_time,
+                        "rewrite_time": j.rewrite_time
                     }
                 else:
                     val = {
@@ -73,7 +79,9 @@ def get_list_connections():
                         "divide_number": j.divide_number,
                         "if_change": j.if_change,
                         "byte_bind": j.byte_bind,
-                        "bit_bind": j.bit_bind
+                        "bit_bind": j.bit_bind,
+                        "time_sleep": j.polling_time,
+                        "rewrite_time": j.rewrite_time
                     }
             value_list.append(val)
         connect = {
@@ -89,6 +97,7 @@ def get_list_connections():
         list_connections.append(connect)
     session.close()
     return list_connections
+
 
 
 def get_alarm_all_world():
