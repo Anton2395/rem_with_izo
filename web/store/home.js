@@ -425,6 +425,14 @@ function getRandomInt(max) {
 
 function formatDate(date) {
     let d = new Date(date);
+    var options = {
+        year: 'numeric',
+        month: 'numeric',
+        day: 'numeric',
 
-    return d.getFullYear() + "-" + d.getMonth() + 1 + "-" + d.getDate();
+    };
+    console.log((d.getTime()/1))
+    return String(d.getTime()/1000);
+    
+
 }

@@ -86,7 +86,7 @@ export default {
         // baseURL: 'http://128.65.54.166:8082',
 
         // baseURL:  'http://localhost:50001/',
-        baseUrl: 'http://0.0.0.0:50001',
+        baseUrl: 'http://localhost:50001',
 
         proxy: false,
     },
