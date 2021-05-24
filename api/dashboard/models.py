@@ -174,7 +174,7 @@ class Substance(models.Model):
             if a == None:
                 a = [0]
             k = DateValue(date=date, value=a[0], parent=self)
-            if date.date() != datetime.datetime.now().date():
+            if date != datetime.datetime.now().date():
                 k.save()
         return a
 
@@ -185,7 +185,7 @@ class Substance(models.Model):
 
         :param date date: дата за которую извлекаются данные
         '''
-        if date.date() == datetime.datetime.now().date():
+        if date == datetime.datetime.now().date():
             try:
                 k = self.calculate(date)[0]
             except TypeError:
@@ -806,4 +806,38 @@ class SpecificConsumptionDay(models.Model):
     kat3 = models.FloatField()
     date = models.DateField(auto_now=False, auto_now_add=False, unique=True)
 
+
+
+class StatePressureRange(models.Model):
+    '''
+    Сущность для хранение границ и названия давления данного диапазона
+
+      Attributes
+    ===========
+    - name - str - имя диапазона давления
+    - from_data - int - начала диапазона давления
+    - to_data - int - конец диапазона давления
+    - color - str - цвет отображения данного диапазона
+
+
+     Methods
+    =============
+    - get_struc - вазвращает все параметры запеси в dict
+
+
+    '''
+    name = models.CharField(max_length=255, default='no name')
+    from_data = models.IntegerField()
+    to_data = models.IntegerField()
+    color = models.CharField(max_length=255, default='#ffffff')
+
+
+    def get_struc(self) -> dict:
+        k = {
+                "name": self.name,
+                "from": self.from_data,
+                "to": self.to_data,
+                "color": self.color
+            }
+        return k
 

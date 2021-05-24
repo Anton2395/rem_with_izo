@@ -306,7 +306,14 @@ dist_table = {
             "generator4": "m_true",
             "torch": "m_fo"
         }
+    },
+    "Remeza": {
+        "davlenie": "mvlab_remesa_davlenie",
+        "temp": "mvlab_remesa_temp",
+        "status": "mvlab_remesa_status",
+        "error": "mvlab_remesa_error"
     }
+
 }
 
 # PlcRemoteUse ___ init

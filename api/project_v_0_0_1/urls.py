@@ -50,6 +50,7 @@ urlpatterns = [
     path('recorder/', include('recorder.urls')),
     path('recorder/structure/', include(router_recorder.urls)),
     path('dashboard/', include('api.urls')),
+    path('status/', include('api.url_status')),
     # path('openapi/', get_schema_view(
     #         title="School Service",
     #         description="API developers hpoing to use our service"

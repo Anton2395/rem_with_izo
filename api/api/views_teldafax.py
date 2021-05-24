@@ -9,6 +9,7 @@ from dashboard.teldefax_dashboard import TransitionReadings, GenerationOfElectri
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
+from project_v_0_0_1.settings import SOCKET_PORT_SEREVER
 
 
 def get_dashboard(data):
@@ -186,14 +187,12 @@ class Teldafax_status(APIView):
 
 
 class GetStatusConnectionsTeldafax(APIView):
-
     def get(self, request):
         data = get_dashboard({"sss": True})
         return Response(data)
 
 
 class GetConnectionsTeldafax(APIView):
-
     def get(self, request):
         with connection.cursor() as cursor:
             sql = """SELECT * FROM mvlab_connections;"""

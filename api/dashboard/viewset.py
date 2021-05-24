@@ -105,6 +105,7 @@ class DurationIntervalShiftViews(APIView):
         }
         return Response(data)
 
+
 #виджет «Остатки на складах»
 @permission_classes([IsAuthenticated])
 class RemainderViews(APIView):
