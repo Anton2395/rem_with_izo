@@ -1,108 +1,93 @@
 <template>
-  <div class="chart-data consumption">
-    <div class="chart-header">
-      <div class="title">Суммарный расход</div>
-      <period title="SpecificConsumption"></period>
-      <div
-        class="bul"
-        @click="SpecificConsumption.modalBul = !SpecificConsumption.modalBul"
-        @click.stop="noChange"
-      >
-        <span></span>
-      </div>
-    </div>
-    <div class="chart-content">
-      <!-- <div
+   <div
+            class="chart-data consumption"
+          
+        >
+          <div class="chart-header">
+            <div class="title">Суммарный расход</div>
+            <period title="TotalConsumption"></period>
+            <!-- <div
+                class="bul"
+                @click="TotalConsumption.modalBul=!TotalConsumption.modalBul;"
+                @click.stop="noChange"
+            >
+              <span></span>
+            </div> -->
+          </div>
+          <div class="chart-content">
+            <div
                 class="menu-bul"
-                v-if="SpecificConsumption.modalBul"
+                v-if="TotalConsumption.modalBul"
             >
               <div
                   class="btn-bul"
-                  @click="SpecificConsumption.cardShow=!SpecificConsumption.cardShow; SpecificConsumption.modalBul=false"
+                  @click="TotalConsumption.cardShow=!TotalConsumption.cardShow; TotalConsumption.modalBul=false"
               ><span class="show"></span>
                 <span>Скрыть</span>
               </div>
               <div class="btn-bul">
                 <span class="new"></span>
-                <span @click="updateSpecificConsumption">Обновить</span>
+                <span @click="updateTotalConsumption">Обновить</span>
               </div>
-            </div> -->
-      <div class="iteam-group">
-        <div class="item">
-          <div class="data">
-            <div class="quantity">{{ specificConsumption.iso }}</div>
-            <div class="subtitle">Изоцианат, л</div>
-          </div>
-          <div class="icon">
-            <div class="circle" style="background: #2d9ad8">
-              <div class="title">ISO</div>
-              <div class="subtitle">km</div>
+            </div>
+            <div class="iteam-group">
+              <div class="item">
+                <div class="data">
+                  <div class="quantity">{{ totalConsumption.iso }}</div>
+                  <div class="subtitle">Изоцианат, л</div>
+                </div>
+                <div class="icon">
+                  <div class="circle" style="background: #2D9AD8">ISO</div>
+                </div>
+              </div>
+              <div class="item">
+                <div class="data">
+                  <div class="quantity">{{ totalConsumption.pol }}</div>
+                  <div class="subtitle">Полиол, л</div>
+                </div>
+                <div class="icon">
+                  <div class="circle" style="background: #FC7A7A">POL</div>
+                </div>
+              </div>
+              <div class="item">
+                <div class="data">
+                  <div class="quantity">{{ totalConsumption.pen }}</div>
+                  <div class="subtitle">Пентан, л</div>
+                </div>
+                <div class="icon">
+                  <div class="circle" style="background: #4BBEAA">PEN</div>
+                </div>
+              </div>
+              <div class="item">
+                <div class="data">
+                  <div class="quantity">{{ totalConsumption.kat1 }}</div>
+                  <div class="subtitle">Катализатор1, л</div>
+                </div>
+                <div class="icon">
+                  <div class="circle" style="background: #2D9AD8">K1</div>
+                </div>
+              </div>
+              <div class="item">
+                <div class="data">
+                  <div class="quantity">{{ totalConsumption.kat2 }}</div>
+                  <div class="subtitle">Катализатор2, л</div>
+                </div>
+                <div class="icon">
+                  <div class="circle" style="background: #FC7A7A">K2</div>
+                </div>
+              </div>
+              <div class="item">
+                <div class="data">
+                  <div class="quantity">{{ totalConsumption.kat3 }}</div>
+                  <div class="subtitle">Катализатор3, л</div>
+                </div>
+                <div class="icon">
+                  <div class="circle" style="background: #4BBEAA">K3</div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
-        <div class="item">
-          <div class="data">
-            <div class="quantity">{{ specificConsumption.pol }}</div>
-            <div class="subtitle">Полиол, л</div>
-          </div>
-          <div class="icon">
-            <div class="circle" style="background: #fc7a7a">
-              <div class="title">POL</div>
-              <div class="subtitle">km</div>
-            </div>
-          </div>
-        </div>
-        <div class="item">
-          <div class="data">
-            <div class="quantity">{{ specificConsumption.pen }}</div>
-            <div class="subtitle">Пентан, л</div>
-          </div>
-          <div class="icon">
-            <div class="circle" style="background: #4bbeaa">
-              <div class="title">PEN</div>
-              <div class="subtitle">km</div>
-            </div>
-          </div>
-        </div>
-        <div class="item">
-          <div class="data">
-            <div class="quantity">{{ specificConsumption.kat1 }}</div>
-            <div class="subtitle">Катализатор1, л</div>
-          </div>
-          <div class="icon">
-            <div class="circle" style="background: #2d9ad8">
-              <div class="title">K1</div>
-              <div class="subtitle">km</div>
-            </div>
-          </div>
-        </div>
-        <div class="item">
-          <div class="data">
-            <div class="quantity">{{ specificConsumption.kat2 }}</div>
-            <div class="subtitle">Катализатор2, л</div>
-          </div>
-          <div class="icon">
-            <div class="circle" style="background: #fc7a7a">
-              <div class="title">K2</div>
-              <div class="subtitle">km</div>
-            </div>
-          </div>
-        </div>
-        <div class="item">
-          <div class="data">
-            <div class="quantity">{{ specificConsumption.kat3 }}</div>
-            <div class="subtitle">Катализатор3, л</div>
-          </div>
-          <div class="icon">
-            <div class="circle" style="background: #4bbeaa">
-              <div class="title">K3</div>
-              <div class="subtitle">km</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
 </template>
 <script>
 import { mapActions } from 'vuex'
@@ -116,50 +101,94 @@ export default {
     background,
     Period,
   },
+  created() {
+   
+    this.$on('hideCartItem', (name) => {
+      this[name].cardShow = false
+    })
+    this.$on('showModalBul', (name) => {
+      this[name].modalBul = !this[name].modalBul
+    })
+    this.$on('noChange', (name) => {})
+
+    this.$on('changeCalendar', (calendar) => {
+      this.calendar = calendar
+    })
+
+    this.$on('setPeriod', (option) => {
+      if (option.end) {
+        this[option.title].option.id2 = option.id2
+        this[option.title].option.isType2 = option.isType2
+        this.updateComparisonModule()
+      } else {
+        this[option.title].option.id1 = option.id1
+        this[option.title].option.isType1 = option.isType1
+        this['update' + option.title]()
+      }
+    })
+    this.updateTotalConsumption()
+  },
+  data() {
+    return {
+      ShowModalPlus: {
+        modalBul: false,
+      },
+     
+      TotalConsumption: {
+        modalBul: false,
+        cardShow: true,
+        option: {
+          id1: 0,
+          isType1: 0,
+        },
+      },
+      calendar: {
+        time: new Date().getTime(),
+        date: new Date().getTime(),//formatDate(new Date().getTime()),
+      },
+    }
+  },
   watch: {
     calendar: function () {
       this.updateAll()
-    },
-    ComparisonModuleDate1: function (newValue) {
-      this.ComparisonModule.option.date1 = newValue
-      this.updateComparisonModule()
-    },
-    ComparisonModuleDate2: function (newValue) {
-      this.ComparisonModule.option.date2 = newValue
-      this.updateComparisonModule()
     },
   },
 
   computed: {
     ...mapGetters('home', {
-      specificConsumption: 'specificConsumption',
+      totalConsumption: 'totalConsumption',
     }),
+   
   },
 
   methods: {
+    //check
+
     ...mapActions('home', {
-      getSpecificConsumption: 'getSpecificConsumption',
+      getTotalConsumption: 'getTotalConsumption',
     }),
     showCartItem(name) {
       this.ShowModalPlus.modalBul = false
       this[name].cardShow = true
     },
     hideModals() {
-      if (this.SpecificConsumption.modalBul) {
-        this.SpecificConsumption.modalBul = false
+      if (
+        this.TotalConsumption.modalBul 
+      ) {
+        this.TotalConsumption.modalBul = false
       }
     },
     noChange() {
       console.log('change')
     },
-
-    updateSpecificConsumption() {
-      this.SpecificConsumption.option.date = this.calendar.date
-      this.getSpecificConsumption(this.SpecificConsumption.option)
+ 
+    updateTotalConsumption() {
+      this.TotalConsumption.option.date = this.calendar.date
+      this.getTotalConsumption(this.TotalConsumption.option)
     },
-
+   
     updateAll() {
-      this.updateSpecificConsumption()
+      this.updateTotalConsumption()
     },
   },
 }

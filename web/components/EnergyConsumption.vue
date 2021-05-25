@@ -62,59 +62,89 @@
 <script>
 import { mapActions } from 'vuex'
 import { mapGetters } from 'vuex'
-import card from '@/components/card/card.vue'
-import background from '@/components/background/back.vue'
 import Period from '@/components/home/period'
+import Calendar from '@/components/home/calendar'
+import DataIndicator from '~/components/home/DataIndicator'
 export default {
-  components: {
-    card,
-    background,
-    Period,
+ 
+  created() {
+    this.$on('hideCartItem', (name) => {
+      this[name].cardShow = false
+    })
+    this.$on('showModalBul', (name) => {
+      this[name].modalBul = !this[name].modalBul
+    })
+    this.$on('noChange', (name) => {})
+
+    this.$on('changeCalendar', (calendar) => {
+      this.calendar = calendar
+    })
+
+    this.updateEnergyConsumption()
   },
+  data() {
+    return {
+      ShowModalPlus: {
+        modalBul: false,
+      },
+      EnergyConsumption: {
+        modalBul: false,
+        cardShow: true,
+        option: {
+          id1: 0,
+          isType1: 0,
+        },
+      },
+      calendar: {
+        time: new Date().getTime(),
+        date: new Date().getTime(),//formatDate(new Date().getTime()),
+      },
+    }
+  },
+
+  components: {
+    period: Period,
+    calendar: Calendar,
+    indicator: DataIndicator,
+  },
+
   watch: {
     calendar: function () {
       this.updateAll()
-    },
-    ComparisonModuleDate1: function (newValue) {
-      this.ComparisonModule.option.date1 = newValue
-      this.updateComparisonModule()
-    },
-    ComparisonModuleDate2: function (newValue) {
-      this.ComparisonModule.option.date2 = newValue
-      this.updateComparisonModule()
     },
   },
 
   computed: {
     ...mapGetters('home', {
-      specificConsumption: 'specificConsumption',
+      energyConsumption: 'energyConsumption',
     }),
+   
   },
 
   methods: {
     ...mapActions('home', {
-      getSpecificConsumption: 'getSpecificConsumption',
+      getEnergyConsumption: 'getEnergyConsumption',
     }),
     showCartItem(name) {
       this.ShowModalPlus.modalBul = false
       this[name].cardShow = true
     },
     hideModals() {
-      if (this.SpecificConsumption.modalBul) {
-        this.SpecificConsumption.modalBul = false
+      if (
+        this.EnergyConsumption.modalBul
+      ) {
+          this.EnergyConsumption.modalBul = false
       }
     },
     noChange() {
       console.log('change')
     },
-
-    updateSpecificConsumption() {
-      this.SpecificConsumption.option.date = this.calendar.date
-      this.getSpecificConsumption(this.SpecificConsumption.option)
+    updateEnergyConsumption() {
+      this.EnergyConsumption.option.date = this.calendar.date
+      this.getEnergyConsumption(this.EnergyConsumption.option)
     },
-
     updateAll() {
-      this.updateSpecificConsumption()
+      this.updateEnergyConsumption()
     },
   },
 }
