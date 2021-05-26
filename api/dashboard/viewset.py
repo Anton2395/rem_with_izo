@@ -290,15 +290,15 @@ class EditionMonthViews(APIView):
                 change_sum = 0
             data = {
                 "suitable": suitable,
-                "change_suitable": change_suitable,
+                "change_suitable": round(change_suitable),
                 "substandard": substandard,
-                "change_substandard": change_substandard,
+                "change_substandard": round(change_substandard),
                 "defect": defect,
-                "change_defect": change_defect,
+                "change_defect": round(change_defect),
                 "flooded": flooded,
-                "change_flooded": change_flooded,
+                "change_flooded": round(change_flooded),
                 "sum": sum,
-                "change_sum": change_sum
+                "change_sum": round(change_sum)
             }
         except UnboundLocalError:
             data = {"error":'not Role'}
@@ -342,15 +342,15 @@ class EditionShiftViews(APIView):
             change_sum = 0
         data = {
             "suitable": k["suitable"],
-            "change_suitable": change_suitable,
+            "change_suitable": round(change_suitable),
             "substandard": k["substandard"],
-            "change_substandard": change_substandard,
+            "change_substandard": round(change_substandard),
             "defect": k["defect"],
-            "change_defect": change_defect,
+            "change_defect": round(change_defect),
             "flooded": k["flooded"],
-            "change_flooded": change_flooded,
+            "change_flooded": round(change_flooded),
             "sum": k["sum"],
-            "change_sum": change_sum
+            "change_sum": round(change_sum)
         }
         return Response(data)
 
