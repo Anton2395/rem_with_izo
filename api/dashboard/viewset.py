@@ -654,19 +654,19 @@ class ComparisonDayViews(APIView):
 
             data = {
                 "suitable1": art1.suitable,
-                "sui1_ch": change_suitable,
+                "sui1_ch": round(change_suitable),
                 "suitable2": art2.suitable,
                 "substandard1": art1.substandard,
-                "sub1_ch": change_substandard,
+                "sub1_ch": round(change_substandard),
                 "substandard2": art2.substandard,
                 "defect1": art1.defect,
-                "def1_ch": change_defect,
+                "def1_ch": round(change_defect),
                 "defect2": art2.defect,
                 "flooded1": art1.flooded,
-                "flo_ch": change_flooded,
+                "flo_ch": round(change_flooded),
                 "flooded2": art2.flooded,
                 "sum1": art1.sum,
-                "sum1_ch": change_sum,
+                "sum1_ch": round(change_sum),
                 "sum2": art2.sum
             }
         except UnboundLocalError:
@@ -747,19 +747,19 @@ class ComparisonMonthViews(APIView):
                     sum1_ch = 0
             data = {
                 "suitable1": suitable1,
-                "sui1_ch": sui1_ch,
+                "sui1_ch": round(sui1_ch),
                 "suitable2": suitable2,
                 "substandard1": substandard1,
-                "sub1_ch": sub1_ch,
+                "sub1_ch": round(sub1_ch),
                 "substandard2": substandard2,
                 "defect1": defect1,
-                "def1_ch": def1_ch,
+                "def1_ch": round(def1_ch),
                 "defect2": defect2,
                 "flooded1": flooded1,
-                "flo_ch": flo_ch,
+                "flo_ch": round(flo_ch),
                 "flooded2": flooded2,
                 "sum1": sum1,
-                "sum1_ch": sum1_ch,
+                "sum1_ch": round(sum1_ch),
                 "sum2": sum2
             }
         except UnboundLocalError:
@@ -798,19 +798,19 @@ class ComparisonShiftViews(APIView):
             sum1_ch = 0
         data = {
             "suitable1": k1['suitable'],
-            "sui1_ch": sui1_ch,
+            "sui1_ch": round(sui1_ch),
             "suitable2": k2['suitable'],
             "substandard1": k1['substandard'],
-            "sub1_ch": sub1_ch,
+            "sub1_ch": round(sub1_ch),
             "substandard2": k2['substandard'],
             "defect1": k1['defect'],
-            "def1_ch": def1_ch,
+            "def1_ch": round(def1_ch),
             "defect2": k2['defect'],
             "flooded1": k1['flooded'],
-            "flo_ch": flo_ch,
+            "flo_ch": round(flo_ch),
             "flooded2": k2['flooded'],
             "sum1": k1['sum'],
-            "sum1_ch": sum1_ch,
+            "sum1_ch": round(sum1_ch),
             "sum2": k2['sum']
         }
         return Response(data)
