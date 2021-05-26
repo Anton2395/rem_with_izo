@@ -277,8 +277,9 @@ export default {
 }
 
 function formatDate(date) {
-  let d = new Date(date)
-  return d.getFullYear() + '-' + d.getMonth() + 1 + '-' + d.getDate()
+  console.log(date, 'anton')
+
+  return date
 }
 </script>
 

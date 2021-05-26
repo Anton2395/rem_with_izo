@@ -52,17 +52,17 @@ export default {
         interval: [
           {
             id:1,
-            start: 15,
-            end: 30,
-            duration: 15,
-            progress: 50,
+            start: 0,
+            end: 0,
+            duration: 0,
+            progress: 0,
           },
           {
             id:2,
-            start: 15,
-            end: 30,
-            duration: 15,
-            progress: 50,
+            start: 0,
+            end: 0,
+            duration: 0,
+            progress: 0,
           },
         ],
       },
@@ -90,8 +90,7 @@ export default {
       if (this.calendar) now.setTime(this.calendar.time);
 
       return {
-        date:
-          now.getFullYear() + "-" + (now.getMonth() + 1) + "-" + now.getDate(),
+        date: now.getFullYear() + "-" + (now.getMonth() + 1) + "-" + now.getDate(),
         smena: smena,
       };
     },

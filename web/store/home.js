@@ -53,24 +53,24 @@ export default {
             kat3: 0,
         },
         specificConsumption: {
-            iso: 1,
-            pol: 2,
-            pen: 3,
-            kat1: 9,
-            kat2: 8,
-            kat3: 7,
+            iso: 80,
+            pol: 10,
+            pen: 0,
+            kat1: 60,
+            kat2: 0,
+            kat3: 0,
         },
         panelRelease: {
-            suitable: 3,
-            change_suitable: 1,
-            substandard: 7,
-            change_substandard: 5,
-            defect: 8,
-            change_defect: 2,
-            flooded: 5,
-            change_flooded: 4,
-            sum: 1,
-            change_sum: 1,
+            suitable: 0,
+            change_suitable: 0,
+            substandard: 0,
+            change_substandard: 0,
+            defect: 0,
+            change_defect: 0,
+            flooded: 0,
+            change_flooded: 0,
+            sum: 0,
+            change_sum: 0,
         }
     }),
     getters: {
@@ -281,15 +281,16 @@ export default {
         },
         async getSpecificConsumption(store, option) {
             let data = {
-                iso: 2,
-                pol: 3,
-                pen: 4,
-                kat1: 5,
-                kat2: 6,
+                iso: 0,
+                pol: 0,
+                pen: 0,
+                kat1: 0,
+                kat2: 0,
                 kat3: 0,
             };
 
             try {
+                console.log('j', option)
                 if (option.id1)
                     data = await this.$axios.$get(`/dashboard/specificconsumption/${formatDate(formatDate(option.date))}/shift/${option.id1}/`);
                 else if (option.isType1 === 'day')
@@ -329,6 +330,7 @@ export default {
                 }
             };
             try {
+                console.log(formatDate(option.date),option.date, 'GOVNO');
                 data = await this.$axios.$get(`/dashboard/remainder/${formatDate(option.date)}/`);
                 if (!data)
                     throw new Error('return data is null');
@@ -372,18 +374,19 @@ export default {
         },
         async getPanelRelease(store, option) {
             let data = {
-                suitable: 55,
-                change_suitable: 6,
-                substandard: 34,
-                change_substandard: 43,
-                defect: 12,
-                change_defect: 4,
-                flooded: 12,
-                change_flooded: 11,
-                sum: 66,
-                change_sum: 60,
+                suitable: 0,
+                change_suitable: 0,
+                substandard: 0,
+                change_substandard: 0,
+                defect: 0,
+                change_defect: 0,
+                flooded: 0,
+                change_flooded: 0,
+                sum: 0,
+                change_sum: 0,
             };
             try {
+                console.log(option.date, 'id1')
                 if (option.id1)
                     data = await this.$axios.$get(`/dashboard/edition/${formatDate(option.date)}/shift/${option.id1}/`);
                 else if (option.isType1 === 'day')
@@ -396,21 +399,6 @@ export default {
             } catch (e) {
                 console.error("getSpecificConsumption axios");
 
-                //latter remove
-                //start block
-                // data = {
-                //     suitable: getRandomInt(500),
-                //     change_suitable: getRandomInt(100),
-                //     substandard: getRandomInt(100),
-                //     change_substandard: getRandomInt(100),
-                //     defect: getRandomInt(100),
-                //     change_defect: getRandomInt(100),
-                //     flooded: getRandomInt(1000000),
-                //     change_flooded: getRandomInt(100),
-                //     sum: getRandomInt(500),
-                //     change_sum: getRandomInt(100),
-                // }
-                //end block
             }
 
             store.commit('setPanelRelease', data);
@@ -423,16 +411,21 @@ function getRandomInt(max) {
     return Math.floor(Math.random() * Math.floor(max));
 }
 
+// function formatDate(date) {
+//     let d = new Date(date);
+//     // var options = {
+//     //     year: 'numeric',
+//     //     month: 'numeric',
+//     //     day: 'numeric',
+//     // };
+//     console.log((d))
+//     console.log(date, 'jjj')
+//     return d.getFullYear() + "-" + d.getMonth() + 1 + "-" + d.getDate();
+// }
 function formatDate(date) {
     let d = new Date(date);
-    var options = {
-        year: 'numeric',
-        month: 'numeric',
-        day: 'numeric',
+    // console.log(Math.floor(date / 1000), 'norm chislo')
+    return (d.getTime()/1000).toFixed();
 
-    };
-    console.log((d.getTime()/1))
-    return String(d.getTime()/1000);
-    
 
 }

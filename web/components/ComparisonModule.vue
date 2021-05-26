@@ -1,5 +1,5 @@
 <template>
-  <div class="chart-data comparison-module" v-if="ComparisonModule.cardShow">
+  <div class="chart-data comparison-module" >
     <div class="chart-header">
       <div class="title">Модуль сравнения</div>
       <div
@@ -12,7 +12,7 @@
     </div>
     <div class="chart-content">
       <div class="menu-bul" v-if="ComparisonModule.modalBul">
-        <div
+        <!-- <div
           class="btn-bul"
           @click="
             ComparisonModule.cardShow = !ComparisonModule.cardShow
@@ -21,11 +21,11 @@
         >
           <span class="show"></span>
           <span>Скрыть</span>
-        </div>
-        <div class="btn-bul">
+        </div> -->
+        <!-- <div class="btn-bul">
           <span class="new"></span>
           <span @click="updateComparisonModule">Обновить</span>
-        </div>
+        </div> -->
       </div>
       <div class="content-box">
         <div class="calendar-period">
@@ -169,18 +169,11 @@ import { mapActions } from 'vuex'
 import { mapGetters } from 'vuex'
 import Period from '@/components/home/period'
 import Calendar from '@/components/home/calendar'
-import DurationWork from '@/components/home/DurationWork'
-import StockBalances from '@/components/home/StockBalances'
 import DataIndicator from '~/components/home/DataIndicator'
-import SpecificConsumption from '~/components/SpecificConsumption'
-import TotalConsumption from '~/components/TotalConsumption'
-import EnergyConsumption from '~/components/EnergyConsumption'
 export default {
   layout: 'header_footer',
 
   created() {
-    this.setActiveTabHeader('HOME')
-    this.setActiveTabSidebar('Dashboard')
     this.$on('hideCartItem', (name) => {
       this[name].cardShow = false
     })
@@ -192,23 +185,6 @@ export default {
     this.$on('changeCalendar', (calendar) => {
       this.calendar = calendar
     })
-
-    this.$on('setPeriod', (option) => {
-      if (option.end) {
-        this[option.title].option.id2 = option.id2
-        this[option.title].option.isType2 = option.isType2
-        this.updateComparisonModule()
-      } else {
-        this[option.title].option.id1 = option.id1
-        this[option.title].option.isType1 = option.isType1
-        this['update' + option.title]()
-      }
-    })
-
-    this.updatePanelRelease()
-    this.updateEnergyConsumption()
-    this.updateTotalConsumption()
-    this.updateSpecificConsumption()
   },
 
   data() {
@@ -216,45 +192,14 @@ export default {
       ShowModalPlus: {
         modalBul: false,
       },
-      PanelRelease: {
-        modalBul: false,
-        cardShow: true,
-        option: {
-          id1: 0,
-          isType1: 0,
-        },
-      },
-      TotalConsumption: {
-        modalBul: false,
-        cardShow: true,
-        option: {
-          id1: 0,
-          isType1: 0,
-        },
-      },
-      EnergyConsumption: {
-        modalBul: false,
-        cardShow: true,
-        option: {
-          id1: 0,
-          isType1: 0,
-        },
-      },
-      SpecificConsumption: {
-        modalBul: false,
-        cardShow: true,
-        option: {
-          id1: 0,
-          isType1: null,
-        },
-      },
+   
       ComparisonModuleDate1: null,
       ComparisonModuleDate2: null,
       ComparisonModule: {
         modalBul: false,
         cardShow: true,
         option: {
-          id1: 0,
+          id1: 1,
           id2: 0,
           isType1: 0,
           isType2: 0,
@@ -262,17 +207,9 @@ export default {
           date2: null,
         },
       },
-      DurationWork: {
-        modalBul: false,
-        cardShow: true,
-      },
-      StockBalances: {
-        modalBul: false,
-        cardShow: true,
-      },
       calendar: {
         time: new Date().getTime(),
-        date: formatDate(new Date().getTime()),
+        date: new Date().getTime(),
       },
     }
   },
@@ -280,137 +217,25 @@ export default {
   components: {
     period: Period,
     calendar: Calendar,
-    durationWork: DurationWork,
-    stockBalances: StockBalances,
     indicator: DataIndicator,
-    SpecificConsumption,
-    TotalConsumption,
-    EnergyConsumption,
   },
 
   watch: {
     calendar: function () {
       this.updateAll()
     },
-    ComparisonModuleDate1: function (newValue) {
-      this.ComparisonModule.option.date1 = newValue
-      this.updateComparisonModule()
-    },
-    ComparisonModuleDate2: function (newValue) {
-      this.ComparisonModule.option.date2 = newValue
-      this.updateComparisonModule()
-    },
   },
 
   computed: {
     ...mapGetters('home', {
       comparisonModuleData: 'comparisonModule',
-      energyConsumption: 'energyConsumption',
-      totalConsumption: 'totalConsumption',
-      specificConsumption: 'specificConsumption',
-      panelRelease: 'panelRelease',
     }),
-    chartOptionsPio() {
-      return {
-        chart: {
-          height: 210,
-          margin: 0,
-          type: 'pie',
-        },
-        credits: {
-          enabled: false,
-          style: {
-            text: null,
-          },
-        },
-        title: {
-          text: '500',
-          style: {
-            'font-family': '"Montserrat", sans-serif',
-            color: '#000000',
-            'font-size': '24px',
-            'font-weight': '500',
-          },
-          align: 'center',
-          verticalAlign: 'middle',
-          y: 30,
-        },
-        tooltip: {
-          // pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
-          split: false,
-          shared: false,
-        },
-        accessibility: {
-          point: {
-            valueSuffix: '%',
-          },
-        },
-        plotOptions: {
-          pie: {
-            slicedOffset: 0,
-            size: 170,
-            center: [140, 110],
-            dataLabels: {
-              enabled: false,
-            },
-          },
-        },
-        navigator: {
-          enabled: false,
-        },
-        exporting: {
-          enabled: false,
-        },
-        rangeSelector: {
-          enabled: false,
-        },
-        legend: false,
-        xAxis: {
-          visible: false,
-        },
-        yAxis: {
-          visible: false,
-        },
-        series: [
-          {
-            name: 'Количество',
-            innerSize: '70%',
-            data: [
-              {
-                name: 'Годно',
-                y: this.panelRelease ? this.panelRelease.suitable : 0,
-                color: '#4BBEA9',
-              },
-              {
-                name: 'Брак',
-                y: this.panelRelease ? this.panelRelease.substandard : 0,
-                color: ' #FC7A7A',
-              },
-              {
-                name: 'Некондиция',
-                y: this.panelRelease ? this.panelRelease.defect : 0,
-                color: '#2D9AD8',
-              },
-            ],
-          },
-        ],
-      }
-    },
   },
 
   methods: {
-    //check
-    ...mapActions('users', {
-      setActiveTabHeader: 'setActiveTabHeader',
-      setActiveTabSidebar: 'setActiveTabSidebar',
-    }),
 
     ...mapActions('home', {
       getComparisonModule: 'getComparisonModule',
-      getEnergyConsumption: 'getEnergyConsumption',
-      getTotalConsumption: 'getTotalConsumption',
-      getSpecificConsumption: 'getSpecificConsumption',
-      getPanelRelease: 'getPanelRelease',
     }),
     showCartItem(name) {
       this.ShowModalPlus.modalBul = false
@@ -418,22 +243,9 @@ export default {
     },
     hideModals() {
       if (
-        this.ShowModalPlus.modalBul ||
-        this.PanelRelease.modalBul ||
-        this.TotalConsumption.modalBul ||
-        this.EnergyConsumption.modalBul ||
-        this.SpecificConsumption.modalBul ||
-        this.ComparisonModule.modalBul ||
-        this.DurationWork.modalBul ||
-        this.StockBalances.modalBul
+        this.ComparisonModule.modalBul 
+      
       ) {
-        this.DurationWork.modalBul = false
-        this.StockBalances.modalBul = false
-        this.ShowModalPlus.modalBul = false
-        this.PanelRelease.modalBul = false
-        this.TotalConsumption.modalBul = false
-        this.EnergyConsumption.modalBul = false
-        this.SpecificConsumption.modalBul = false
         this.ComparisonModule.modalBul = false
       }
     },
@@ -451,35 +263,7 @@ export default {
 
       this.getComparisonModule(this.ComparisonModule.option)
     },
-    updateEnergyConsumption() {
-      this.EnergyConsumption.option.date = this.calendar.date
-      this.getEnergyConsumption(this.EnergyConsumption.option)
-    },
-    updateTotalConsumption() {
-      this.TotalConsumption.option.date = this.calendar.date
-      this.getTotalConsumption(this.TotalConsumption.option)
-    },
-    updateSpecificConsumption() {
-      this.SpecificConsumption.option.date = this.calendar.date
-      this.getSpecificConsumption(this.SpecificConsumption.option)
-    },
-    updatePanelRelease() {
-      this.PanelRelease.option.date = this.calendar.date
-      this.getPanelRelease(this.PanelRelease.option)
-    },
-    updateAll() {
-      this.updatePanelRelease()
-      this.updateSpecificConsumption()
-      this.updateTotalConsumption()
-      this.updateEnergyConsumption()
-    },
   },
-}
-
-function formatDate(date) {
-  let d = new Date(date)
-
-  return d.getFullYear() + '-' + d.getMonth() + 1 + '-' + d.getDate()
 }
 </script>
 

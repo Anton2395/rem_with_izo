@@ -116,18 +116,48 @@ export default {
     background,
     Period,
   },
+  created() {
+       this.$on('changeCalendar', (calendar) => {
+      this.calendar = calendar
+    })
+
+    this.$on('setPeriod', (option) => {
+      if (option.end) {
+        this[option.title].option.id2 = option.id2
+        this[option.title].option.isType2 = option.isType2
+        this.updateComparisonModule()
+      } else {
+        this[option.title].option.id1 = option.id1
+        this[option.title].option.isType1 = option.isType1
+        this['update' + option.title]()
+      }
+    })
+    this.updateSpecificConsumption()
+  },
+  data() {
+    return {
+      ShowModalPlus: {
+        modalBul: false,
+      },
+      SpecificConsumption: {
+        modalBul: false,
+        cardShow: true,
+        option: {
+          id1: 0,
+          isType1: null,
+        },
+      },
+      calendar: {
+        time: new Date().getTime(),
+        date: new Date().getTime(),//formatDate(new Date().getTime()),
+      },
+    }
+  },
   watch: {
     calendar: function () {
       this.updateAll()
     },
-    ComparisonModuleDate1: function (newValue) {
-      this.ComparisonModule.option.date1 = newValue
-      this.updateComparisonModule()
-    },
-    ComparisonModuleDate2: function (newValue) {
-      this.ComparisonModule.option.date2 = newValue
-      this.updateComparisonModule()
-    },
+   
   },
 
   computed: {

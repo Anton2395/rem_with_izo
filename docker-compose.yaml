@@ -3,7 +3,7 @@ version: "3.9"
 
 services:
   postgres:
-    container_name: postgres_container
+    container_name: postgres_container1
     image: postgres
     # restart: always
     environment:
@@ -22,7 +22,7 @@ services:
         ipv4_address: 10.0.0.2
 
   pgadmin:
-    container_name: pgadmin_container
+    container_name: pgadmin_container1
     image: dpage/pgadmin4:5.0
     # restart: always
     environment:
@@ -71,7 +71,7 @@ services:
         ipv4_address: 10.0.0.8
 
   web:
-    container_name: web_server
+    container_name: web_server1
     build: ./web
     # command: bash -c "npm install && npm run dev"
     command: bash -c "
@@ -88,7 +88,7 @@ services:
     # restart: unless-stopped
 
   opc:
-    container_name: opc_server
+    container_name: opc_server1
     build: ./opc
     command: python3 main.py
     # restart: always
@@ -103,7 +103,7 @@ services:
         ipv4_address: 10.0.0.6
 
   api:
-    container_name: api_server
+    container_name: api_server1
     build: ./api
     # restart: always
     command:
