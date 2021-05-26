@@ -167,8 +167,7 @@ class EditionDayViews(APIView):
             if globals()[dash].objects.filter(date=date).exists():
                 art = globals()[dash].objects.get(date=date)
             else:
-                calculate_edition(date)
-                art = globals()[dash].objects.get(date=date)
+                art = calculate_edition(date)
             delt = timedelta(days=1)
             date_del = date-delt
             if globals()[dash].objects.filter(date=date_del).exists():
