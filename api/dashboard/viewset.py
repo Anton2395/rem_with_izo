@@ -123,22 +123,34 @@ class RemainderViews(APIView):
             pensum = 0
             for a in art:
                 iso = []
+                iso_prog = []
                 pen = []
+                pen_prog = []
                 pol = []
+                pol_prog = []
                 for i in a.substance_set.filter(short_name='ISO'):
                     iso.append(i.value_date(date))
+                    x = float('{:.1f}'.format((i.value_date(date)/39000)*100))
+                    iso_prog.append(x)
                     isosum =isosum + i.value_date(date)
                 for i in a.substance_set.filter(short_name='PEN'):
                     pen.append(i.value_date(date))
+                    x = float('{:.1f}'.format((i.value_date(date)/39000)*100))
+                    pen_prog.append(x)
                     pensum = pensum + i.value_date(date)
                 for i in a.substance_set.filter(short_name='POL'):
                     pol.append(i.value_date(date))
+                    x = float('{:.1f}'.format((i.value_date(date) / 39000) * 100))
+                    pol_prog.append(x)
                     polsum = polsum + i.value_date(date)
                 data = {
                     "name": a.name,
                     "iso": iso,
+                    "iso_prog": iso_prog,
                     "pol": pol,
+                    "pol_prog": pol_prog,
                     "pen": pen,
+                    "pen_prog": pen_prog
                 }
                 storehouse.append(data)
             data = {
