@@ -2,13 +2,13 @@
   <div class="chart second">
     <div class="chart-header">
       <div class="title">Остатки на складах</div>
-      <div
+      <!-- <div
           class="bul"
           @click="$parent.$emit('showModalBul', 'StockBalances')"
           @click.stop="$parent.$emit('noChange')"
       >
         <span></span>
-      </div>
+      </div> -->
       <div
           class="menu-bul"
           v-if="card.modalBul"
@@ -26,14 +26,17 @@
       </div>
     </div>
     <div class="chart-content">
-      <div class="box" v-for="el in stockBalances.storehouse">
+      <div class="box" v-for="(el,ine) in stockBalances.storehouse" :key="ine">
         <div class="name-block">{{ el.name }}</div>
         <div class="block-content" v-if="el.iso.length">
           <div class="title-position">Изоционат</div>
           <div class="group">
-            <div class="number-lit" v-for="i in el.iso">{{ i }}л
+            <div class="number-lit" 
+            v-for="(i,ind) in el.iso"
+            :key="ind"
+            >{{ i }}кг
               <div class="line-progress">
-                <div class="data-progress" :style="'width: ' + i + '%'"></div>
+                <div class="data-progress" :style="'width: ' + stockBalances.storehouse[ine].iso_prog[ind] + '%'"></div>
               </div>
             </div>
           </div>
@@ -41,9 +44,10 @@
         <div class="block-content" v-if="el.pol.length">
           <div class="title-position">Полиол</div>
           <div class="group">
-            <div class="number-lit" v-for="i in el.pol">{{ i }}л
+            <div class="number-lit" v-for="(i,ind) in el.pol"
+            :key="ind">{{ i }}кг
               <div class="line-progress">
-                <div class="data-progress" :style="'width: ' + i + '%'"></div>
+                <div class="data-progress" :style="'width: ' + stockBalances.storehouse[ine].pol_prog[ind] + '%'"></div>
               </div>
             </div>
           </div>
@@ -51,9 +55,9 @@
         <div class="block-content" v-if="el.pen.length">
           <div class="title-position">Пентан</div>
           <div class="group">
-            <div class="number-lit" v-for="i in el.pen">{{ i }}л
+            <div class="number-lit" v-for="(i,ind) in el.pen" :key="ind">{{ i }}кг
               <div class="line-progress">
-                <div class="data-progress" :style="'width: ' + i + '%'"></div>
+                <div class="data-progress" :style="'width: ' + stockBalances.storehouse[ine].pen_prog[ind] + '%'"></div>
               </div>
             </div>
           </div>
@@ -61,7 +65,7 @@
       </div>
     </div>
     <div class="chart-footer">
-      <div class="title">Итого - ISO: <b>{{ stockBalances.in_total.iso }}л</b>; POL: <b>{{ stockBalances.in_total.pol }}л</b>; PEN: <b>{{ stockBalances.in_total.pen }}л</b></div>
+      <div class="title">Итого - ISO: <b>{{ stockBalances.in_total.iso }}кг</b>; POL: <b>{{ stockBalances.in_total.pol }}кг</b>; PEN: <b>{{ stockBalances.in_total.pen }}кг</b></div>
     </div>
   </div>
 </template>
@@ -265,7 +269,7 @@ export default {
   justify-content: center;
   align-items: center;
   border-top: 1px solid #E9E9E9;
-  padding: 6px 24px;
+  // padding: 6px 24px;
 
   .title {
     font-weight: normal;

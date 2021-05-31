@@ -13,6 +13,9 @@ export default {
                     iso: [],
                     pol: [],
                     pen: [],
+                    iso_prog: [],
+                    pol_prog: [],
+                    pen_prog: [],
                 },
             ],
             in_total: {
@@ -22,20 +25,20 @@ export default {
             },
         },
         comparisonModule: {
-            suitable1: 5,
-            change_suitable1: 6,
-            suitable2: 7,
-            substandard1: 12,
-            change_substandard1: 9,
-            substandard2: 0,
+            def1_ch: 0,
             defect1: 0,
-            change_defect1: 0,
             defect2: 0,
+            flo_ch: 0,
             flooded1: 0,
-            change_flooded1: 0,
             flooded2: 0,
+            sub1_ch: 0,
+            substandard1: 0,
+            substandard2: 0,
+            sui1_ch: 0,
+            suitable1: 0,
+            suitable2: 0,
             sum1: 0,
-            change_sum1: 0,
+            sum1_ch: 0,
             sum2: 0,
             isQuery: false,
         },
@@ -80,12 +83,13 @@ export default {
             lineDataFirst.interval.forEach((item) => {
                 item.progress = Math.floor((item.duration / lineDataFirst.sum) * 100);
                 item.duration = item.duration.toFixed(2);
-
+                item.start= item.start.slice(0,5);
+                item.end= item.end.slice(0,5);
                 intervalNew.push(item);
             });
-
+            
             lineDataFirst.interval = intervalNew;
-
+            lineDataFirst.sum=lineDataFirst.sum.toFixed(2);
             return lineDataFirst;
         },
         comparisonModule(state) {
@@ -171,6 +175,7 @@ export default {
         async getComparisonModule(store, option) {
             let data = null;
             try {
+               
                 if (option.id1 && option.id2)
                     data = await this.$axios.$get(`/dashboard/comparison/shift/${formatDate(option.date1)}/${option.id1}/${formatDate(option.date2)}/${option.id2}`);
                 else if (option.isType1 === 'day')
@@ -222,12 +227,13 @@ export default {
         },
         async getEnergyConsumption(store, option) {
             let data = {
-                input1: 2,
-                input2: 5,
-                gas: 6,
+                input1: 0,
+                input2: 0,
+                gas: 0,
             };
 
             try {
+               
                 if (option.id1)
                     data = await this.$axios.$get(`/dashboard/energyconsumption/${formatDate(option.date)}/shift/${option.id1}/`);
                 else if (option.isType1 === 'day')
@@ -290,13 +296,13 @@ export default {
             };
 
             try {
-                console.log('j', option)
+               
                 if (option.id1)
-                    data = await this.$axios.$get(`/dashboard/specificconsumption/${formatDate(formatDate(option.date))}/shift/${option.id1}/`);
+                    data = await this.$axios.$get(`/dashboard/specificconsumption/${(formatDate(option.date))}/shift/${option.id1}/`);
                 else if (option.isType1 === 'day')
-                    data = await this.$axios.$get(`/dashboard/specificconsumption/${formatDate(formatDate(option.date))}/day/`);
+                    data = await this.$axios.$get(`/dashboard/specificconsumption/${(formatDate(option.date))}/day/`);
                 else if (option.isType1 === 'month')
-                    data = await this.$axios.$get(`/dashboard/specificconsumption/${formatDate(formatDate(option.date))}/month/`);
+                    data = await this.$axios.$get(`/dashboard/specificconsumption/${(formatDate(option.date))}/month/`);
 
                 if (!data)
                     throw new Error('return data is null');
@@ -326,11 +332,14 @@ export default {
                     "iso": 15,
                     "pol": 3,
                     "pen": 55,
+                    "iso_prog": 0,
+                    "pen_prog": 0,
+                    "pol_prog": 0,
 
                 }
             };
             try {
-                console.log(formatDate(option.date),option.date, 'GOVNO');
+                // console.log(formatDate(option.date),option.date, 'GOVNO');
                 data = await this.$axios.$get(`/dashboard/remainder/${formatDate(option.date)}/`);
                 if (!data)
                     throw new Error('return data is null');
@@ -386,7 +395,7 @@ export default {
                 change_sum: 0,
             };
             try {
-                console.log(option.date, 'id1')
+               
                 if (option.id1)
                     data = await this.$axios.$get(`/dashboard/edition/${formatDate(option.date)}/shift/${option.id1}/`);
                 else if (option.isType1 === 'day')
@@ -424,7 +433,6 @@ function getRandomInt(max) {
 // }
 function formatDate(date) {
     let d = new Date(date);
-    // console.log(Math.floor(date / 1000), 'norm chislo')
     return (d.getTime()/1000).toFixed();
 
 

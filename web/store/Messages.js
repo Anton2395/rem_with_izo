@@ -62,7 +62,7 @@ export default {
   actions: {
     getCurrentDevMessages(store, payload) {
 
-      let data = this.$axios.$get('/dashboard/teldafax/status/connections/');
+      let data = this.$axios.$get('/status/connections/status');
       // store.commit('updateCurrentDevMessages', data.currentDevMessages);
       data.
       then(data => store.commit('updateCurrentDevMessages', data)
@@ -76,7 +76,7 @@ export default {
          console.error(data['error']);
        }else{
          let result = data.alarms.concat(data.warnings);
-         console.log(result);
+        //  console.log(result);
          for(let i of result){
           i[1] = new Date(i[1]);
           i[1] = i[1].getFullYear() +"-"+ i[1].getMonth()+"-"+i[1].getDate()+" "+i[1].getHours()+":"+i[1].getMinutes()+":"+i[1].getSeconds();
@@ -91,7 +91,7 @@ export default {
         console.error(data['error']);
       }else{
         let result = data.alarms.concat(data.warnings);
-        console.log(result);
+        // console.log(result);
         for(let i of result){
          i[1] = new Date(i[1]);
          i[1] = i[1].getFullYear() +"-"+ i[1].getMonth()+"-"+i[1].getDate()+" "+i[1].getHours()+":"+i[1].getMinutes()+":"+i[1].getSeconds();

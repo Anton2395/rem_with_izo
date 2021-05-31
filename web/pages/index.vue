@@ -253,11 +253,11 @@
             </div>
           </div>
         </div> -->
-        <PanelRelease></PanelRelease>
-        <SpecificConsumption></SpecificConsumption>
-        <TotalConsumption></TotalConsumption>
-        <ComparisonModule></ComparisonModule>
-        <EnergyConsumption></EnergyConsumption>
+        <PanelRelease :date="calendar.date"></PanelRelease>
+        <SpecificConsumption :date="calendar.date"></SpecificConsumption>
+        <TotalConsumption :date="calendar.date"></TotalConsumption>
+        <ComparisonModule ></ComparisonModule>
+        <EnergyConsumption :date="calendar.date"></EnergyConsumption>
         <!-- <div
             class="chart-data consumption"
             v-if="TotalConsumption.cardShow"
@@ -642,7 +642,7 @@ export default {
         cardShow: true,
         option: {
           id1: 0,
-          isType1: 0,
+          isType1: "day",
         },
       },
       TotalConsumption: {
@@ -658,7 +658,7 @@ export default {
         cardShow: true,
         option: {
           id1: 0,
-          isType1: 0,
+          isType1: "day",
         },
       },
       SpecificConsumption: {
@@ -693,7 +693,7 @@ export default {
       },
       calendar: {
         time: new Date().getTime(),
-        date: new Date().getTime(),//formatDate(new Date().getTime()),
+        date: ( new Date().getTime()),//formatDate(new Date().getTime()),
       },
     }
   },
@@ -806,7 +806,7 @@ export default {
       this.getPanelRelease(this.PanelRelease.option)
     },
     updateAll() {
-      this.updatePanelRelease()
+      // this.updatePanelRelease()
       this.updateSpecificConsumption()
       this.updateTotalConsumption()
       this.updateEnergyConsumption()

@@ -128,6 +128,7 @@ export default {
     })
     this.updateTotalConsumption()
   },
+   props:['date'],
   data() {
     return {
       ShowModalPlus: {
@@ -152,6 +153,11 @@ export default {
     calendar: function () {
       this.updateAll()
     },
+    date: function(newD){
+     
+      this.calendar.date = +formatDate(newD)*1000;
+      this.updateTotalConsumption();
+    }
   },
 
   computed: {
@@ -191,6 +197,11 @@ export default {
       this.updateTotalConsumption()
     },
   },
+}
+function formatDate(date) {
+  let d = new Date(date)
+  // console.log(d.getTime(), 'ggggg')
+  return (d.getTime()/1000).toFixed();
 }
 </script>
 <style lang="scss" scoped>
@@ -414,7 +425,7 @@ export default {
                 font-family: 'Montserrat', -apple-system, BlinkMacSystemFont,
                   'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
                 font-weight: 500;
-                font-size: 48px;
+                font-size: 42px;
                 color: #000000;
               }
 

@@ -123,6 +123,8 @@ export default {
 
     this.updatePanelRelease()
   },
+  
+  props:['date'],
 
   data() {
     return {
@@ -132,14 +134,16 @@ export default {
       PanelRelease: {
         modalBul: false,
         cardShow: true,
-        option: {
+        option: 
+        {
           id1: 0,
           isType1: 0,
-        },
+        }
+        ,
       },
       calendar: {
         time: new Date().getTime(),
-        date: formatDate(new Date().getTime()),
+        date: new Date().getTime(),
       },
     }
   },
@@ -154,6 +158,11 @@ export default {
     calendar: function () {
       this.updateAll()
     },
+    date: function(newD){
+      console.log(newD, "новая дата");
+      this.calendar.date = +formatDate(newD)*1000;
+      this.updatePanelRelease();
+    }
   },
 
   computed: {
@@ -174,7 +183,7 @@ export default {
           },
         },
         title: {
-          text: '500',
+          text: this.panelRelease.sum,
           style: {
             'font-family': '"Montserrat", sans-serif',
             color: '#000000',
@@ -276,10 +285,11 @@ export default {
   },
 }
 
-function formatDate(date) {
-  console.log(date, 'anton')
 
-  return date
+function formatDate(date) {
+  let d = new Date(date)
+  // console.log(d.getTime(), 'ggggg')
+  return (d.getTime()/1000).toFixed();
 }
 </script>
 
@@ -459,7 +469,7 @@ function formatDate(date) {
               .title {
                 font-style: normal;
                 font-weight: normal;
-                font-size: 18px;
+                font-size: 16px;
                 margin-left: 0;
               }
             }

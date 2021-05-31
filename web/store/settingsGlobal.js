@@ -2031,7 +2031,7 @@ export default {
         },
         async getDataConnection(store) { //получение всех данных о таблице Узел
             if (store.state.connection.length == 0) {
-                await this.$axios.$get(`/dashboard/teldafax/connections/`)
+                await this.$axios.$get(`/status/connections/`)
                     .then((data) => {
                         // debugger;
                         // console.log(data);
@@ -2068,7 +2068,7 @@ export default {
                 //     while (new Date() < ms){}
                 //     } 
                 // sleep(5000);
-                await this.$axios.$get(`dashboard/teldafax/connections/variables/${option.id}/`)
+                await this.$axios.$get(`status/connections/variables/${option.id}/`)
                     .then((data) => {
                         // debugger;
                         // console.log(data);

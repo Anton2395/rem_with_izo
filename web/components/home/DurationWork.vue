@@ -1,145 +1,142 @@
 <template>
   <div class="chart first">
-      <div class="chart-header">
-        <div class="box-header">
-          <div class="title">Продолжительность работы,ч</div>
-          <div
-              class="bul"
-              @click="$parent.$emit('showModalBul', 'DurationWork')"
-              @click.stop="$parent.$emit('noChange')"
-          >
-            <span></span>
-          </div>
-          <div
-              class="menu-bul"
-             
-          >
-          
-          </div>
-        </div>
-        <!-- <div class="period">
-          <button
-              v-on:click="setPeriod(0)"
-              class="btn text"
-              :class="{active: periodActive[0]}"
-          >сутки
-          </button>
-          <button
-              v-on:click="setPeriod(1)"
-              class="btn text"
-              :class="{active: periodActive[1] || periodActive[2] || periodActive[3]}"
-          >смена
-          </button>
-          <button
-              v-on:click="setPeriod(1)"
-              class="btn num"
-              :class="{active: periodActive[1]}"
-          >1
-          </button>
-          <button
-              v-on:click="setPeriod(2)"
-              class="btn num"
-              :class="{active: periodActive[2]}"
-          >2
-          </button>
-          <button
-              v-on:click="setPeriod(3)"
-              class="btn num"
-              :class="{active: periodActive[3]}"
-          >3
-          </button>
+    <div class="chart-header">
+      <div class="box-header">
+        <div class="title">Продолжительность работы,ч</div>
+        <!-- <div
+          class="bul"
+          @click="$parent.$emit('showModalBul', 'DurationWork')"
+          @click.stop="$parent.$emit('noChange')"
+        >
+          <span></span>
         </div> -->
+        <div class="menu-bul"></div>
       </div>
-      <div class="chart-content">
-        <div class="line" v-for="(item, id) in lineDataFirst.interval">
-          <div class="box-line">
-            <div class="bg" :style="'width: ' + item.progress + '%'">
-              <div class="start" v-if="item.progress >= 50">{{ item.start }}</div>
-              <div class="end" v-if="item.progress >= 50">{{ item.end }}</div>
-            </div>
-          </div>
-          <div class="data-line">{{ item.duration }}</div>
-          <div class="title-line" :class="{down: id===0}"  v-if="item.progress < 50">
-            <div class="start">Начало - {{item.start}}</div>
-            <div class="end">Конец - {{item.end}}</div>
+      <div class="period">
+        <button
+          v-on:click="setPeriod(0)"
+          class="btn text"
+          :class="{ active: periodActive[0] }"
+        >
+          сутки
+        </button>
+        <button
+          v-on:click="setPeriod(1)"
+          class="btn text"
+          :class="{
+            active: periodActive[1] || periodActive[2] || periodActive[3],
+          }"
+        >
+          смена
+        </button>
+        <button
+          v-on:click="setPeriod(1)"
+          class="btn num"
+          :class="{ active: periodActive[1] }"
+        >
+          1
+        </button>
+        <button
+          v-on:click="setPeriod(2)"
+          class="btn num"
+          :class="{ active: periodActive[2] }"
+        >
+          2
+        </button>
+        <button
+          v-on:click="setPeriod(3)"
+          class="btn num"
+          :class="{ active: periodActive[3] }"
+        >
+          3
+        </button>
+      </div>
+    </div>
+    <div class="chart-content">
+      <div class="line" v-for="(item, id) in lineDataFirst.interval">
+        <div class="box-line">
+          <div class="bg" :style="'width: ' + item.progress + '%'">
+            <div class="start" v-if="item.progress >= 50">{{ item.start }}</div>
+            <div class="end" v-if="item.progress >= 50">{{ item.end }}</div>
           </div>
         </div>
+        <div class="data-line">{{ item.duration }}</div>
+        <div
+          class="title-line"
+          :class="{ down: id === 0 }"
+          v-if="item.progress < 50"
+        >
+          <div class="start">Начало - {{ item.start }}</div>
+          <div class="end">Конец - {{ item.end }}</div>
+        </div>
       </div>
-      <div class="chart-footer">
-        <div class="title">Общее рабочее время за день</div>
-        <div class="view">{{ lineDataFirst.sum }}</div>
-      </div>
-
     </div>
+    <div class="chart-footer">
+      <div class="title">Общее рабочее время за день</div>
+      <div class="view">{{ lineDataFirst.sum }}</div>
+    </div>
+  </div>
 </template>
 
 <script>
-
-import {mapGetters} from "vuex";
-import {mapActions} from "vuex";
-import calendar from "@/components/home/calendar";
+import { mapGetters } from 'vuex'
+import { mapActions } from 'vuex'
+import calendar from '@/components/home/calendar'
 
 export default {
-  name: "DurationWork",
-  props: [
-      'card',
-      'calendar'
-  ],
+  name: 'DurationWork',
+  props: ['card', 'calendar'],
   data() {
     return {
       periodActive: [true, false, false, false],
     }
   },
   created() {
-    this.update();
+    this.update()
   },
   watch: {
-    calendar: function() {
-      this.update();
-    }
+    calendar: function () {
+      this.update()
+    },
   },
   computed: {
-    ...mapGetters("home", {
-      lineDataFirst: "lineDataFirst",
+    ...mapGetters('home', {
+      lineDataFirst: 'lineDataFirst',
     }),
     option() {
-      let smena = 0;
-      if(this.periodActive[1] || this.periodActive[2])
-        smena = 1;
-      else if(this.periodActive[2])
-        smena = 2;
-      else if(this.periodActive[3])
-        smena = 3;
+      let smena = 0
+      if (this.periodActive[1] || this.periodActive[2]) smena = 1
+      else if (this.periodActive[2]) smena = 2
+      else if (this.periodActive[3]) smena = 3
 
-      let now = new Date();
-      if(this.calendar)
-        now.setTime(this.calendar.time);
+      let now = new Date()
+      if (this.calendar) now.setTime(this.calendar.time)
 
       return {
-        date: now.getFullYear() + '-' + (now.getMonth() + 1) + '-' + now.getDate(),
+        date:
+          now.getFullYear() + '-' + (now.getMonth() + 1) + '-' + now.getDate(),
         smena: smena,
       }
-    }
+    },
   },
   methods: {
-    ...mapActions("home", {
-      getLineDataFirst: "getLineDataFirst",
+    ...mapActions('home', {
+      getLineDataFirst: 'getLineDataFirst',
     }),
-    setPeriod (id) {
-      let arr = [false, false, false, false];
-      arr[id] = true;
-      this.periodActive = arr;
-      this.update();
+    setPeriod(id) {
+      let arr = [false, false, false, false]
+      arr[id] = true
+      this.periodActive = arr
+      this.update()
     },
     update() {
-      this.getLineDataFirst(this.option);
-    }
+      this.getLineDataFirst(this.option)
+    },
   },
 }
 </script>
 
 <style lang="scss" scoped>
-
 .period {
   display: flex;
   justify-content: center;
@@ -157,13 +154,13 @@ export default {
     margin-right: 12px;
     padding: 0 6px;
 
-    border: 1px solid #ECEDF4;
+    border: 1px solid #ecedf4;
     border-radius: 3px;
-    background: #FFFFFF;
+    background: #ffffff;
 
     font-weight: 500;
     font-size: 12px;
-    color: #42435F;
+    color: #42435f;
 
     &:hover {
       border: 1px solid #272848;
@@ -172,7 +169,6 @@ export default {
 
   .text {
     width: 52px;
-
   }
 
   .btn.text:nth-child(3) {
@@ -181,13 +177,13 @@ export default {
 
   .num {
     width: 42px;
-    background: #FFFFFF;
+    background: #ffffff;
     margin-right: 6px;
   }
 
   .active {
     background: #272848;
-    color: #BFC0C9;
+    color: #bfc0c9;
     text-align: center;
   }
 
@@ -197,7 +193,7 @@ export default {
 }
 .chart {
   width: 284px;
-  border: 2px solid #E9E9E9;
+  border: 2px solid #e9e9e9;
   border-radius: 9px;
 }
 .chart.first {
@@ -266,7 +262,7 @@ export default {
           justify-content: space-between;
           align-items: center;
           height: 16px;
-          background: #ECEDF4;
+          background: #ecedf4;
 
           .start {
             margin-right: 10px;
@@ -306,7 +302,7 @@ export default {
         font-weight: normal;
         font-size: 10px;
         color: #000000;
-        background: #FFFFFF;
+        background: #ffffff;
 
         box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.15);
         border-radius: 3px;
@@ -328,12 +324,12 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 1px solid #E9E9E9;
+  border-bottom: 1px solid #e9e9e9;
   padding: 2px 0;
 
   .title {
-    font-family: "Montserrat", -apple-system, BlinkMacSystemFont, "Segoe UI",
-    Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI',
+      Roboto, 'Helvetica Neue', Arial, sans-serif;
     font-weight: 500;
     font-size: 14px;
     text-align: center;
@@ -350,7 +346,7 @@ export default {
 
     span {
       position: relative;
-      background-color: #CFCDCD;
+      background-color: #cfcdcd;
       width: 3px;
       height: 3px;
       border-radius: 50%;
@@ -364,7 +360,7 @@ export default {
       top: 0;
       content: '';
 
-      background-color: #CFCDCD;
+      background-color: #cfcdcd;
       font-size: 0;
       width: 3px;
       height: 3px;
@@ -376,7 +372,7 @@ export default {
       left: 10px;
       top: 0;
       content: '';
-      background-color: #CFCDCD;
+      background-color: #cfcdcd;
       font-size: 0;
       width: 3px;
       height: 3px;
@@ -390,7 +386,7 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-top: 1px solid #E9E9E9;
+  border-top: 1px solid #e9e9e9;
   padding: 4px 24px 4px 6px;
 
   .title {
@@ -399,7 +395,7 @@ export default {
     line-height: 15px;
     display: flex;
     align-items: center;
-    color: #3F51B5;
+    color: #3f51b5;
   }
 
   .view {
@@ -409,7 +405,7 @@ export default {
     display: flex;
     align-items: center;
     text-align: center;
-    color: #3F51B5;
+    color: #3f51b5;
   }
 }
 .menu-bul {
@@ -423,7 +419,7 @@ export default {
   width: 110px;
   display: flex;
   flex-direction: column;
-  background: #F7F8FA;
+  background: #f7f8fa;
   box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.25);
   border-radius: 4px 0px 4px 4px;
   z-index: 50;
@@ -441,7 +437,7 @@ export default {
     font-weight: 500;
     font-size: 10px;
     line-height: 12px;
-    color: #BABABA;
+    color: #bababa;
 
     &:hover {
       color: #727272;
@@ -484,5 +480,4 @@ export default {
     background-size: contain;
   }
 }
-
 </style>

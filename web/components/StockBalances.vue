@@ -17,7 +17,7 @@
             class="btn-bul"
             @click="$parent.$emit('hideCartItem','StockBalances')"
         ><span class="show"></span>
-          <span>Скрыть</span>
+          <!-- <span>Скрыть</span> -->
         </div>
         <div class="btn-bul">
           <span class="new"></span>
@@ -31,7 +31,7 @@
         <div class="block-content" v-if="el.iso.length">
           <div class="title-position">Изоционат</div>
           <div class="group">
-            <div class="number-lit" v-for="i in el.iso">{{ i }}л
+            <div class="number-lit" v-for="i in el.iso">{{ i }}кг
               <div class="line-progress">
                 <div class="data-progress" :style="'width: ' + i + '%'"></div>
               </div>
@@ -41,9 +41,9 @@
         <div class="block-content" v-if="el.pol.length">
           <div class="title-position">Полиол</div>
           <div class="group">
-            <div class="number-lit" v-for="i in el.pol">{{ i }}л
+            <div class="number-lit" v-for="i in el.pol">{{ i }}кг
               <div class="line-progress">
-                <div class="data-progress" :style="'width: ' + i + '%'"></div>
+                <div class="data-progress" :style="'width:' + i + '%'"></div>
               </div>
             </div>
           </div>
@@ -51,7 +51,7 @@
         <div class="block-content" v-if="el.pen.length">
           <div class="title-position">Пентан</div>
           <div class="group">
-            <div class="number-lit" v-for="i in el.pen">{{ i }}л
+            <div class="number-lit" v-for="i in el.pen">{{ i }}кг
               <div class="line-progress">
                 <div class="data-progress" :style="'width: ' + i + '%'"></div>
               </div>
@@ -61,7 +61,7 @@
       </div>
     </div>
     <div class="chart-footer">
-      <div class="title">Итого - ISO: <b>{{ stockBalances.in_total.iso }}л</b>; POL: <b>{{ stockBalances.in_total.pol }}л</b>; PEN: <b>{{ stockBalances.in_total.pen }}л</b></div>
+      <div class="title">Итого - ISO: <b>{{ stockBalances.in_total.iso }}кг</b>; POL: <b>{{ stockBalances.in_total.pol }}кг</b>; PEN: <b>{{ stockBalances.in_total.pen }}кг</b></div>
     </div>
   </div>
 </template>

@@ -1,18 +1,18 @@
 <template>
-  <div class="chart-data comparison-module" >
+  <div class="chart-data comparison-module" v-if="ComparisonModule.cardShow">
     <div class="chart-header">
       <div class="title">Модуль сравнения</div>
-      <div
+      <!-- <div
         class="bul"
         @click="ComparisonModule.modalBul = !ComparisonModule.modalBul"
         @click.stop="noChange"
       >
         <span></span>
-      </div>
+      </div> -->
     </div>
     <div class="chart-content">
       <div class="menu-bul" v-if="ComparisonModule.modalBul">
-        <!-- <div
+        <div
           class="btn-bul"
           @click="
             ComparisonModule.cardShow = !ComparisonModule.cardShow
@@ -21,11 +21,11 @@
         >
           <span class="show"></span>
           <span>Скрыть</span>
-        </div> -->
-        <!-- <div class="btn-bul">
+        </div>
+        <div class="btn-bul">
           <span class="new"></span>
           <span @click="updateComparisonModule">Обновить</span>
-        </div> -->
+        </div>
       </div>
       <div class="content-box">
         <div class="calendar-period">
@@ -43,7 +43,7 @@
         >
           <div class="module">
             <div class="index">{{ comparisonModuleData.sum1 }}</div>
-            <indicator :change="comparisonModuleData.change_sum1"></indicator>
+            <indicator :change="comparisonModuleData.sum1_ch"></indicator>
           </div>
           <div class="data-list">
             <div class="list">
@@ -56,7 +56,7 @@
                   {{ comparisonModuleData.suitable1 }}
                 </div>
                 <indicator
-                  :change="comparisonModuleData.change_suitable1"
+                  :change="comparisonModuleData.sui1_ch"
                 ></indicator>
               </div>
             </div>
@@ -70,7 +70,7 @@
                   {{ comparisonModuleData.substandard1 }}
                 </div>
                 <indicator
-                  :change="comparisonModuleData.change_substandard1"
+                  :change="comparisonModuleData.sub1_ch"
                 ></indicator>
               </div>
             </div>
@@ -84,7 +84,7 @@
                   {{ comparisonModuleData.defect1 }}
                 </div>
                 <indicator
-                  :change="comparisonModuleData.change_defect1"
+                  :change="comparisonModuleData.def1_ch"
                 ></indicator>
               </div>
             </div>
@@ -94,7 +94,7 @@
             <div class="data">
               <div class="index">{{ comparisonModuleData.flooded1 }}</div>
               <indicator
-                :change="comparisonModuleData.change_flooded1"
+                :change="comparisonModuleData.flo_ch"
               ></indicator>
             </div>
           </div>
@@ -170,6 +170,7 @@ import { mapGetters } from 'vuex'
 import Period from '@/components/home/period'
 import Calendar from '@/components/home/calendar'
 import DataIndicator from '~/components/home/DataIndicator'
+// console.log(comparisonModuleData.change_defect1)
 export default {
   layout: 'header_footer',
 
@@ -185,21 +186,32 @@ export default {
     this.$on('changeCalendar', (calendar) => {
       this.calendar = calendar
     })
-  },
 
+    this.$on('setPeriod', (option) => {
+      if (option.end) {
+        this[option.title].option.id2 = option.id2
+        this[option.title].option.isType2 = option.isType2
+        this.updateComparisonModule()
+      } else {
+        this[option.title].option.id1 = option.id1
+        this[option.title].option.isType1 = option.isType1
+        this['update' + option.title]()
+      }
+    })
+  },
   data() {
     return {
       ShowModalPlus: {
         modalBul: false,
       },
-   
+
       ComparisonModuleDate1: null,
       ComparisonModuleDate2: null,
       ComparisonModule: {
         modalBul: false,
         cardShow: true,
         option: {
-          id1: 1,
+          id1: 0,
           id2: 0,
           isType1: 0,
           isType2: 0,
@@ -207,9 +219,10 @@ export default {
           date2: null,
         },
       },
+
       calendar: {
         time: new Date().getTime(),
-        date: new Date().getTime(),
+        date: new Date().getTime(), //formatDate(new Date().getTime()),
       },
     }
   },
@@ -224,6 +237,14 @@ export default {
     calendar: function () {
       this.updateAll()
     },
+    ComparisonModuleDate1: function (newValue) {
+      this.ComparisonModule.option.date1 = newValue
+      this.updateComparisonModule()
+    },
+    ComparisonModuleDate2: function (newValue) {
+      this.ComparisonModule.option.date2 = newValue
+      this.updateComparisonModule()
+    },
   },
 
   computed: {
@@ -233,7 +254,6 @@ export default {
   },
 
   methods: {
-
     ...mapActions('home', {
       getComparisonModule: 'getComparisonModule',
     }),
@@ -242,10 +262,7 @@ export default {
       this[name].cardShow = true
     },
     hideModals() {
-      if (
-        this.ComparisonModule.modalBul 
-      
-      ) {
+      if (this.ComparisonModule.modalBul) {
         this.ComparisonModule.modalBul = false
       }
     },
@@ -265,7 +282,9 @@ export default {
     },
   },
 }
+
 </script>
+
 
 <style lang="scss" scoped>
 .chart-header {

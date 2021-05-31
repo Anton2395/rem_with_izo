@@ -3,13 +3,13 @@
     <div class="chart-header">
       <div class="title">Удельный расход на км</div>
       <period title="SpecificConsumption"></period>
-      <div
+      <!-- <div
         class="bul"
         @click="SpecificConsumption.modalBul = !SpecificConsumption.modalBul"
         @click.stop="noChange"
       >
         <span></span>
-      </div>
+      </div> -->
     </div>
     <div class="chart-content">
       <!-- <div
@@ -134,6 +134,7 @@ export default {
     })
     this.updateSpecificConsumption()
   },
+  props:['date'],
   data() {
     return {
       ShowModalPlus: {
@@ -157,6 +158,11 @@ export default {
     calendar: function () {
       this.updateAll()
     },
+     date: function(newD){
+    
+      this.calendar.date = +formatDate(newD)*1000;
+      this.updateSpecificConsumption();
+    }
    
   },
 
@@ -192,6 +198,12 @@ export default {
       this.updateSpecificConsumption()
     },
   },
+  
+}
+function formatDate(date) {
+  let d = new Date(date)
+  // console.log(d.getTime(), 'ggggg')
+  return (d.getTime()/1000).toFixed();
 }
 </script>
 <style lang="scss" scoped>
@@ -415,7 +427,7 @@ export default {
                 font-family: 'Montserrat', -apple-system, BlinkMacSystemFont,
                   'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
                 font-weight: 500;
-                font-size: 48px;
+                font-size: 42px;
                 color: #000000;
               }
 

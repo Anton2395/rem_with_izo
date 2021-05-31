@@ -1,61 +1,65 @@
 <template>
-  <div class="chart-data-min energy-consumption">
+  <div
+    class="chart-data-min energy-consumption"
+    v-if="EnergyConsumption.cardShow"
+  >
     <div class="chart-header">
       <div class="title">Расход энергоресурсов</div>
-      <period title="SpecificConsumption"></period>
-      <div
+      <period title="EnergyConsumption"></period>
+      <!-- <div
         class="bul"
-        @click="SpecificConsumption.modalBul = !SpecificConsumption.modalBul"
+        @click="EnergyConsumption.modalBul = !EnergyConsumption.modalBul"
         @click.stop="noChange"
       >
         <span></span>
-      </div>
+      </div> -->
     </div>
     <div class="chart-content">
-      <!-- <div
-                class="menu-bul"
-                v-if="SpecificConsumption.modalBul"
-            >
-              <div
-                  class="btn-bul"
-                  @click="SpecificConsumption.cardShow=!SpecificConsumption.cardShow; SpecificConsumption.modalBul=false"
-              ><span class="show"></span>
-                <span>Скрыть</span>
-              </div>
-              <div class="btn-bul">
-                <span class="new"></span>
-                <span @click="updateSpecificConsumption">Обновить</span>
-              </div>
-            </div> -->
-        <div class="iteam-group">
-              <div class="item">
-                <div class="data">
-                  <div class="quantity">1</div>
-                  <div class="subtitle">Ввод1, кВт</div>
-                </div>
-                <div class="icon">
-                  <div class="circle"></div>
-                </div>
-              </div>
-              <div class="item">
-                <div class="data">
-                  <div class="quantity">2</div>
-                  <div class="subtitle">Ввод2, кВт</div>
-                </div>
-                <div class="icon">
-                  <div class="circle"></div>
-                </div>
-              </div>
-              <div class="item">
-                <div class="data">
-                  <div class="quantity">3</div>
-                  <div class="subtitle">Газ, м3</div>
-                </div>
-                <div class="iconLast">
-                  <div class="circle"></div>
-                </div>
-              </div>
-            </div>
+      <div class="menu-bul" v-if="EnergyConsumption.modalBul">
+        <div
+          class="btn-bul"
+          @click="
+            EnergyConsumption.cardShow = !EnergyConsumption.cardShow
+            EnergyConsumption.modalBul = false
+          "
+        >
+          <span class="show"></span>
+          <span>Скрыть</span>
+        </div>
+        <div class="btn-bul">
+          <span class="new"></span>
+          <span @click="updateEnergyConsumption">Обновить</span>
+        </div>
+      </div>
+      <div class="iteam-group">
+        <div class="item">
+          <div class="data">
+            <div class="quantity">{{ energyConsumption.input1 }}</div>
+            <div class="subtitle">Ввод1, кВт</div>
+          </div>
+          <div class="icon">
+            <div class="circle"></div>
+          </div>
+        </div>
+        <div class="item">
+          <div class="data">
+            <div class="quantity">{{ energyConsumption.input2 }}</div>
+            <div class="subtitle">Ввод2, кВт</div>
+          </div>
+          <div class="icon">
+            <div class="circle"></div>
+          </div>
+        </div>
+        <div class="item">
+          <div class="data">
+            <div class="quantity">{{ energyConsumption.gas }}</div>
+            <div class="subtitle">Газ, м3</div>
+          </div>
+          <div class="iconLast">
+            <div class="circle"></div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -66,7 +70,6 @@ import Period from '@/components/home/period'
 import Calendar from '@/components/home/calendar'
 import DataIndicator from '~/components/home/DataIndicator'
 export default {
- 
   created() {
     this.$on('hideCartItem', (name) => {
       this[name].cardShow = false
@@ -79,9 +82,20 @@ export default {
     this.$on('changeCalendar', (calendar) => {
       this.calendar = calendar
     })
-
+    this.$on('setPeriod', (option) => {
+      if (option.end) {
+        this[option.title].option.id2 = option.id2
+        this[option.title].option.isType2 = option.isType2
+        this.updateComparisonModule()
+      } else {
+        this[option.title].option.id1 = option.id1
+        this[option.title].option.isType1 = option.isType1
+        this['update' + option.title]()
+      }
+    })
     this.updateEnergyConsumption()
   },
+  props: ['date'],
   data() {
     return {
       ShowModalPlus: {
@@ -97,7 +111,7 @@ export default {
       },
       calendar: {
         time: new Date().getTime(),
-        date: new Date().getTime(),//formatDate(new Date().getTime()),
+        date: new Date().getTime(), //formatDate(new Date().getTime()),
       },
     }
   },
@@ -112,13 +126,16 @@ export default {
     calendar: function () {
       this.updateAll()
     },
+    date: function (newD) {
+      this.calendar.date = +formatDate(newD) * 1000
+      this.updateEnergyConsumption()
+    },
   },
 
   computed: {
     ...mapGetters('home', {
       energyConsumption: 'energyConsumption',
     }),
-   
   },
 
   methods: {
@@ -130,10 +147,8 @@ export default {
       this[name].cardShow = true
     },
     hideModals() {
-      if (
-        this.EnergyConsumption.modalBul
-      ) {
-          this.EnergyConsumption.modalBul = false
+      if (this.EnergyConsumption.modalBul) {
+        this.EnergyConsumption.modalBul = false
       }
     },
     noChange() {
@@ -147,6 +162,11 @@ export default {
       this.updateEnergyConsumption()
     },
   },
+}
+function formatDate(date) {
+  let d = new Date(date)
+  // console.log(d.getTime(), 'ggggg')
+  return (d.getTime() / 1000).toFixed()
 }
 </script>
 
