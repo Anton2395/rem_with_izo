@@ -21,8 +21,11 @@ base = declarative_base()
 class Connections(base):
     __tablename__ = 'connections'
     id = Column(Integer(), primary_key=True)
+    switch = Column(Boolean, default=True, nullable=False)
+    driver = Column(String(128), nullable=False)
     name = Column(String(128), nullable=False)
     ip = Column(String(128), nullable=False)
+    port = Column(Integer, nullable=False)
     rack = Column(Integer, nullable=False)
     slot = Column(Integer, nullable=False)
     DB = Column(Integer, nullable=False)
@@ -30,6 +33,7 @@ class Connections(base):
     offset = Column(Integer, nullable=False)
     listvalue = relationship("ListValue", cascade="all, delete")
     status = Column(Boolean, default=None, nullable=True)
+
 
 class ListValue(base):
     TYPES = [
@@ -242,7 +246,7 @@ def up_alarm_text(id_alarm_text):
     return redirect(url_for('alarm_text'))
 
 
-@app.route('/connections')
+@app.route('/connections', methods=['GET'])
 @login_required
 def index():
     session = Session()
@@ -252,6 +256,7 @@ def index():
         k = {
             "name": i.name,
             "ip": i.ip,
+            "switch": i.switch,
             "rack": i.rack,
             "slot": i.slot,
             "DB": i.DB,
@@ -262,6 +267,23 @@ def index():
         data.append(k)
     session.close()
     return render_template('connections_list.html', data=data)
+
+@app.route('/connections', methods=['POST'])
+@login_required
+def index_switcher():
+    status = request.form['status']
+    id = request.form['id']
+    session = Session()
+    art = session.query(Connections).get(int(id))
+    if status == "1":
+        art.switch = True
+    elif status == "0":
+        art.switch = False
+    session.commit()
+    session.close()
+    return f"{type(request.form['status'])}, {type(request.form['id'])}"
+
+
 
 
 @app.route('/add_con', methods=['GET'])
@@ -280,8 +302,14 @@ def add_connections():
     DB = request.form['DB']
     start = request.form['start']
     offset = request.form['offset']
-
-    a = Connections(name=name, ip=ip, rack=rack, slot=slot, DB=DB, start=start, offset=offset)
+    switch = True
+    driver = request.form['driver']
+    try:
+        port = request.form['port']
+    except:
+        port = 102
+    a = Connections(name=name, ip=ip, rack=rack, slot=slot, DB=DB, start=start, offset=offset, switch=switch,
+                    driver=driver, port=port)
     session = Session()
     session.add(a)
     session.commit()
@@ -393,6 +421,8 @@ def add_value(id):
         polling_time = request.form['polling_time']
     except:
         polling_time = 1
+    if rewrite_time == '':
+        rewrite_time = 10
     if polling_time == None:
         polling_time = 1
     try:

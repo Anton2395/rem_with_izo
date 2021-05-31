@@ -7,6 +7,9 @@
     <!-- <link rel="stylesheet" href="/assets/bootstrap/css/bootstrap.min.css"> -->
     <link rel="stylesheet" href="/assets/css/Data_con.css">
     <link rel="stylesheet" href="/assets/css/global_setting.css">
+    <script   src="/assets/js/jquery-3.6.0.min.js"
+              integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+              crossorigin="anonymous"></script>
 </head>
 <body>
     <div class="data_con">
@@ -20,10 +23,17 @@
 <form method="post" action="/add_con">
     <table class="input_add_con">
         <tr>
+            <th>driver</th>
+            <th><select class="driver_class" name="driver">
+                    <option value="snap7">snap7</option>
+                    <option value="node-red">node-red</option>
+            </select></th>
+        </tr>
+        <tr>
            <th>name</th>
            <th><input type="text" name="name"></th> 
         </tr>
-        <tr>
+        <tr class="ipClass">
            <th>ip</th>
            <th><input pattern="\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}" name="ip"></th>
         </tr>
@@ -56,5 +66,23 @@
 </form>
 </div>
 </div>
+<script>
+    $('.driver_class').on('change',function() {
+        var value = $(this).val();
+
+        if (value == "node-red" && !$('.portClass')[0]){
+            $('.ipClass').after($(`
+                <tr class="portClass">
+                    <th>port</th>
+                    <th><input type="number" name="port"></th>
+                </tr>
+`))
+        };
+
+        if (value == "snap7" && $('.portClass')[0]){
+            $('.portClass').remove();
+        };
+    });
+</script>
 </body>
 </html>

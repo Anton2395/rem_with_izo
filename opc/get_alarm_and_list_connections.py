@@ -12,89 +12,92 @@ def get_list_connections():
     list_connections = []
     k = session.query(Connections).order_by(Connections.id)
     for i in k:
-        k = session.query(ListValue).filter_by(connections_id=i.id)
-        value_list = []
-        for j in k:
-            alarms = []
-            if j.type_value == 'bool':
-                aar = session.query(Alarms).filter_by(value_list_id=j.id)
-                for alarm in aar:
-                    bar = session.query(Text_Alarm).get(alarm.text_alarm_id)
-                    al = {
-                        "bit": alarm.bit,
-                        "text": bar.name + '-' + i.name,
-                        "type": bar.type
-                    }
-                    alarms.append(al)
-                if j.divide == False:
-                    val = {
-                        "name": j.name,
-                        "start": j.start,
-                        "type": j.type_value.value,
-                        "table": j.type_table.value,
-                        "divide": j.divide,
-                        "if_change": j.if_change,
-                        "byte_bind": j.byte_bind,
-                        "bit_bind": j.bit_bind,
-                        "alarms": alarms,
-                        "time_sleep": j.polling_time,
-                        "rewrite_time": j.rewrite_time
-                    }
+        if not i.switch:
+            continue
+        else:
+            k = session.query(ListValue).filter_by(connections_id=i.id)
+            value_list = []
+            for j in k:
+                alarms = []
+                if j.type_value == 'bool':
+                    aar = session.query(Alarms).filter_by(value_list_id=j.id)
+                    for alarm in aar:
+                        bar = session.query(Text_Alarm).get(alarm.text_alarm_id)
+                        al = {
+                            "bit": alarm.bit,
+                            "text": bar.name + '-' + i.name,
+                            "type": bar.type
+                        }
+                        alarms.append(al)
+                    if j.divide == False:
+                        val = {
+                            "name": j.name,
+                            "start": j.start,
+                            "type": j.type_value.value,
+                            "table": j.type_table.value,
+                            "divide": j.divide,
+                            "if_change": j.if_change,
+                            "byte_bind": j.byte_bind,
+                            "bit_bind": j.bit_bind,
+                            "alarms": alarms,
+                            "time_sleep": j.polling_time,
+                            "rewrite_time": j.rewrite_time
+                        }
+                    else:
+                        val = {
+                            "name": j.name,
+                            "start": j.start,
+                            "type": j.type_value.value,
+                            "table": j.type_table.value,
+                            "divide": j.divide,
+                            "divide_number": j.divide_number,
+                            "if_change": j.if_change,
+                            "byte_bind": j.byte_bind,
+                            "bit_bind": j.bit_bind,
+                            "alarms": alarms,
+                            "time_sleep": j.polling_time,
+                            "rewrite_time": j.rewrite_time
+                        }
                 else:
-                    val = {
-                        "name": j.name,
-                        "start": j.start,
-                        "type": j.type_value.value,
-                        "table": j.type_table.value,
-                        "divide": j.divide,
-                        "divide_number": j.divide_number,
-                        "if_change": j.if_change,
-                        "byte_bind": j.byte_bind,
-                        "bit_bind": j.bit_bind,
-                        "alarms": alarms,
-                        "time_sleep": j.polling_time,
-                        "rewrite_time": j.rewrite_time
-                    }
-            else:
-                if j.divide == False:
-                    val = {
-                        "name": j.name,
-                        "start": j.start,
-                        "type": j.type_value.value,
-                        "table": j.type_table.value,
-                        "divide": j.divide,
-                        "if_change": j.if_change,
-                        "byte_bind": j.byte_bind,
-                        "bit_bind": j.bit_bind,
-                        "time_sleep": j.polling_time,
-                        "rewrite_time": j.rewrite_time
-                    }
-                else:
-                    val = {
-                        "name": j.name,
-                        "start": j.start,
-                        "type": j.type_value.value,
-                        "table": j.type_table.value,
-                        "divide": j.divide,
-                        "divide_number": j.divide_number,
-                        "if_change": j.if_change,
-                        "byte_bind": j.byte_bind,
-                        "bit_bind": j.bit_bind,
-                        "time_sleep": j.polling_time,
-                        "rewrite_time": j.rewrite_time
-                    }
-            value_list.append(val)
-        connect = {
-            "name": i.name,
-            "ip": i.ip,
-            "rack": i.rack,
-            "slot": i.slot,
-            "DB": i.DB,
-            "start": i.start,
-            "offset": i.offset,
-            "value_list": value_list
-        }
-        list_connections.append(connect)
+                    if j.divide == False:
+                        val = {
+                            "name": j.name,
+                            "start": j.start,
+                            "type": j.type_value.value,
+                            "table": j.type_table.value,
+                            "divide": j.divide,
+                            "if_change": j.if_change,
+                            "byte_bind": j.byte_bind,
+                            "bit_bind": j.bit_bind,
+                            "time_sleep": j.polling_time,
+                            "rewrite_time": j.rewrite_time
+                        }
+                    else:
+                        val = {
+                            "name": j.name,
+                            "start": j.start,
+                            "type": j.type_value.value,
+                            "table": j.type_table.value,
+                            "divide": j.divide,
+                            "divide_number": j.divide_number,
+                            "if_change": j.if_change,
+                            "byte_bind": j.byte_bind,
+                            "bit_bind": j.bit_bind,
+                            "time_sleep": j.polling_time,
+                            "rewrite_time": j.rewrite_time
+                        }
+                value_list.append(val)
+            connect = {
+                "name": i.name,
+                "ip": i.ip,
+                "rack": i.rack,
+                "slot": i.slot,
+                "DB": i.DB,
+                "start": i.start,
+                "offset": i.offset,
+                "value_list": value_list
+            }
+            list_connections.append(connect)
     session.close()
     return list_connections
 

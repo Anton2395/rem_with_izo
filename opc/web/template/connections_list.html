@@ -39,6 +39,7 @@
         <table class="con_tab">
             <tr class=thead>
                 <td>id</td>
+                <td>switcher</td>
                 <td>name</td>
                 <td>ip</td>
                 <td>rack</td>
@@ -53,6 +54,15 @@
             {% for i in data %}
             <tr class="tbody">
                 <td>{{i.id}}</td>
+                {% if i.switch %}
+                    <td>
+                          <input id="checkbox{{ i.id }}" type="checkbox" checked>
+                    </td>
+                {% else %}
+                    <td>
+                          <input id="checkbox{{ i.id }}" type="checkbox">
+                    </td>
+                {% endif %}
                 <td><a href="/updata_con/{{i.id}}">{{i.name}}</a></td>
                 <td>{{i.ip}}</td>
                 <td>{{i.rack}}</td>
@@ -79,6 +89,16 @@
         </table>
     </div>
 <script>
+    {% for i in data %}
+    $('#checkbox{{ i.id }}').click(function(){
+        if ($(this).is(':checked')){
+            $.post("/connections", {"status":1, "id":{{i.id}}});
+        } else {
+            $.post("/connections", {"status":0, "id":{{i.id}}});
+        }
+
+    });
+    {% endfor %}
         function show()
     {
         $.ajax({

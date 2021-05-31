@@ -72,10 +72,9 @@ def main():
             for p in pr:
                 restart_process_if_not_alive(p)
                 print(pr[p].is_alive(), 'process', p)
-            for a in statuses_connection:
-                for index, (value1, value2) in enumerate(zip(statuses_connection, ses.query(Connections).order_by(Connections.id))):
-                    value2.status = value1
-                    ses.commit()
+            for index, (value1, value2) in enumerate(zip(statuses_connection, ses.query(Connections).filter_by(switch=True).order_by(Connections.id))):
+                value2.status = value1
+                ses.commit()
             time.sleep(1)
             if list_connections != get_list_connections():
                 for i in pr:
