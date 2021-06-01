@@ -322,6 +322,7 @@ def add_connections():
 def up_con(id):
     session = Session()
     data = session.query(Connections).get(id)
+    session.close()
     return render_template('up_con.html', data=data)
 
 
@@ -358,6 +359,7 @@ def del_connections():
     a = session.query(Connections).get(id)
     session.delete(a)
     session.commit()
+    session.close()
     return redirect(url_for('index'))
 
 
@@ -387,6 +389,7 @@ def value_list(id):
         "id": id,
         "name": b,
     }
+    session.close()
     return render_template('value_list.html', data=data)
 
 
@@ -402,6 +405,7 @@ def add_value_list(id):
         "alarm": alarm,
         "warning": warning
     }
+    session.close()
     return render_template('add_value_list.html', data=data)
 
 
@@ -441,7 +445,6 @@ def add_value(id):
         if_change = 0
     byte_bind = request.form['byte_bind']
     bit_bind = request.form['bit_bind']
-    print(polling_time)
     a = ListValue(name=name,
                   start=start,
                   type_value=str(type_value),
@@ -472,6 +475,7 @@ def add_value(id):
                 )
         session.add(alarm)
         session.commit()
+        session.close()
     return redirect(url_for('value_list', id=id))
 
 
@@ -483,6 +487,7 @@ def del_value(id):
     a = session.query(ListValue).get(id1)
     session.delete(a)
     session.commit()
+    session.close()
     return redirect(url_for('value_list', id=id))
 
 
@@ -512,6 +517,7 @@ def up_value(id1, id2):
         "al_id": alarms,
         "alarm_text": alarm_text
     }
+    session.close()
     return render_template('up_val.html', data=data)
 
 
@@ -573,7 +579,7 @@ def up_value_ch(id1, id2):
     # alarm_get = session.query(Alarms).filter_by(value_list_id=a.id).first()
     # alarm_get.bit = bit_bool
 
-
+    session.close()
     return redirect(url_for('value_list', id=id1))
 
 @app.route('/alarm_text/<int:id_alarm_text>/alarm', methods=['GET'])
@@ -588,6 +594,7 @@ def alarm_list(id_alarm_text):
         "text": b.name,
         "type": b.type
     }
+    session.close()
     return render_template('alarm_list.html', data=data)
 
 

@@ -18,17 +18,14 @@ def get_list_connections():
             k = session.query(ListValue).filter_by(connections_id=i.id)
             value_list = []
             for j in k:
-                alarms = []
+                alarms = {}
                 if j.type_value == 'bool':
                     aar = session.query(Alarms).filter_by(value_list_id=j.id)
                     for alarm in aar:
                         bar = session.query(Text_Alarm).get(alarm.text_alarm_id)
-                        al = {
-                            "bit": alarm.bit,
-                            "text": bar.name + '-' + i.name,
-                            "type": bar.type
-                        }
-                        alarms.append(al)
+                        alarms["bit"] = alarm.bit
+                        alarms["text"] = bar.name + '-' + i.name
+                        alarms["type"] = bar.type
                     if j.divide == False:
                         val = {
                             "name": j.name,

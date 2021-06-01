@@ -143,7 +143,8 @@ class StartProcessOpcForConnectToPLC(Process):
             end = int(start) + int(offset)
             result = self.disassemble_int(self.bytearray_data[int(start):int(end)])
         elif (type == 'bool'):
-            result = self.from_bytearray_to_bit(bit=data['bit'], start=start)
+            bit = data['alarms']['bit']
+            result = self.from_bytearray_to_bit(bit=bit, start=start)
         else:
             result = False
         return result
