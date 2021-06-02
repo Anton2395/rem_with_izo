@@ -280,7 +280,7 @@ def calculate_edition(date):
         # godno = cursor.fetchone()
 
         sql_fol = f"""
-        SELECT
+        SELECT COALESCE(
         (SELECT value
         FROM {dist_table['EditionDay1']['flooded']} 
         where date_trunc('day', now_time)='{date}'
@@ -288,7 +288,7 @@ def calculate_edition(date):
         (SELECT value
         FROM {dist_table['EditionDay1']['flooded']} 
         where date_trunc('day', now_time)='{date}'
-        ORDER BY now_time ASC LIMIT 1)
+        ORDER BY now_time ASC LIMIT 1), 0)
         """
         cursor.execute(sql_fol)
         zalito1 = cursor.fetchone()
