@@ -283,11 +283,11 @@ def calculate_edition(date):
         SELECT
         (SELECT value
         FROM {dist_table['EditionDay1']['flooded']} 
-        where date_trunc('day', now_time)={date}
+        where date_trunc('day', now_time)='{date}'
         ORDER BY now_time DESC LIMIT 1) - 
         (SELECT value
         FROM {dist_table['EditionDay1']['flooded']} 
-        where date_trunc('day', now_time)={date}
+        where date_trunc('day', now_time)='{date}'
         ORDER BY now_time ASC LIMIT 1)
         """
         cursor.execute(sql_fol)
