@@ -231,24 +231,68 @@ def calculate_edition(date):
 
     '''
     with connection.cursor() as cursor:
+        sql = f"""
+        SELECT COALESCE(sum(len), 0)  FROM
+            (SELECT i.now_time, i."value", (
+                SELECT a.value
+                FROM {dist_table["EditionDay1"]["len"]} a
+                WHERE a.now_time<=i.now_time
+                ORDER BY a.now_time DESC LIMIT 1
+                ) as len , ( 
+                    SELECT t.value
+                    FROM {dist_table["EditionDay1"]["type"]} as t
+                    WHERE i.now_time>=t.now_time
+                    ORDER BY t.now_time DESC LIMIT 1
+                ) as type
+        from {dist_table["EditionDay1"]["impuls"]} i
+        where i.value=1 and date_trunc('day', i.now_time) = '{date}') t
+        WHERE t.type=
+        """
+
+
+        cursor.execute(sql+"1")
+        brak1 = cursor.fetchone()
+
         sql1 = '''SELECT value, now_time FROM '''
-        sql2 = ''' WHERE now_time>=%s and now_time<%s and status=0 ORDER BY now_time DESC LIMIT 1'''
-        sql = sql1 + dist_table['EditionDay'] + sql2
-        date_now = date + datetime.timedelta(days=1)
-        cursor.execute(sql, [date, date_now])
-        brak = cursor.fetchone()
+        # sql2 = ''' WHERE now_time>=%s and now_time<%s and status=0 ORDER BY now_time DESC LIMIT 1'''
+        # sql = sql1 + dist_table['EditionDay'] + sql2
+        # date_now = date + datetime.timedelta(days=1)
+        # cursor.execute(sql, [date, date_now])
+        # brak = cursor.fetchone()
 
-        sql2 = ''' WHERE now_time>=%s and now_time<%s and status=2 ORDER BY now_time DESC LIMIT 1'''
-        sql = sql1 + dist_table['EditionDay'] + sql2
-        date_now = date + datetime.timedelta(days=1)
-        cursor.execute(sql, [date, date_now])
-        ne_kond = cursor.fetchone()
+        cursor.execute(sql + "2")
+        ne_kond1 = cursor.fetchone()
 
-        sql2 = ''' WHERE now_time>=%s and now_time<%s and status=1 ORDER BY now_time DESC LIMIT 1'''
-        sql = sql1 + dist_table['EditionDay'] + sql2
-        date_now = date + datetime.timedelta(days=1)
-        cursor.execute(sql, [date, date_now])
-        godno = cursor.fetchone()
+        # sql2 = ''' WHERE now_time>=%s and now_time<%s and status=2 ORDER BY now_time DESC LIMIT 1'''
+        # sql = sql1 + dist_table['EditionDay'] + sql2
+        # date_now = date + datetime.timedelta(days=1)
+        # cursor.execute(sql, [date, date_now])
+        # ne_kond = cursor.fetchone()
+
+        cursor.execute(sql + "0")
+        godno1 = cursor.fetchone()
+
+
+        # sql2 = ''' WHERE now_time>=%s and now_time<%s and status=1 ORDER BY now_time DESC LIMIT 1'''
+        # sql = sql1 + dist_table['EditionDay'] + sql2
+        # date_now = date + datetime.timedelta(days=1)
+        # cursor.execute(sql, [date, date_now])
+        # godno = cursor.fetchone()
+
+        sql_fol = f"""
+        SELECT
+        (SELECT value
+        FROM {dist_table['EditionDay1']['flooded']} 
+        where date_trunc('day', now_time)={date}
+        ORDER BY now_time DESC LIMIT 1) - 
+        (SELECT value
+        FROM {dist_table['EditionDay1']['flooded']} 
+        where date_trunc('day', now_time)={date}
+        ORDER BY now_time ASC LIMIT 1)
+        """
+        cursor.execute(sql_fol)
+        zalito1 = cursor.fetchone()
+
 
         sql2 = ''' WHERE now_time>=%s and now_time<%s and status=3 ORDER BY now_time DESC LIMIT 1'''
         sql = sql1 + dist_table['EditionDay'] + sql2
@@ -256,15 +300,15 @@ def calculate_edition(date):
         cursor.execute(sql, [date, date_now])
         zalito = cursor.fetchone()
 
-        if brak == None:
-            brak = [0]
-        if ne_kond == None:
-            ne_kond = [0]
-        if godno == None:
-            godno = [0]
-        if zalito == None:
-            zalito = [0]
-        k = EditionDay(date=date, suitable=godno[0], substandard=ne_kond[0], defect=brak[0], flooded=zalito[0], sum=brak[0]+ne_kond[0]+godno[0])
+        if brak1 == None:
+            brak1 = [0]
+        if ne_kond1 == None:
+            ne_kond1 = [0]
+        if godno1 == None:
+            godno1 = [0]
+        if zalito1 == None:
+            zalito1 = [0]
+        k = EditionDay(date=date, suitable=godno1[0], substandard=ne_kond1[0], defect=brak1[0], flooded=zalito1[0], sum=brak1[0]+ne_kond1[0]+godno1[0])
         if datetime.datetime.now().date() != date:
             k.save()
     return k

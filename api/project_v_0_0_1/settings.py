@@ -239,6 +239,12 @@ dist_table:
 dist_table = {
     "DurationIntervalDay": ["m_fosd", 1],
     "EditionDay": "Edition",
+    "EditionDay1": {
+        "impuls": "mvlab_izospan_edition_impuls_cut",
+        "type": "mvlab_izospan_edition_type_cut",
+        "len": "mvlab_izospan_edition_length_cut",
+        "flooded": "mvlab_izospan_counter_1_flooded_len"
+    },
     "SumexpenseDay": {
         "iso": ['iso0', 'iso2'],
         "pol": ['pol1', 'pol2'],
