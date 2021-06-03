@@ -297,11 +297,7 @@ def calculate_edition(date):
         zalito1 = cursor.fetchone()
 
 
-        sql2 = ''' WHERE now_time>=%s and now_time<%s and status=3 ORDER BY now_time DESC LIMIT 1'''
-        sql = sql1 + dist_table['EditionDay'] + sql2
-        date_now = date + datetime.timedelta(days=1)
-        cursor.execute(sql, [date, date_now])
-        zalito = cursor.fetchone()
+
 
         if brak1 == None:
             brak1 = [0]
