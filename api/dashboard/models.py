@@ -249,35 +249,38 @@ def calculate_edition(date):
         WHERE t.type=
         """
 
-
-        cursor.execute(sql+"1")
+        sql_br = f"""
+        SELECT COALESCE(sum(len), 0)
+        FROM (
+        SELECT t.now_time , t."value", (
+            SELECT l."value"
+            FROM mvlab_izospan_edition_length_cut l
+            WHERE t.now_time=l.now_time) as len
+        FROM mvlab_izospan_edition_type_cut t
+        WHERE date_trunc('day', now_time)='{date}' and t."value"=1
+        ORDER BY now_time DESC) t
+        """
+        sql_nek = f"""
+        SELECT COALESCE(sum(len), 0)
+        FROM (
+        SELECT t.now_time , t."value", (
+            SELECT l."value"
+            FROM mvlab_izospan_edition_length_cut l
+            WHERE t.now_time=l.now_time) as len
+        FROM mvlab_izospan_edition_type_cut t
+        WHERE date_trunc('day', now_time)='{date}' and t."value"=2
+        ORDER BY now_time DESC) t
+                """
+        cursor.execute(sql_br)
         brak1 = cursor.fetchone()
 
-        sql1 = '''SELECT value, now_time FROM '''
-        # sql2 = ''' WHERE now_time>=%s and now_time<%s and status=0 ORDER BY now_time DESC LIMIT 1'''
-        # sql = sql1 + dist_table['EditionDay'] + sql2
-        # date_now = date + datetime.timedelta(days=1)
-        # cursor.execute(sql, [date, date_now])
-        # brak = cursor.fetchone()
 
-        cursor.execute(sql + "2")
+        cursor.execute(sql_nek)
         ne_kond1 = cursor.fetchone()
 
-        # sql2 = ''' WHERE now_time>=%s and now_time<%s and status=2 ORDER BY now_time DESC LIMIT 1'''
-        # sql = sql1 + dist_table['EditionDay'] + sql2
-        # date_now = date + datetime.timedelta(days=1)
-        # cursor.execute(sql, [date, date_now])
-        # ne_kond = cursor.fetchone()
 
         cursor.execute(sql + "0")
         godno1 = cursor.fetchone()
-
-
-        # sql2 = ''' WHERE now_time>=%s and now_time<%s and status=1 ORDER BY now_time DESC LIMIT 1'''
-        # sql = sql1 + dist_table['EditionDay'] + sql2
-        # date_now = date + datetime.timedelta(days=1)
-        # cursor.execute(sql, [date, date_now])
-        # godno = cursor.fetchone()
 
         sql_fol = f"""
         SELECT COALESCE(
@@ -308,7 +311,7 @@ def calculate_edition(date):
             godno1 = [0]
         if zalito1 == None:
             zalito1 = [0]
-        k = EditionDay(date=date, suitable=godno1[0], substandard=ne_kond1[0], defect=brak1[0], flooded=zalito1[0], sum=brak1[0]+ne_kond1[0]+godno1[0])
+        k = EditionDay(date=date, suitable=godno1[0]/1000, substandard=ne_kond1[0]/1000, defect=brak1[0]/1000, flooded=zalito1[0]/1000, sum=(brak1[0]+ne_kond1[0]+godno1[0])/1000)
         if datetime.datetime.now().date() != date:
             k.save()
     return k
