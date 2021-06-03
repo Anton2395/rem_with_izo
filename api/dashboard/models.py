@@ -307,7 +307,7 @@ def calculate_edition(date):
             godno1 = [0]
         if zalito1 == None:
             zalito1 = [0]
-        k = EditionDay(date=date, suitable=godno1[0]/1000, substandard=ne_kond1[0]/1000, defect=brak1[0]/1000, flooded=zalito1[0]/1000, sum=(brak1[0]+ne_kond1[0]+godno1[0])/1000)
+        k = EditionDay(date=date, suitable=godno1[0]/1000, substandard=ne_kond1[0]/1000, defect=brak1[0]/1000, flooded=zalito1[0], sum=(brak1[0]+ne_kond1[0]+godno1[0])/1000)
         if datetime.datetime.now().date() != date:
             k.save()
     return k
