@@ -771,25 +771,26 @@ def calculate_specific(date):
     kat2 = 0
     kat3 = 0
     ################
-    sql_zalito = f"""
-            SELECT value 
-            from {dist_table['EditionDay1']['flooded']}
-            WHERE date_trunc('day', now_time)='{date}'
-            ORDER BY now_time
-            """
-    cursor.execute(sql_zalito)
-    zalito_array = cursor.fetchall()
-    zalito1 = 0
-    flag = 0
-    leng = len(zalito_array)
-    for i, d in enumerate(zalito_array):
-        if d[0] != 0:
-            flag = 0
-        if flag == 0 and d[0] == 0 and i != 0:
-            zalito1 = zalito1 + zalito_array[i - 1][0]
-            flag = 1
-        if flag == 0 and i == (leng - 1):
-            zalito1 = zalito1 + d[0]
+    with connection.cursor() as cursor:
+        sql_zalito = f"""
+                SELECT value 
+                from {dist_table['EditionDay1']['flooded']}
+                WHERE date_trunc('day', now_time)='{date}'
+                ORDER BY now_time
+                """
+        cursor.execute(sql_zalito)
+        zalito_array = cursor.fetchall()
+        zalito1 = 0
+        flag = 0
+        leng = len(zalito_array)
+        for i, d in enumerate(zalito_array):
+            if d[0] != 0:
+                flag = 0
+            if flag == 0 and d[0] == 0 and i != 0:
+                zalito1 = zalito1 + zalito_array[i - 1][0]
+                flag = 1
+            if flag == 0 and i == (leng - 1):
+                zalito1 = zalito1 + d[0]
     ################
     for i in dist_table['SumexpenseDay']['iso']:
         with connection.cursor() as cursor:
