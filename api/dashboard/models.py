@@ -925,12 +925,12 @@ def calculate_specific(date):
                     kat3_temp = kat3_temp + d[0]
             kat3 = kat3 + kat3_temp
     if zalito1!=0:
-        iso = iso/zalito1
-        pol = pol/zalito1
-        pen = pen/zalito1
-        kat1 = kat1/zalito1
-        kat2 = kat2/zalito1
-        kat3 = kat3/zalito1
+        iso = float('{:.3f}'.format(iso/zalito1))
+        pol = float('{:.3f}'.format(pol / zalito1))
+        pen = float('{:.3f}'.format(pen / zalito1))
+        kat1 = float('{:.3f}'.format(kat1 / zalito1))
+        kat2 = float('{:.3f}'.format(kat2 / zalito1))
+        kat3 = float('{:.3f}'.format(kat3 / zalito1))
     else:
         iso = 0
         pol = 0
