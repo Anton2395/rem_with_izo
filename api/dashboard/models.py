@@ -254,22 +254,22 @@ def calculate_edition(date):
         FROM (
         SELECT t.now_time , t."value", (
             SELECT l."value"
-            FROM mvlab_izospan_edition_length_cut l
+            FROM {dist_table['EditionDay1']['len']} l
             WHERE t.now_time=l.now_time) as len
         FROM mvlab_izospan_edition_type_cut t
         WHERE date_trunc('day', now_time)='{date}' and t."value"=1
-        ORDER BY now_time DESC) t
+        ORDER BY now_time DESC) k
         """
         sql_nek = f"""
         SELECT COALESCE(sum(len), 0)
         FROM (
         SELECT t.now_time , t."value", (
             SELECT l."value"
-            FROM mvlab_izospan_edition_length_cut l
+            FROM {dist_table['EditionDay1']['len']} l
             WHERE t.now_time=l.now_time) as len
         FROM mvlab_izospan_edition_type_cut t
         WHERE date_trunc('day', now_time)='{date}' and t."value"=2
-        ORDER BY now_time DESC) t
+        ORDER BY now_time DESC) k
                 """
         cursor.execute(sql_br)
         brak1 = cursor.fetchone()
@@ -282,22 +282,9 @@ def calculate_edition(date):
         cursor.execute(sql + "0")
         godno1 = cursor.fetchone()
 
-        sql_fol = f"""
-        SELECT COALESCE(
-        (SELECT value
-        FROM {dist_table['EditionDay1']['flooded']} 
-        where date_trunc('day', now_time)='{date}'
-        ORDER BY now_time DESC LIMIT 1) - 
-        (SELECT value
-        FROM {dist_table['EditionDay1']['flooded']} 
-        where date_trunc('day', now_time)='{date}'
-        ORDER BY now_time ASC LIMIT 1), 0)
-        """
-        cursor.execute(sql_fol)
-        zalito1 = cursor.fetchone()
         sql_zalito = f"""
         SELECT value 
-        from mvlab_izospan_counter_1_flooded_len
+        from {dist_table['EditionDay1']['flooded']}
         WHERE date_trunc('day', now_time)='{date}'
         ORDER BY now_time
         """
@@ -315,11 +302,6 @@ def calculate_edition(date):
             if flag==0 and i==(leng-1):
                 zalito1 = zalito1 + d[0]
         zalito1 = [zalito1]
-
-
-
-
-
 
         if brak1 == None:
             brak1 = [0]
@@ -410,58 +392,136 @@ def calculate_sumexpense(date):
     sql2 = ''' WHERE now_time>=%s and now_time<%s ORDER BY now_time DESC LIMIT 1'''
     for i in dist_table['SumexpenseDay']['iso']:
         with connection.cursor() as cursor:
-            sql = sql1 + i + sql2
-            date_now = date + datetime.timedelta(days=1)
-            cursor.execute(sql, [date, date_now])
-            data = cursor.fetchone()
-            if data == None:
-                data = [0]
-            iso = iso + data[0]
+            sql_new = f"""
+                    SELECT value 
+                    from {i}
+                    WHERE date_trunc('day', now_time)='{date}'
+                    ORDER BY now_time
+                """
+            cursor.execute(sql_new)
+            iso_array = cursor.fetchall()
+            iso_temp = 0
+            flag = 0
+            leng = len(iso_array)
+            for i, d in enumerate(iso_array):
+                if d[0] != 0:
+                    flag = 0
+                if flag == 0 and d[0] == 0 and i != 0:
+                    iso_temp = iso_temp + iso_array[i - 1][0]
+                    flag = 1
+                if flag == 0 and i == (leng - 1):
+                    iso_temp = iso_temp + d[0]
+            iso = iso + iso_temp
     for i in dist_table['SumexpenseDay']['pol']:
         with connection.cursor() as cursor:
-            sql = sql1 + i + sql2
-            date_now = date + datetime.timedelta(days=1)
-            cursor.execute(sql, [date, date_now])
-            data = cursor.fetchone()
-            if data == None:
-                data = [0]
-            pol = pol + data[0]
+            sql_new = f"""
+                    SELECT value 
+                    from {i}
+                    WHERE date_trunc('day', now_time)='{date}'
+                    ORDER BY now_time
+                            """
+            cursor.execute(sql_new)
+            pol_array = cursor.fetchall()
+            pol_temp = 0
+            flag = 0
+            leng = len(pol_array)
+            for i, d in enumerate(pol_array):
+                if d[0] != 0:
+                    flag = 0
+                if flag == 0 and d[0] == 0 and i != 0:
+                    pol_temp = pol_temp + pol_array[i - 1][0]
+                    flag = 1
+                if flag == 0 and i == (leng - 1):
+                    pol_temp = pol_temp + d[0]
+            pol = pol + pol_temp
     for i in dist_table['SumexpenseDay']['pen']:
         with connection.cursor() as cursor:
-            sql = sql1 + i + sql2
-            date_now = date + datetime.timedelta(days=1)
-            cursor.execute(sql, [date, date_now])
-            data = cursor.fetchone()
-            if data == None:
-                data = [0]
-            pen = pen + data[0]
+            sql_new = f"""
+                    SELECT value 
+                    from {i}
+                    WHERE date_trunc('day', now_time)='{date}'
+                    ORDER BY now_time
+                                        """
+            cursor.execute(sql_new)
+            pen_array = cursor.fetchall()
+            pen_temp = 0
+            flag = 0
+            leng = len(pen_array)
+            for i, d in enumerate(pen_array):
+                if d[0] != 0:
+                    flag = 0
+                if flag == 0 and d[0] == 0 and i != 0:
+                    pen_temp = pen_temp + pen_array[i - 1][0]
+                    flag = 1
+                if flag == 0 and i == (leng - 1):
+                    pen_temp = pen_temp + d[0]
+            pen = pen + pen_temp
     for i in dist_table['SumexpenseDay']['kat1']:
         with connection.cursor() as cursor:
-            sql = sql1 + i + sql2
-            date_now = date + datetime.timedelta(days=1)
-            cursor.execute(sql, [date, date_now])
-            data = cursor.fetchone()
-            if data == None:
-                data = [0]
-            kat1 = kat1 + data[0]
+            sql_new = f"""
+                    SELECT value 
+                    from {i}
+                    WHERE date_trunc('day', now_time)='{date}'
+                    ORDER BY now_time
+                                        """
+            cursor.execute(sql_new)
+            kat1_array = cursor.fetchall()
+            kat1_temp = 0
+            flag = 0
+            leng = len(kat1_array)
+            for i, d in enumerate(kat1_array):
+                if d[0] != 0:
+                    flag = 0
+                if flag == 0 and d[0] == 0 and i != 0:
+                    kat1_temp = kat1_temp + kat1_array[i - 1][0]
+                    flag = 1
+                if flag == 0 and i == (leng - 1):
+                    kat1_temp = kat1_temp + d[0]
+            kat1 = kat1 + kat1_temp
     for i in dist_table['SumexpenseDay']['kat2']:
         with connection.cursor() as cursor:
-            sql = sql1 + i + sql2
-            date_now = date + datetime.timedelta(days=1)
-            cursor.execute(sql, [date, date_now])
-            data = cursor.fetchone()
-            if data == None:
-                data = [0]
-            kat2 = kat2 + data[0]
+            sql_new = f"""
+                    SELECT value 
+                    from {i}
+                    WHERE date_trunc('day', now_time)='{date}'
+                    ORDER BY now_time
+                                        """
+            cursor.execute(sql_new)
+            kat2_array = cursor.fetchall()
+            kat2_temp = 0
+            flag = 0
+            leng = len(kat2_array)
+            for i, d in enumerate(kat2_array):
+                if d[0] != 0:
+                    flag = 0
+                if flag == 0 and d[0] == 0 and i != 0:
+                    kat2_temp = kat2_temp + kat2_array[i - 1][0]
+                    flag = 1
+                if flag == 0 and i == (leng - 1):
+                    kat2_temp = kat2_temp + d[0]
+            kat2 = kat2 + kat2_temp
     for i in dist_table['SumexpenseDay']['kat3']:
         with connection.cursor() as cursor:
-            sql = sql1 + i + sql2
-            date_now = date + datetime.timedelta(days=1)
-            cursor.execute(sql, [date, date_now])
-            data = cursor.fetchone()
-            if data == None:
-                data = [0]
-            kat3 = kat3 + data[0]
+            sql_new = f"""
+                    SELECT value 
+                    from {i}
+                    WHERE date_trunc('day', now_time)='{date}'
+                    ORDER BY now_time
+                                        """
+            cursor.execute(sql_new)
+            kat3_array = cursor.fetchall()
+            kat3_temp = 0
+            flag = 0
+            leng = len(kat3_array)
+            for i, d in enumerate(kat3_array):
+                if d[0] != 0:
+                    flag = 0
+                if flag == 0 and d[0] == 0 and i != 0:
+                    kat3_temp = kat3_temp + kat3_array[i - 1][0]
+                    flag = 1
+                if flag == 0 and i == (leng - 1):
+                    kat3_temp = kat3_temp + d[0]
+            kat3 = kat3 + kat3_temp
     data = SumexpenseDay(date=date, iso=iso, pol=pol, pen=pen, kat1=kat1, kat2=kat2, kat3=kat3)
     if datetime.datetime.now().date() != date:
         data.save()

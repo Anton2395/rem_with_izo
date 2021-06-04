@@ -246,12 +246,12 @@ dist_table = {
         "flooded": "mvlab_izospan_counter_1_flooded_len"
     },
     "SumexpenseDay": {
-        "iso": ['iso0', 'iso2'],
-        "pol": ['pol1', 'pol2'],
-        "pen": ['pen1', 'pen2'],
-        "kat1": ['kat1'],
-        "kat2": ['kat2'],
-        "kat3": ['kat3']
+        "iso": ['mvlab_izospan_counter_1_counter_mdi'],
+        "pol": ['mvlab_izospan_counter_1_counter_pol'],
+        "pen": ['mvlab_izospan_counter_1_counter_pentan'],
+        "kat1": ['mvlab_izospan_counter_1_counter_cat1'],
+        "kat2": ['mvlab_izospan_counter_1_counter_cat2'],
+        "kat3": ['mvlab_izospan_counter_1_counter_cat3']
     },
     "EnergyConsumptionDay": {
         "input1": "in1",
