@@ -295,6 +295,28 @@ def calculate_edition(date):
         """
         cursor.execute(sql_fol)
         zalito1 = cursor.fetchone()
+        sql_zalito = f"""
+        SELECT value 
+        from mvlab_izospan_counter_1_flooded_len
+        WHERE date_trunc('day', now_time)='{date}'
+        ORDER BY now_time
+        """
+        cursor.execute(sql_zalito)
+        zalito_array = cursor.fetchall()
+        zalito1 = 0
+        flag = 0
+        leng = len(zalito_array)
+        for i,d in enumerate(zalito_array):
+            if d[0]!=0:
+                flag = 0
+            if flag==0 and d[0]==0 and i!=0:
+                zalito1 = zalito1 + zalito_array[i-1][0]
+                flag = 1
+            if flag==0 and i==(leng-1):
+                zalito1 = zalito1 + d[0]
+        zalito1 = [zalito1]
+
+
 
 
 
@@ -305,8 +327,6 @@ def calculate_edition(date):
             ne_kond1 = [0]
         if godno1 == None:
             godno1 = [0]
-        if zalito1 == None:
-            zalito1 = [0]
         k = EditionDay(date=date, suitable=godno1[0]/1000, substandard=ne_kond1[0]/1000, defect=brak1[0]/1000, flooded=zalito1[0], sum=(brak1[0]+ne_kond1[0]+godno1[0])/1000)
         if datetime.datetime.now().date() != date:
             k.save()
