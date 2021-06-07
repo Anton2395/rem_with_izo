@@ -14,9 +14,11 @@ class GetStatusConnectionsRemeza(APIView):
             connections = cursor.fetchall()
             data = {}
             for i in connections:
-                if i[2] == None:
-                    i[2] = False
-                data[f'{i[0]}'] = [i[2], i[0], i[1]]
+                if i[2]==None or i[2]==False:
+                    status = False
+                else:
+                    status = True
+                data[f'{i[0]}'] = [status, i[0], i[1]]
         return Response(data)
 
 
