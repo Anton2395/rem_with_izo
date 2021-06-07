@@ -9,27 +9,27 @@ from project_v_0_0_1.settings import dist_table
 class GetStatusConnectionsRemeza(APIView):
     def get(self, request):
         with connection.cursor() as cursor:
-            sql = """SELECT * FROM connections"""
+            sql = """SELECT name, ip, status FROM connections"""
             cursor.execute(sql)
             connections = cursor.fetchall()
             data = {}
             for i in connections:
-                data[f'{i[1]}'] = [i[8], i[1], i[2]]
+                data[f'{i[0]}'] = [i[2], i[0], i[1]]
         return Response(data)
 
 
 class GetConnectionsRemeza(APIView):
     def get(self, request):
         with connection.cursor() as cursor:
-            sql = """SELECT * FROM connections"""
+            sql = """SELECT name, ip, id FROM connections"""
             cursor.execute(sql)
             connections = cursor.fetchall()
             data = []
             for index, val in enumerate(connections):
                 k = {
-                    "connection_name": val[1],
-                    "ip": val[2],
-                    "key": val[0]
+                    "connection_name": val[0],
+                    "ip": val[1],
+                    "key": val[2]
                 }
                 data.append(k)
             return Response(data)
