@@ -7,7 +7,7 @@ export default {
       special: "test",
       access: true,
       accessLevel: "завод",
-      company: "ООО Ремеза"
+      company: "ООО Изоспан"
     },
     currentTabHeader: "",
     currentTabSidebar:"",

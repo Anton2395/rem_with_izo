@@ -34,7 +34,7 @@
               <div class="item">
                 <div class="data">
                   <div class="quantity">{{ totalConsumption.iso }}</div>
-                  <div class="subtitle">Изоцианат, л</div>
+                  <div class="subtitle">Изоцианат, кг</div>
                 </div>
                 <div class="icon">
                   <div class="circle" style="background: #2D9AD8">ISO</div>
@@ -43,7 +43,7 @@
               <div class="item">
                 <div class="data">
                   <div class="quantity">{{ totalConsumption.pol }}</div>
-                  <div class="subtitle">Полиол, л</div>
+                  <div class="subtitle">Полиол, кг</div>
                 </div>
                 <div class="icon">
                   <div class="circle" style="background: #FC7A7A">POL</div>
@@ -52,7 +52,7 @@
               <div class="item">
                 <div class="data">
                   <div class="quantity">{{ totalConsumption.pen }}</div>
-                  <div class="subtitle">Пентан, л</div>
+                  <div class="subtitle">Пентан, кг</div>
                 </div>
                 <div class="icon">
                   <div class="circle" style="background: #4BBEAA">PEN</div>
@@ -61,7 +61,7 @@
               <div class="item">
                 <div class="data">
                   <div class="quantity">{{ totalConsumption.kat1 }}</div>
-                  <div class="subtitle">Катализатор1, л</div>
+                  <div class="subtitle">Катализатор1, кг</div>
                 </div>
                 <div class="icon">
                   <div class="circle" style="background: #2D9AD8">K1</div>
@@ -70,7 +70,7 @@
               <div class="item">
                 <div class="data">
                   <div class="quantity">{{ totalConsumption.kat2 }}</div>
-                  <div class="subtitle">Катализатор2, л</div>
+                  <div class="subtitle">Катализатор2, кг</div>
                 </div>
                 <div class="icon">
                   <div class="circle" style="background: #FC7A7A">K2</div>
@@ -79,7 +79,7 @@
               <div class="item">
                 <div class="data">
                   <div class="quantity">{{ totalConsumption.kat3 }}</div>
-                  <div class="subtitle">Катализатор3, л</div>
+                  <div class="subtitle">Катализатор3, кг</div>
                 </div>
                 <div class="icon">
                   <div class="circle" style="background: #4BBEAA">K3</div>

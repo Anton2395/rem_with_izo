@@ -31,7 +31,7 @@
         <div class="item">
           <div class="data">
             <div class="quantity">{{ specificConsumption.iso }}</div>
-            <div class="subtitle">Изоцианат, л</div>
+            <div class="subtitle">Изоцианат, кг</div>
           </div>
           <div class="icon">
             <div class="circle" style="background: #2d9ad8">
@@ -43,7 +43,7 @@
         <div class="item">
           <div class="data">
             <div class="quantity">{{ specificConsumption.pol }}</div>
-            <div class="subtitle">Полиол, л</div>
+            <div class="subtitle">Полиол, кг</div>
           </div>
           <div class="icon">
             <div class="circle" style="background: #fc7a7a">
@@ -55,7 +55,7 @@
         <div class="item">
           <div class="data">
             <div class="quantity">{{ specificConsumption.pen }}</div>
-            <div class="subtitle">Пентан, л</div>
+            <div class="subtitle">Пентан, кг</div>
           </div>
           <div class="icon">
             <div class="circle" style="background: #4bbeaa">
@@ -67,7 +67,7 @@
         <div class="item">
           <div class="data">
             <div class="quantity">{{ specificConsumption.kat1 }}</div>
-            <div class="subtitle">Катализатор1, л</div>
+            <div class="subtitle">Катализатор1, кг</div>
           </div>
           <div class="icon">
             <div class="circle" style="background: #2d9ad8">
@@ -79,7 +79,7 @@
         <div class="item">
           <div class="data">
             <div class="quantity">{{ specificConsumption.kat2 }}</div>
-            <div class="subtitle">Катализатор2, л</div>
+            <div class="subtitle">Катализатор2, кг</div>
           </div>
           <div class="icon">
             <div class="circle" style="background: #fc7a7a">
@@ -91,7 +91,7 @@
         <div class="item">
           <div class="data">
             <div class="quantity">{{ specificConsumption.kat3 }}</div>
-            <div class="subtitle">Катализатор3, л</div>
+            <div class="subtitle">Катализатор3, кг</div>
           </div>
           <div class="icon">
             <div class="circle" style="background: #4bbeaa">
