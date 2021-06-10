@@ -339,6 +339,11 @@ def updata_connections():
     DB = request.form['DB']
     start = request.form['start']
     offset = request.form['offset']
+    arrays = request.form['arrays']
+    try:
+        port = request.form['port']
+    except:
+        port = 102
     session = Session()
     a = session.query(Connections).get(id)
     a.name = name
@@ -348,6 +353,8 @@ def updata_connections():
     a.DB = DB
     a.start = start
     a.offset = offset
+    a.arrays = arrays
+    a.port = port
     session.commit()
     session.close()
     return redirect(url_for('index'))
