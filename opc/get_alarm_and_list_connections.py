@@ -92,6 +92,7 @@ def get_list_connections():
                 "DB": i.DB,
                 "start": i.start,
                 "offset": i.offset,
+                "arrays": i.arrays,
                 "value_list": value_list
             }
             list_connections.append(connect)

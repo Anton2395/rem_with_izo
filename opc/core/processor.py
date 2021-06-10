@@ -15,7 +15,7 @@ from settings import createConnection
 class StartProcessOpcForConnectToPLC(Process):
 
     def __init__(self, address: str, rack: int, slot: int, db: int, start_address_db: int, offset_db: int,
-                 values_list: list = None, port=102, name_connect: str = "", status=[], count=0):
+                 values_list: list = None, port=102, name_connect: str = "", status=[], count=0, arrays: str = "DB",):
         """Класс процесса для подключения к ПЛК по адресу address, с портом port (по умолчанию 102) и получения заданных
         значений из блока данных db в промежутке с start_address_db по start_address_db+offset_db
         (offset_db - количество забираемых byte из блока). После получения данных разбирает bytearray по
@@ -52,7 +52,7 @@ class StartProcessOpcForConnectToPLC(Process):
         self.values = {}
         self._conn = createConnection()
         self._c = self._conn.cursor()
-
+        self.arrays = arrays
         self.client = snap7.client.Client()
         self.client.set_connection_type(3)
         try:
@@ -61,13 +61,19 @@ class StartProcessOpcForConnectToPLC(Process):
             cprint.cprint.err("NotConnect to PLC")
         super(StartProcessOpcForConnectToPLC, self).__init__()
 
-    def __get_db_data(self) -> bool:  # получение данных в байт формате
+    def __get_db_data(self, arrays) -> bool:  # получение данных в байт формате
         """
         получение данных из ДБ блока в формате bytearray
         """
         try:
-            self.bytearray_data = self.client.db_read(self.DB, self.start_address_DB, self.offset_DB)
-            return True
+            if arrays=='DB':
+                self.bytearray_data = self.client.db_read(self.DB, self.start_address_DB, self.offset_DB)
+                return True
+            elif arrays=='PA':
+                self.bytearray_data = self.client.read_area(snap7.types.areas['PA'], 0, self.start_address_DB, self.offset_DB)
+                return True
+            else:
+                return False
         except Exception as e:
             self.last_error = str(e)
             self.error_read_data = True
@@ -227,7 +233,7 @@ class StartProcessOpcForConnectToPLC(Process):
         while True:
             start_time = time.time()
 
-            if (not self.__get_db_data()):
+            if (not self.__get_db_data(self.arrays)):
                 self.__reconect_to_plc()
                 self.status[self.count] = 0
             else:

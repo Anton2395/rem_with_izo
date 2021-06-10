@@ -46,8 +46,17 @@
             <th><input type="number" name="slot"></th>
         </tr>
         <tr>
+            <th>array</th>
+            <th>
+                <select class="class_array" name="arrays">
+                    <option value="DB">DB</option>
+                    <option value="PA">Process Outputs</option>
+                </select>
+            </th>
+        </tr>
+        <tr>
             <th>DB</th>
-            <th><input type="number" name="DB"></th>
+            <th><input type="number" class="class_db" name="DB"></th>
         </tr>
         <tr>
             <th>start</th>
@@ -76,13 +85,26 @@
                     <th>port</th>
                     <th><input type="number" name="port"></th>
                 </tr>
-`))
+    `))
         };
 
         if (value == "snap7" && $('.portClass')[0]){
             $('.portClass').remove();
         };
     });
+
+    $('.class_array').on('change',function (){
+        var value = $(this).val();
+
+        if (value == "PA") {
+            $('.class_db').attr('readonly', true);
+            $('.class_db').val(0);
+        }
+        else {
+            $('.class_db').attr('readonly', false);
+        }
+    })
+
 </script>
 </body>
 </html>

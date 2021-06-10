@@ -241,13 +241,8 @@ class davlenie_graf(APIView):
                 res['data'] = self.get_last_hour()
                 res['state'] = self.get_color_stat_hour()
             elif (keys == "day"):
-                st1 = datetime.datetime.now()
                 res['data'] = self.get_last_day()
-                end1 = datetime.datetime.now()
-                print('tochki: ', (end1 - st1).total_seconds() / 60, 'min')
                 res['state'] = self.get_color_stat_day()
-                end2 = datetime.datetime.now()
-                print('interval: ', (end2 - end1).total_seconds() / 60, 'min')
             elif (keys == "week"):
                 res['data'] = self.get_last_week()
                 res['state'] = self.get_color_stat_week()

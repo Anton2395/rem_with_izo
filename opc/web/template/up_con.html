@@ -6,6 +6,9 @@
     <!-- <link rel="stylesheet" href="/assets/bootstrap/css/bootstrap.min.css"> -->
     <link rel="stylesheet" href="/assets/css/updata_con.css">
     <link rel="stylesheet" href="/assets/css/global_setting.css">
+    <script   src="/assets/js/jquery-3.6.0.min.js"
+              integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+              crossorigin="anonymous"></script>
 </head>
 <body>
     <div class="updata_con">
@@ -17,6 +20,19 @@
     <form method="post" action="/updata_con">
         <table class="input_upadd_con">
             <tr>
+                <th>driver</th>
+                <th><select class="driver_class" name="driver">
+                        {% if data.driver == 'snap7' %}
+                        <option value="snap7" checked>snap7</option>
+                        <option value="node-red">node-red</option>
+                        {% endif %}
+                        {% if data.driver == 'node-red' %}
+                        <option value="snap7">snap7</option>
+                        <option value="node-red" checked>node-red</option>
+                        {% endif %}
+                </select></th>
+            </tr>
+            <tr>
                 <th>id:</th>
                 <th>{{data.id}}<input type=hidden name="id" value={{data.id}}></th>
             </tr>
@@ -24,7 +40,7 @@
                 <th>name:</th>
                 <th><input type="text" name="name" value={{data.name}}></th>
             </tr>
-            <tr>
+            <tr class="ipClass">
                 <th>ip:</th>
                 <th><input pattern="\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}" name="ip" value={{data.ip}}></th>
             </tr>
@@ -35,6 +51,21 @@
             <tr>
                 <th>slot:</th>
                 <th><input type="number" name="slot" value={{data.slot}}></th>
+            </tr>
+            <tr>
+                <th>array</th>
+                <th>
+                    <select class="class_array" name="arrays">
+                        {% if data.arrays == 'PA' %}
+                        <option value="PA">Process Outputs</option>
+                        <option value="DB">DB</option>
+                        {% endif %}
+                        {% if data.arrays == 'DB' %}
+                        <option value="DB">DB</option>
+                        <option value="PA">Process Outputs</option>
+                        {% endif %}
+                    </select>
+                </th>
             </tr>
             <tr>
                 <th>DB:</th>
@@ -64,5 +95,36 @@
     </form>
 </div>
 </div>
+<script>
+    $('.driver_class').on('change',function() {
+        var value = $(this).val();
+
+        if (value == "node-red" && !$('.portClass')[0]){
+            $('.ipClass').after($(`
+                <tr class="portClass">
+                    <th>port</th>
+                    <th><input type="number" name="port" value={{ data.port }}></th>
+                </tr>
+    `))
+        };
+
+        if (value == "snap7" && $('.portClass')[0]){
+            $('.portClass').remove();
+        };
+    });
+
+    $('.class_array').on('change',function (){
+        var value = $(this).val();
+
+        if (value == "PA") {
+            $('.class_db').attr('readonly', true);
+            $('.class_db').val(0);
+        }
+        else {
+            $('.class_db').attr('readonly', false);
+        }
+    })
+
+</script>
 </body>
 </html>

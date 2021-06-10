@@ -50,7 +50,8 @@ def main():
                     values_list=connection['value_list'],
                     name_connect=connection['name'],
                     status=statuses_connection,
-                    count=count
+                    count=count,
+                    arrays=connection['arrays']
                 )
                 data_for_restart[connection['name']] = {
                                                             "ip":connection['ip'],

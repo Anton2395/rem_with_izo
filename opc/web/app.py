@@ -28,6 +28,7 @@ class Connections(base):
     port = Column(Integer, nullable=False)
     rack = Column(Integer, nullable=False)
     slot = Column(Integer, nullable=False)
+    arrays = Column(String(128), nullable=False)
     DB = Column(Integer, nullable=False)
     start = Column(Integer, nullable=False)
     offset = Column(Integer, nullable=False)
@@ -303,13 +304,14 @@ def add_connections():
     start = request.form['start']
     offset = request.form['offset']
     switch = True
+    arrays = request.form['arrays']
     driver = request.form['driver']
     try:
         port = request.form['port']
     except:
         port = 102
     a = Connections(name=name, ip=ip, rack=rack, slot=slot, DB=DB, start=start, offset=offset, switch=switch,
-                    driver=driver, port=port)
+                    driver=driver, port=port, arrays=arrays)
     session = Session()
     session.add(a)
     session.commit()

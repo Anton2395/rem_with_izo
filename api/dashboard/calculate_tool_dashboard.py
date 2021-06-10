@@ -341,8 +341,6 @@ def calculate_sumexpense(date):
 def calculate_sumexpense_shift(date, start, end):
     date_start = datetime.datetime(date.year, date.month, date.day, start.hour, start.minute, start.second)
     date_end = datetime.datetime(date.year, date.month, date.day, end.hour, end.minute, end.second)
-    sql1 = '''SELECT value, now_time FROM '''
-    sql2 = ''' WHERE now_time>=%s and now_time<%s ORDER BY now_time DESC LIMIT 1'''
     iso = 0
     pol = 0
     pen = 0
