@@ -7,7 +7,7 @@ from multiprocessing import Process
 import multiprocessing as mp
 import cprint
 import snap7
-
+from snap7.util import get_bool
 from core.bind_error import BindError
 from settings import createConnection
 
@@ -151,6 +151,7 @@ class StartProcessOpcForConnectToPLC(Process):
         elif (type == 'bool'):
             bit = data['alarms']['bit']
             result = self.from_bytearray_to_bit(bit=bit, start=start)
+
         else:
             result = False
         return result
@@ -166,6 +167,8 @@ class StartProcessOpcForConnectToPLC(Process):
 
     def _thread_for_write_data(self, d):
         value = self.__parse_bytearray(d)
+        if type(value) == bool:
+            value = int(value)
         now = datetime.datetime.now()
         timeout_sec = d['time_sleep'] / 1000
         if 'if_change' in d and d['if_change'] and not d['name'] in self.values:
@@ -274,7 +277,8 @@ class StartProcessOpcForConnectToPLC(Process):
         bits = bits.replace("0b", "")
         bits = bits[::-1]
         try:
-            result = bits[bit]
+            # result = bits[bit]
+            result = get_bool(self.bytearray_data[int(start):int(start) + 1], 0, bit)
         except:
             result = 0
         return result
