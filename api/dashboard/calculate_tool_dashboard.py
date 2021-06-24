@@ -5,6 +5,7 @@ from .models import EditionDay, SumexpenseDay, SpecificConsumptionDay, DurationI
 
 def calculate_duration_shift(date, start, end):
     with connection.cursor() as cursor:
+        art = []
         for i in dist_table['DurationIntervalDay']:
             date_start = datetime.datetime(date.year, date.month, date.day, start.hour, start.minute, start.second)
             date_end = datetime.datetime(date.year, date.month, date.day, end.hour, end.minute, end.second)
@@ -15,7 +16,6 @@ def calculate_duration_shift(date, start, end):
             cursor.execute(sql)
             a = cursor.fetchall()
             k = 0
-            art = []
             for i in a:
                 if i[1] == 1 and k == 0:
                     k += 1
