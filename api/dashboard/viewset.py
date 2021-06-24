@@ -2,7 +2,7 @@ from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from .models import *
-from .calculate_tool_dashboard import calculate_edition, calculate_edition_shift, calculate_sumexpense, calculate_sumexpense_shift, calculate_specific, calculate_specific_shift
+from .calculate_tool_dashboard import calculate_edition, calculate_edition_shift, calculate_sumexpense, calculate_sumexpense_shift, calculate_specific, calculate_specific_shift, calculate_duration_shift
 from .serializer import *
 from users.models import UserP
 from datetime import datetime, timedelta, time
@@ -51,9 +51,8 @@ class DurationIntervalDayViews(APIView):
             if len(art) == 0:
                 start = time(0,0,1)
                 end = time(23,59,59)
-                calculate_duration_shift(date, start, end)
+                art = calculate_duration_shift(date, start, end)
             sum = 0
-            art = globals()[dash].objects.filter(date=date)
             format = "%H:%M:%S"
             data1 =[]
             for i in art:

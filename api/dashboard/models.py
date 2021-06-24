@@ -49,26 +49,26 @@ class Role(models.Model):
     dashboard = models.ManyToManyField(Dashboard)
 
 
-def calculate_duration_shift(date, start, end):
-    with connection.cursor() as cursor:
-        sql1 = '''SELECT value, now_time FROM '''
-        sql2 = ''' WHERE now_time>=%s and now_time<%s ORDER BY now_time'''
-        sql = sql1 + dist_table['DurationIntervalDay'][0] + sql2
-        date_start = datetime.datetime(date.year, date.month, date.day, start.hour, start.minute, start.second)
-        date_end = datetime.datetime(date.year, date.month, date.day, end.hour, end.minute, end.second)
-        cursor.execute(sql, [date_start, date_end])
-        a = cursor.fetchall()
-        k = 0
-        for i in a:
-            if i[0] == 1 and k == 0:
-                k += 1
-                date_start1 = datetime.time(i[1].hour, i[1].minute, i[1].second)
-            if i[0] == 0 and k == 1:
-                k = 0
-                date_end1 = datetime.time(i[1].hour, i[1].minute, i[1].second)
-                obj = DurationIntervalDay(start=date_start1, end=date_end1, date=date)
-                obj.save()
-        return 0
+# def calculate_duration_shift(date, start, end):
+#     with connection.cursor() as cursor:
+#         sql1 = '''SELECT value, now_time FROM '''
+#         sql2 = ''' WHERE now_time>=%s and now_time<%s ORDER BY now_time'''
+#         sql = sql1 + dist_table['DurationIntervalDay'][0] + sql2
+#         date_start = datetime.datetime(date.year, date.month, date.day, start.hour, start.minute, start.second)
+#         date_end = datetime.datetime(date.year, date.month, date.day, end.hour, end.minute, end.second)
+#         cursor.execute(sql, [date_start, date_end])
+#         a = cursor.fetchall()
+#         k = 0
+#         for i in a:
+#             if i[0] == 1 and k == 0:
+#                 k += 1
+#                 date_start1 = datetime.time(i[1].hour, i[1].minute, i[1].second)
+#             if i[0] == 0 and k == 1:
+#                 k = 0
+#                 date_end1 = datetime.time(i[1].hour, i[1].minute, i[1].second)
+#                 obj = DurationIntervalDay(start=date_start1, end=date_end1, date=date)
+#                 obj.save()
+#         return 0
 
 
 # для виджета продолжительность работы
