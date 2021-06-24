@@ -237,7 +237,7 @@ dist_table:
             "torch" - хранит имя таблицы для статуса факела
 '''
 dist_table = {
-    "DurationIntervalDay": ["m_fosd", 1],
+    "DurationIntervalDay": ["mvlab_izospan_duration_1_flap_mdi1", "mvlab_izospan_duration_2_flap_mdi2"],
     "EditionDay": "Edition",
     "EditionDay1": {
         "impuls": "mvlab_izospan_edition_impuls_cut",

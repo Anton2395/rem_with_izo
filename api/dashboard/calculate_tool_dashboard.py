@@ -1,9 +1,33 @@
 from django.db import connection
 import datetime
 from project_v_0_0_1.settings import dist_table
-from .models import EditionDay, SumexpenseDay, SpecificConsumptionDay
+from .models import EditionDay, SumexpenseDay, SpecificConsumptionDay, DurationIntervalDay
 
-
+def calculate_duration_shift(date, start, end):
+    with connection.cursor() as cursor:
+        for i in dist_table['DurationIntervalDay']:
+            date_start = datetime.datetime(date.year, date.month, date.day, start.hour, start.minute, start.second)
+            date_end = datetime.datetime(date.year, date.month, date.day, end.hour, end.minute, end.second)
+            sql = f'''select now_time, value from {i} 
+                        WHERE now_time>='{date_start}' and now_time<'{date_end}'
+                        order by now_time
+                        '''
+            cursor.execute(sql)
+            a = cursor.fetchall()
+            k = 0
+            art = []
+            for i in a:
+                if i[1] == 1 and k == 0:
+                    k += 1
+                    date_start1 = datetime.time(i[0].hour, i[0].minute, i[0].second)
+                if i[1] == 0 and k == 1:
+                    k = 0
+                    date_end1 = datetime.time(i[0].hour, i[0].minute, i[0].second)
+                    obj = DurationIntervalDay(start=date_start1, end=date_end1, date=date)
+                    art.append(obj)
+                    if date != datetime.datetime.now().date():
+                        obj.save()
+    return art
 
 def calculate_edition(date):
     '''
