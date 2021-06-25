@@ -418,6 +418,10 @@ def calculate_sumexpense_shift(date, start, end):
                 if flag == 0 and i == (leng - 1):
                     pol_temp = pol_temp + d[0]
             pol = pol + pol_temp
+            sql_new = sql_new + ''' limit 1'''
+            cursor.execute(sql_new)
+            pol_first = cursor.fetchone()
+            pol = pol - pol_first[0]
         for i in dist_table['SumexpenseDay']['pen']:
             sql_new = f"""
                     SELECT value 
@@ -439,6 +443,10 @@ def calculate_sumexpense_shift(date, start, end):
                 if flag == 0 and i == (leng - 1):
                     pen_temp = pen_temp + d[0]
             pen = pen + pen_temp
+            sql_new = sql_new + ''' limit 1'''
+            cursor.execute(sql_new)
+            pen_first = cursor.fetchone()
+            pen = pen - pen_first[0]
         for i in dist_table['SumexpenseDay']['kat1']:
             sql_new = f"""
                     SELECT value 
@@ -460,6 +468,10 @@ def calculate_sumexpense_shift(date, start, end):
                 if flag == 0 and i == (leng - 1):
                     kat1_temp = kat1_temp + d[0]
             kat1 = kat1 + kat1_temp
+            sql_new = sql_new + ''' limit 1'''
+            cursor.execute(sql_new)
+            kat1_first = cursor.fetchone()
+            kat1 = kat1 - kat1_first[0]
         for i in dist_table['SumexpenseDay']['kat2']:
             sql_new = f"""
                     SELECT value 
@@ -481,6 +493,10 @@ def calculate_sumexpense_shift(date, start, end):
                 if flag == 0 and i == (leng - 1):
                     kat2_temp = kat2_temp + d[0]
             kat2 = kat2 + kat2_temp
+            sql_new = sql_new + ''' limit 1'''
+            cursor.execute(sql_new)
+            kat2_first = cursor.fetchone()
+            kat2 = kat2 - kat2_first[0]
         for i in dist_table['SumexpenseDay']['kat3']:
             sql_new = f"""
                     SELECT value 
@@ -502,6 +518,10 @@ def calculate_sumexpense_shift(date, start, end):
                 if flag == 0 and i == (leng - 1):
                     kat3_temp = kat3_temp + d[0]
             kat3 = kat3 + kat3_temp
+            sql_new = sql_new + ''' limit 1'''
+            cursor.execute(sql_new)
+            kat3_first = cursor.fetchone()
+            kat3 = kat3 - kat3_first[0]
     a = {
         "iso": iso,
         "pol": pol,
@@ -729,6 +749,10 @@ def calculate_specific_shift(date, start, end):
                 flag = 1
             if flag == 0 and i == (leng - 1):
                 zalito1 = zalito1 + d[0]
+        sql_zalito = sql_zalito + ''' limit 1'''
+        cursor.execute(sql_zalito)
+        first_zalito = cursor.fetchone()
+        zalito1 = zalito1 - first_zalito[0]
     ################
     for i in dist_table['SumexpenseDay']['iso']:
         with connection.cursor() as cursor:
@@ -752,6 +776,10 @@ def calculate_specific_shift(date, start, end):
                 if flag == 0 and i == (leng - 1):
                     iso_temp = iso_temp + d[0]
             iso = iso + iso_temp
+            sql_new = sql_new + ''' limit 1'''
+            cursor.execute(sql_new)
+            first_iso = cursor.fetchone()
+            iso = iso - first_iso[0]
     for i in dist_table['SumexpenseDay']['pol']:
         with connection.cursor() as cursor:
             sql_new = f"""
@@ -774,6 +802,10 @@ def calculate_specific_shift(date, start, end):
                 if flag == 0 and i == (leng - 1):
                     pol_temp = pol_temp + d[0]
             pol = pol + pol_temp
+            sql_new = sql_new + ''' limit 1'''
+            cursor.execute(sql_new)
+            first_pol = cursor.fetchone()
+            pol = pol - first_pol[0]
     for i in dist_table['SumexpenseDay']['pen']:
         with connection.cursor() as cursor:
             sql_new = f"""
@@ -796,6 +828,10 @@ def calculate_specific_shift(date, start, end):
                 if flag == 0 and i == (leng - 1):
                     pen_temp = pen_temp + d[0]
             pen = pen + pen_temp
+            sql_new = sql_new + ''' limit 1'''
+            cursor.execute(sql_new)
+            first_pen = cursor.fetchone()
+            pen = pen - first_pen[0]
     for i in dist_table['SumexpenseDay']['kat1']:
         with connection.cursor() as cursor:
             sql_new = f"""
@@ -818,6 +854,10 @@ def calculate_specific_shift(date, start, end):
                 if flag == 0 and i == (leng - 1):
                     kat1_temp = kat1_temp + d[0]
             kat1 = kat1 + kat1_temp
+            sql_new = sql_new + ''' limit 1'''
+            cursor.execute(sql_new)
+            first_kat1 = cursor.fetchone()
+            kat1 = kat1 - first_kat1[0]
     for i in dist_table['SumexpenseDay']['kat2']:
         with connection.cursor() as cursor:
             sql_new = f"""
@@ -840,6 +880,10 @@ def calculate_specific_shift(date, start, end):
                 if flag == 0 and i == (leng - 1):
                     kat2_temp = kat2_temp + d[0]
             kat2 = kat2 + kat2_temp
+            sql_new = sql_new + ''' limit 1'''
+            cursor.execute(sql_new)
+            first_kat2 = cursor.fetchone()
+            kat2 = kat2 - first_kat2[0]
     for i in dist_table['SumexpenseDay']['kat3']:
         with connection.cursor() as cursor:
             sql_new = f"""
@@ -862,6 +906,10 @@ def calculate_specific_shift(date, start, end):
                 if flag == 0 and i == (leng - 1):
                     kat3_temp = kat3_temp + d[0]
             kat3 = kat3 + kat3_temp
+            sql_new = sql_new + ''' limit 1'''
+            cursor.execute(sql_new)
+            first_kat3 = cursor.fetchone()
+            kat3 = kat3 - first_kat3[0]
     if zalito1 != 0:
         iso = float('{:.3f}'.format(iso / zalito1))
         pol = float('{:.3f}'.format(pol / zalito1))
