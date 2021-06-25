@@ -206,21 +206,35 @@ class EditionDayViews(APIView):
                 change_sum = (((art.sum/art_del.sum)-1)*100)
             else:
                 change_sum = 0
-            data = {
-                "suitable": float('{:.2f}'.format(art.suitable)),
-                # "change_suitable": round(change_suitable),
-                "change_suitable": round(art.suitable*100/art.sum),
-                "substandard": float('{:.2f}'.format(art.substandard)),
-                # "change_substandard": round(change_substandard),
-                "change_substandard": round(art.substandard*100/art.sum),
-                "defect": float('{:.2f}'.format(art.defect)),
-                # "change_defect": round(change_defect),
-                "change_defect": round(art.defect*100/art.sum),
-                "flooded": art.flooded,
-                # "change_flooded": round(change_flooded),
-                "sum": art.sum,
-                # "change_sum": round(change_sum)
-            }
+            if art.sum != 0:
+                data = {
+                    "suitable": float('{:.2f}'.format(art.suitable)),
+                    # "change_suitable": round(change_suitable),
+                    "change_suitable": round(art.suitable*100/art.sum),
+                    "substandard": float('{:.2f}'.format(art.substandard)),
+                    # "change_substandard": round(change_substandard),
+                    "change_substandard": round(art.substandard*100/art.sum),
+                    "defect": float('{:.2f}'.format(art.defect)),
+                    # "change_defect": round(change_defect),
+                    "change_defect": round(art.defect*100/art.sum),
+                    "flooded": art.flooded,
+                    # "change_flooded": round(change_flooded),
+                    "sum": art.sum,
+                    # "change_sum": round(change_sum)
+                }
+            else:
+                data = {
+                    "suitable": float('{:.2f}'.format(art.suitable)),
+                    "change_suitable": round(change_suitable),
+                    "substandard": float('{:.2f}'.format(art.substandard)),
+                    "change_substandard": round(change_substandard),
+                    "defect": float('{:.2f}'.format(art.defect)),
+                    "change_defect": round(change_defect),
+                    "flooded": art.flooded,
+                    # "change_flooded": round(change_flooded),
+                    "sum": art.sum,
+                    # "change_sum": round(change_sum)
+                }
         except UnboundLocalError:
             data = {"error":'not Role'}
             return Response(data, status=status.HTTP_404_NOT_FOUND)
