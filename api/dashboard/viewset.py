@@ -405,7 +405,22 @@ class EditionShiftViews(APIView):
                 # "change_substandard": round(change_substandard),
                 "change_substandard": round(k["substandard"]*100/k["sum"]),
                 "defect": float('{:.2f}'.format(k["defect"])),
+                # "change_defect": round(change_defect),
                 "change_defect": round(k["defect"]*100/k["sum"]),
+                "flooded": k["flooded"],
+                # "change_flooded": round(change_flooded),
+                "sum": k["sum"],
+                # "change_sum": round(change_sum)
+            }
+        else:
+            data = {
+                "suitable": float('{:.2f}'.format(k["suitable"])),
+                "change_suitable": round(change_suitable),
+                "substandard": float('{:.2f}'.format(k["substandard"])),
+                # "change_substandard": round(change_substandard),
+                "change_substandard": round(k["substandard"] * 100 / k["sum"]),
+                "defect": float('{:.2f}'.format(k["defect"])),
+                "change_defect": round(change_defect),
                 "flooded": k["flooded"],
                 # "change_flooded": round(change_flooded),
                 "sum": k["sum"],
