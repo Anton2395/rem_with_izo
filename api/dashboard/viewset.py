@@ -396,18 +396,21 @@ class EditionShiftViews(APIView):
             change_sum = (((k["sum"] / k_pred["sum"]) - 1) * 100)
         else:
             change_sum = 0
-        data = {
-            "suitable": float('{:.2f}'.format(k["suitable"])),
-            "change_suitable": round(change_suitable),
-            "substandard": float('{:.2f}'.format(k["substandard"])),
-            "change_substandard": round(change_substandard),
-            "defect": float('{:.2f}'.format(k["defect"])),
-            "change_defect": round(change_defect),
-            "flooded": k["flooded"],
-            "change_flooded": round(change_flooded),
-            "sum": k["sum"],
-            "change_sum": round(change_sum)
-        }
+        if k["sum"] != 0:
+            data = {
+                "suitable": float('{:.2f}'.format(k["suitable"])),
+                # "change_suitable": round(change_suitable),
+                "change_suitable": round(k["suitable"]*100/k["sum"]),
+                "substandard": float('{:.2f}'.format(k["substandard"])),
+                # "change_substandard": round(change_substandard),
+                "change_substandard": round(k["substandard"]*100/k["sum"]),
+                "defect": float('{:.2f}'.format(k["defect"])),
+                "change_defect": round(k["defect"]*100/k["sum"]),
+                "flooded": k["flooded"],
+                # "change_flooded": round(change_flooded),
+                "sum": k["sum"],
+                # "change_sum": round(change_sum)
+            }
         return Response(data)
 
 
