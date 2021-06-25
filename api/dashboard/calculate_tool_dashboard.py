@@ -393,6 +393,10 @@ def calculate_sumexpense_shift(date, start, end):
                 if flag == 0 and i == (leng - 1):
                     iso_temp = iso_temp + d[0]
             iso = iso + iso_temp
+            sql_new = sql_new + ''' limit 1'''
+            cursor.execute(sql_new)
+            iso_first = cursor.fetchone()
+            iso = iso - iso_first[0]
         for i in dist_table['SumexpenseDay']['pol']:
             sql_new = f"""
                     SELECT value 
