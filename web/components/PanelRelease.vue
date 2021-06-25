@@ -123,7 +123,7 @@ export default {
 
     this.updatePanelRelease()
   },
-  
+
   props:['date'],
 
   data() {
@@ -134,7 +134,7 @@ export default {
       PanelRelease: {
         modalBul: false,
         cardShow: true,
-        option: 
+        option:
         {
           id1: 0,
           isType1: 0,
@@ -242,12 +242,12 @@ export default {
               },
               {
                 name: 'Брак',
-                y: this.panelRelease ? this.panelRelease.substandard : 0,
+                y: this.panelRelease ? this.panelRelease.defect : 0,
                 color: ' #FC7A7A',
               },
               {
                 name: 'Некондиция',
-                y: this.panelRelease ? this.panelRelease.defect : 0,
+                y: this.panelRelease ? this.panelRelease.substandard : 0,
                 color: '#2D9AD8',
               },
             ],

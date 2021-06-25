@@ -223,11 +223,11 @@ def calculate_sumexpense(date):
     kat1 = 0
     kat2 = 0
     kat3 = 0
-    for i in dist_table['SumexpenseDay']['iso']:
+    for j in dist_table['SumexpenseDay']['iso']:
         with connection.cursor() as cursor:
             sql_new = f"""
                     SELECT value 
-                    from {i}
+                    from {j}
                     WHERE date_trunc('day', now_time)='{date}'
                     ORDER BY now_time
                 """
@@ -245,11 +245,11 @@ def calculate_sumexpense(date):
                 if flag == 0 and i == (leng - 1):
                     iso_temp = iso_temp + d[0]
             iso = iso + iso_temp
-    for i in dist_table['SumexpenseDay']['pol']:
+    for j in dist_table['SumexpenseDay']['pol']:
         with connection.cursor() as cursor:
             sql_new = f"""
                     SELECT value 
-                    from {i}
+                    from {j}
                     WHERE date_trunc('day', now_time)='{date}'
                     ORDER BY now_time
                             """
@@ -267,11 +267,11 @@ def calculate_sumexpense(date):
                 if flag == 0 and i == (leng - 1):
                     pol_temp = pol_temp + d[0]
             pol = pol + pol_temp
-    for i in dist_table['SumexpenseDay']['pen']:
+    for j in dist_table['SumexpenseDay']['pen']:
         with connection.cursor() as cursor:
             sql_new = f"""
                     SELECT value 
-                    from {i}
+                    from {j}
                     WHERE date_trunc('day', now_time)='{date}'
                     ORDER BY now_time
                                         """
@@ -289,11 +289,11 @@ def calculate_sumexpense(date):
                 if flag == 0 and i == (leng - 1):
                     pen_temp = pen_temp + d[0]
             pen = pen + pen_temp
-    for i in dist_table['SumexpenseDay']['kat1']:
+    for j in dist_table['SumexpenseDay']['kat1']:
         with connection.cursor() as cursor:
             sql_new = f"""
                     SELECT value 
-                    from {i}
+                    from {j}
                     WHERE date_trunc('day', now_time)='{date}'
                     ORDER BY now_time
                                         """
@@ -311,11 +311,11 @@ def calculate_sumexpense(date):
                 if flag == 0 and i == (leng - 1):
                     kat1_temp = kat1_temp + d[0]
             kat1 = kat1 + kat1_temp
-    for i in dist_table['SumexpenseDay']['kat2']:
+    for j in dist_table['SumexpenseDay']['kat2']:
         with connection.cursor() as cursor:
             sql_new = f"""
                     SELECT value 
-                    from {i}
+                    from {j}
                     WHERE date_trunc('day', now_time)='{date}'
                     ORDER BY now_time
                                         """
@@ -333,11 +333,11 @@ def calculate_sumexpense(date):
                 if flag == 0 and i == (leng - 1):
                     kat2_temp = kat2_temp + d[0]
             kat2 = kat2 + kat2_temp
-    for i in dist_table['SumexpenseDay']['kat3']:
+    for j in dist_table['SumexpenseDay']['kat3']:
         with connection.cursor() as cursor:
             sql_new = f"""
                     SELECT value 
-                    from {i}
+                    from {j}
                     WHERE date_trunc('day', now_time)='{date}'
                     ORDER BY now_time
                                         """
@@ -372,10 +372,10 @@ def calculate_sumexpense_shift(date, start, end):
     kat2 = 0
     kat3 = 0
     with connection.cursor() as cursor:
-        for i in dist_table['SumexpenseDay']['iso']:
+        for j in dist_table['SumexpenseDay']['iso']:
             sql_new = f"""
                     SELECT value 
-                    from {i}
+                    from {j}
                     WHERE now_time >= '{date_start}' and now_time < '{date_end}'
                     ORDER BY now_time
                     """
@@ -397,10 +397,10 @@ def calculate_sumexpense_shift(date, start, end):
             cursor.execute(sql_new)
             iso_first = cursor.fetchone()
             iso = iso - iso_first[0]
-        for i in dist_table['SumexpenseDay']['pol']:
+        for j in dist_table['SumexpenseDay']['pol']:
             sql_new = f"""
                     SELECT value 
-                    from {i}
+                    from {j}
                     WHERE now_time >= '{date_start}' and now_time < '{date_end}'
                     ORDER BY now_time
                     """
@@ -422,10 +422,10 @@ def calculate_sumexpense_shift(date, start, end):
             cursor.execute(sql_new)
             pol_first = cursor.fetchone()
             pol = pol - pol_first[0]
-        for i in dist_table['SumexpenseDay']['pen']:
+        for j in dist_table['SumexpenseDay']['pen']:
             sql_new = f"""
                     SELECT value 
-                    from {i}
+                    from {j}
                     WHERE now_time >= '{date_start}' and now_time < '{date_end}'
                     ORDER BY now_time
                     """
@@ -447,10 +447,10 @@ def calculate_sumexpense_shift(date, start, end):
             cursor.execute(sql_new)
             pen_first = cursor.fetchone()
             pen = pen - pen_first[0]
-        for i in dist_table['SumexpenseDay']['kat1']:
+        for j in dist_table['SumexpenseDay']['kat1']:
             sql_new = f"""
                     SELECT value 
-                    from {i}
+                    from {j}
                     WHERE now_time >= '{date_start}' and now_time < '{date_end}'
                     ORDER BY now_time
                     """
@@ -472,10 +472,10 @@ def calculate_sumexpense_shift(date, start, end):
             cursor.execute(sql_new)
             kat1_first = cursor.fetchone()
             kat1 = kat1 - kat1_first[0]
-        for i in dist_table['SumexpenseDay']['kat2']:
+        for j in dist_table['SumexpenseDay']['kat2']:
             sql_new = f"""
                     SELECT value 
-                    from {i}
+                    from {j}
                     WHERE now_time >= '{date_start}' and now_time < '{date_end}'
                     ORDER BY now_time
                     """
@@ -497,10 +497,10 @@ def calculate_sumexpense_shift(date, start, end):
             cursor.execute(sql_new)
             kat2_first = cursor.fetchone()
             kat2 = kat2 - kat2_first[0]
-        for i in dist_table['SumexpenseDay']['kat3']:
+        for j in dist_table['SumexpenseDay']['kat3']:
             sql_new = f"""
                     SELECT value 
-                    from {i}
+                    from {j}
                     WHERE now_time >= '{date_start}' and now_time < '{date_end}'
                     ORDER BY now_time
                     """
@@ -576,11 +576,11 @@ def calculate_specific(date):
         zalito1_first = cursor.fetchone()
         zalito1 = zalito1 - zalito1_first[0]
     ################
-    for i in dist_table['SumexpenseDay']['iso']:
+    for j in dist_table['SumexpenseDay']['iso']:
         with connection.cursor() as cursor:
             sql_new = f"""
                     SELECT value 
-                    from {i}
+                    from {j}
                     WHERE date_trunc('day', now_time)='{date}'
                     ORDER BY now_time
                 """
@@ -600,17 +600,17 @@ def calculate_specific(date):
             iso = iso + iso_temp
             sql_new = f''' 
                 SELECT value 
-                from {i}
+                from {j}
                 WHERE date_trunc('day', now_time)='{date_del}'
                 ORDER BY now_time DESC limit 1'''
             cursor.execute(sql_new)
             iso_first = cursor.fetchone()
             iso = iso - iso_first[0]
-    for i in dist_table['SumexpenseDay']['pol']:
+    for j in dist_table['SumexpenseDay']['pol']:
         with connection.cursor() as cursor:
             sql_new = f"""
                     SELECT value 
-                    from {i}
+                    from {j}
                     WHERE date_trunc('day', now_time)='{date}'
                     ORDER BY now_time
                             """
@@ -630,17 +630,17 @@ def calculate_specific(date):
             pol = pol + pol_temp
             sql_new = f''' 
                             SELECT value 
-                            from {i}
+                            from {j}
                             WHERE date_trunc('day', now_time)='{date_del}'
                             ORDER BY now_time DESC limit 1'''
             cursor.execute(sql_new)
             pol_first = cursor.fetchone()
             pol = pol - pol_first[0]
-    for i in dist_table['SumexpenseDay']['pen']:
+    for j in dist_table['SumexpenseDay']['pen']:
         with connection.cursor() as cursor:
             sql_new = f"""
                     SELECT value 
-                    from {i}
+                    from {j}
                     WHERE date_trunc('day', now_time)='{date}'
                     ORDER BY now_time
                                         """
@@ -660,17 +660,17 @@ def calculate_specific(date):
             pen = pen + pen_temp
             sql_new = f''' 
                             SELECT value 
-                            from {i}
+                            from {j}
                             WHERE date_trunc('day', now_time)='{date_del}'
                             ORDER BY now_time DESC limit 1'''
             cursor.execute(sql_new)
             pen_first = cursor.fetchone()
             pen = pen - pen_first[0]
-    for i in dist_table['SumexpenseDay']['kat1']:
+    for j in dist_table['SumexpenseDay']['kat1']:
         with connection.cursor() as cursor:
             sql_new = f"""
                     SELECT value 
-                    from {i}
+                    from {j}
                     WHERE date_trunc('day', now_time)='{date}'
                     ORDER BY now_time
                                         """
@@ -690,17 +690,17 @@ def calculate_specific(date):
             kat1 = kat1 + kat1_temp
             sql_new = f''' 
                             SELECT value 
-                            from {i}
+                            from {j}
                             WHERE date_trunc('day', now_time)='{date_del}'
                             ORDER BY now_time DESC limit 1'''
             cursor.execute(sql_new)
             kat1_first = cursor.fetchone()
             kat1 = kat1 - kat1_first[0]
-    for i in dist_table['SumexpenseDay']['kat2']:
+    for j in dist_table['SumexpenseDay']['kat2']:
         with connection.cursor() as cursor:
             sql_new = f"""
                     SELECT value 
-                    from {i}
+                    from {j}
                     WHERE date_trunc('day', now_time)='{date}'
                     ORDER BY now_time
                                         """
@@ -720,17 +720,17 @@ def calculate_specific(date):
             kat2 = kat2 + kat2_temp
             sql_new = f''' 
                             SELECT value 
-                            from {i}
+                            from {j}
                             WHERE date_trunc('day', now_time)='{date_del}'
                             ORDER BY now_time DESC limit 1'''
             cursor.execute(sql_new)
             kat2_first = cursor.fetchone()
             kat2 = kat2 - kat2_first[0]
-    for i in dist_table['SumexpenseDay']['kat3']:
+    for j in dist_table['SumexpenseDay']['kat3']:
         with connection.cursor() as cursor:
             sql_new = f"""
                     SELECT value 
-                    from {i}
+                    from {j}
                     WHERE date_trunc('day', now_time)='{date}'
                     ORDER BY now_time
                                         """
@@ -750,7 +750,7 @@ def calculate_specific(date):
             kat3 = kat3 + kat3_temp
             sql_new = f''' 
                             SELECT value 
-                            from {i}
+                            from {j}
                             WHERE date_trunc('day', now_time)='{date_del}'
                             ORDER BY now_time DESC limit 1'''
             cursor.execute(sql_new)
@@ -817,11 +817,11 @@ def calculate_specific_shift(date, start, end):
         first_zalito = cursor.fetchone()
         zalito1 = zalito1 - first_zalito[0]
     ################
-    for i in dist_table['SumexpenseDay']['iso']:
+    for j in dist_table['SumexpenseDay']['iso']:
         with connection.cursor() as cursor:
             sql_new = f"""
                     SELECT value 
-                    from {i}
+                    from {j}
                     WHERE now_time>='{date_start}' and now_time<'{date_end}'
                     ORDER BY now_time
                 """
@@ -841,18 +841,18 @@ def calculate_specific_shift(date, start, end):
             iso = iso + iso_temp
             sql_new = f"""
                         SELECT value 
-                        from {i}
+                        from {j}
                         WHERE now_time>='{date_del}' and now_time<'{date_start}'
                         ORDER BY now_time DESC limit 1
                         """
             cursor.execute(sql_new)
             first_iso = cursor.fetchone()
             iso = iso - first_iso[0]
-    for i in dist_table['SumexpenseDay']['pol']:
+    for j in dist_table['SumexpenseDay']['pol']:
         with connection.cursor() as cursor:
             sql_new = f"""
                     SELECT value 
-                    from {i}
+                    from {j}
                     WHERE now_time>='{date_start}' and now_time<'{date_end}'
                     ORDER BY now_time
                             """
@@ -872,18 +872,18 @@ def calculate_specific_shift(date, start, end):
             pol = pol + pol_temp
             sql_new = f"""
                                     SELECT value 
-                                    from {i}
+                                    from {j}
                                     WHERE now_time>='{date_del}' and now_time<'{date_start}'
                                     ORDER BY now_time DESC limit 1
                                     """
             cursor.execute(sql_new)
             first_pol = cursor.fetchone()
             pol = pol - first_pol[0]
-    for i in dist_table['SumexpenseDay']['pen']:
+    for j in dist_table['SumexpenseDay']['pen']:
         with connection.cursor() as cursor:
             sql_new = f"""
                     SELECT value 
-                    from {i}
+                    from {j}
                     WHERE now_time>='{date_start}' and now_time<'{date_end}'
                     ORDER BY now_time
                                         """
@@ -903,18 +903,18 @@ def calculate_specific_shift(date, start, end):
             pen = pen + pen_temp
             sql_new = f"""
                                     SELECT value 
-                                    from {i}
+                                    from {j}
                                     WHERE now_time>='{date_del}' and now_time<'{date_start}'
                                     ORDER BY now_time DESC limit 1
                                     """
             cursor.execute(sql_new)
             first_pen = cursor.fetchone()
             pen = pen - first_pen[0]
-    for i in dist_table['SumexpenseDay']['kat1']:
+    for j in dist_table['SumexpenseDay']['kat1']:
         with connection.cursor() as cursor:
             sql_new = f"""
                     SELECT value 
-                    from {i}
+                    from {j}
                     WHERE now_time>='{date_start}' and now_time<'{date_end}'
                     ORDER BY now_time
                                         """
@@ -934,18 +934,18 @@ def calculate_specific_shift(date, start, end):
             kat1 = kat1 + kat1_temp
             sql_new = f"""
                                     SELECT value 
-                                    from {i}
+                                    from {j}
                                     WHERE now_time>='{date_del}' and now_time<'{date_start}'
                                     ORDER BY now_time DESC limit 1
                                     """
             cursor.execute(sql_new)
             first_kat1 = cursor.fetchone()
             kat1 = kat1 - first_kat1[0]
-    for i in dist_table['SumexpenseDay']['kat2']:
+    for j in dist_table['SumexpenseDay']['kat2']:
         with connection.cursor() as cursor:
             sql_new = f"""
                     SELECT value 
-                    from {i}
+                    from {j}
                     WHERE now_time>='{date_start}' and now_time<'{date_end}'
                     ORDER BY now_time
                                         """
@@ -965,18 +965,18 @@ def calculate_specific_shift(date, start, end):
             kat2 = kat2 + kat2_temp
             sql_new = f"""
                                     SELECT value 
-                                    from {i}
+                                    from {j}
                                     WHERE now_time>='{date_del}' and now_time<'{date_start}'
                                     ORDER BY now_time DESC limit 1
                                     """
             cursor.execute(sql_new)
             first_kat2 = cursor.fetchone()
             kat2 = kat2 - first_kat2[0]
-    for i in dist_table['SumexpenseDay']['kat3']:
+    for j in dist_table['SumexpenseDay']['kat3']:
         with connection.cursor() as cursor:
             sql_new = f"""
                     SELECT value 
-                    from {i}
+                    from {j}
                     WHERE now_time>='{date_start}' and now_time<'{date_end}'
                     ORDER BY now_time
                                         """
@@ -996,7 +996,7 @@ def calculate_specific_shift(date, start, end):
             kat3 = kat3 + kat3_temp
             sql_new = f"""
                                     SELECT value 
-                                    from {i}
+                                    from {j}
                                     WHERE now_time>='{date_del}' and now_time<'{date_start}'
                                     ORDER BY now_time DESC limit 1
                                     """
