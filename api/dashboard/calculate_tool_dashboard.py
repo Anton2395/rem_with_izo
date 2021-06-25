@@ -778,7 +778,7 @@ def calculate_specific(date):
 
 
 def calculate_specific_shift(date, start, end):
-    date_start = datetime.datetime(date.year, date.month, date.day, start.hour, start.minute, start.second)
+    date_start = datetime.datetime(date.year, date.month, date.day, start.hour, start.minute, start.second, tzinfo=)
     date_end = datetime.datetime(date.year, date.month, date.day, end.hour, end.minute, end.second)
     date_del = date_start - datetime.timedelta(hours=1)
     iso = 0
@@ -812,7 +812,7 @@ def calculate_specific_shift(date, start, end):
         first_zalito = cursor.fetchone()
         zalito1 = zalito1 - first_zalito[0]
         for t in zalito_array:
-            print(t[1])
+            print(t[1], "||", t[0])
     ################
     for j in dist_table['SumexpenseDay']['iso']:
         with connection.cursor() as cursor:
