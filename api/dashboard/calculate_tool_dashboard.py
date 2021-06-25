@@ -778,8 +778,8 @@ def calculate_specific(date):
 
 
 def calculate_specific_shift(date, start, end):
-    date_start = datetime.datetime(date.year, date.month, date.day, start.hour, start.minute, start.second) - datetime.timedelta(hours=3)
-    date_end = datetime.datetime(date.year, date.month, date.day, end.hour, end.minute, end.second) - datetime.timedelta(hours=3)
+    date_start = datetime.datetime(date.year, date.month, date.day, start.hour, start.minute, start.second)
+    date_end = datetime.datetime(date.year, date.month, date.day, end.hour, end.minute, end.second)
     date_del = date_start - datetime.timedelta(hours=1)
     iso = 0
     pen = 0
