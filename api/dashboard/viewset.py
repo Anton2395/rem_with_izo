@@ -207,11 +207,11 @@ class EditionDayViews(APIView):
             else:
                 change_sum = 0
             data = {
-                "suitable": art.suitable,
+                "suitable": float('{:.2f}'.format(art.suitable)),
                 "change_suitable": round(change_suitable),
-                "substandard": art.substandard,
+                "substandard": float('{:.2f}'.format(art.substandard)),
                 "change_substandard": round(change_substandard),
-                "defect": art.defect,
+                "defect": float('{:.2f}'.format(art.defect)),
                 "change_defect": round(change_defect),
                 "flooded": art.flooded,
                 "change_flooded": round(change_flooded),
@@ -299,15 +299,15 @@ class EditionMonthViews(APIView):
             else:
                 change_sum = 0
             data = {
-                "suitable": suitable,
+                "suitable": float('{:.2f}'.format(suitable)),
                 "change_suitable": round(change_suitable),
-                "substandard": substandard,
+                "substandard": float('{:.2f}'.format(substandard)),
                 "change_substandard": round(change_substandard),
-                "defect": defect,
+                "defect": float('{:.2f}'.format(defect)),
                 "change_defect": round(change_defect),
                 "flooded": flooded,
                 "change_flooded": round(change_flooded),
-                "sum": sum,
+                "sum": float('{:.2f}'.format(sum)),
                 "change_sum": round(change_sum)
             }
         except UnboundLocalError:
@@ -351,11 +351,11 @@ class EditionShiftViews(APIView):
         else:
             change_sum = 0
         data = {
-            "suitable": k["suitable"],
+            "suitable": float('{:.2f}'.format(k["suitable"])),
             "change_suitable": round(change_suitable),
-            "substandard": k["substandard"],
+            "substandard": float('{:.2f}'.format(k["substandard"])),
             "change_substandard": round(change_substandard),
-            "defect": k["defect"],
+            "defect": float('{:.2f}'.format(k["defect"])),
             "change_defect": round(change_defect),
             "flooded": k["flooded"],
             "change_flooded": round(change_flooded),
