@@ -315,18 +315,47 @@ class EditionMonthViews(APIView):
                 change_sum = (((sum/sum_pr)-1)*100)
             else:
                 change_sum = 0
-            data = {
-                "suitable": float('{:.2f}'.format(suitable)),
-                "change_suitable": round(change_suitable),
-                "substandard": float('{:.2f}'.format(substandard)),
-                "change_substandard": round(change_substandard),
-                "defect": float('{:.2f}'.format(defect)),
-                "change_defect": round(change_defect),
-                "flooded": flooded,
-                "change_flooded": round(change_flooded),
-                "sum": float('{:.2f}'.format(sum)),
-                "change_sum": round(change_sum)
-            }
+            if sum != 0:
+                # data = {
+                #     "suitable": float('{:.2f}'.format(art.suitable)),
+                #     # "change_suitable": round(change_suitable),
+                #     "change_suitable": round(art.suitable*100/art.sum),
+                #     "substandard": float('{:.2f}'.format(art.substandard)),
+                #     # "change_substandard": round(change_substandard),
+                #     "change_substandard": round(art.substandard*100/art.sum),
+                #     "defect": float('{:.2f}'.format(art.defect)),
+                #     # "change_defect": round(change_defect),
+                #     "change_defect": round(art.defect*100/art.sum),
+                #     "flooded": art.flooded,
+                #     # "change_flooded": round(change_flooded),
+                #     "sum": art.sum,
+                #     # "change_sum": round(change_sum)
+                # }
+                data = {
+                    "suitable": float('{:.2f}'.format(suitable)),
+                    "change_suitable": round(suitable*100/sum),
+                    "substandard": float('{:.2f}'.format(substandard)),
+                    "change_substandard": round(substandard*100/sum),
+                    "defect": float('{:.2f}'.format(defect)),
+                    "change_defect": round(defect*100/sum),
+                    "flooded": flooded,
+                    # "change_flooded": round(change_flooded),
+                    "sum": float('{:.2f}'.format(sum)),
+                    # "change_sum": round(change_sum)
+                }
+            else:
+                data = {
+                    "suitable": float('{:.2f}'.format(suitable)),
+                    "change_suitable": 0,
+                    "substandard": float('{:.2f}'.format(substandard)),
+                    "change_substandard": 0,
+                    "defect": float('{:.2f}'.format(defect)),
+                    "change_defect": 0,
+                    "flooded": flooded,
+                    # "change_flooded": round(change_flooded),
+                    "sum": float('{:.2f}'.format(sum)),
+                    # "change_sum": round(change_sum)
+                }
         except UnboundLocalError:
             data = {"error":'not Role'}
             return Response(data, status=status.HTTP_404_NOT_FOUND)
