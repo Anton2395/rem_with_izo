@@ -789,7 +789,7 @@ def calculate_specific_shift(date, start, end):
     kat3 = 0
     with connection.cursor() as cursor:
         sql_zalito = f"""
-                SELECT value 
+                SELECT value, now_time
                 from {dist_table['EditionDay1']['flooded']}
                 WHERE now_time>='{date_start}' and now_time<'{date_end}'
                 ORDER BY now_time
@@ -807,15 +807,12 @@ def calculate_specific_shift(date, start, end):
                 flag = 1
             if flag == 0 and i == (leng - 1):
                 zalito1 = zalito1 + d[0]
-        sql_zalito = f"""
-                        SELECT value 
-                        from {dist_table['EditionDay1']['flooded']}
-                        WHERE now_time>='{date_del}' and now_time<'{date_start}'
-                        ORDER BY now_time DESC limit 1
-                        """
+        sql_zalito = sql_zalito + """ limit 1"""
         cursor.execute(sql_zalito)
         first_zalito = cursor.fetchone()
         zalito1 = zalito1 - first_zalito[0]
+        for t in zalito_array:
+            print(t[1])
     ################
     for j in dist_table['SumexpenseDay']['iso']:
         with connection.cursor() as cursor:
@@ -839,12 +836,7 @@ def calculate_specific_shift(date, start, end):
                 if flag == 0 and i == (leng - 1):
                     iso_temp = iso_temp + d[0]
             iso = iso + iso_temp
-            sql_new = f"""
-                        SELECT value 
-                        from {j}
-                        WHERE now_time>='{date_del}' and now_time<'{date_start}'
-                        ORDER BY now_time DESC limit 1
-                        """
+            sql_new = sql_new + """ limit 1"""
             cursor.execute(sql_new)
             first_iso = cursor.fetchone()
             iso = iso - first_iso[0]
@@ -870,12 +862,7 @@ def calculate_specific_shift(date, start, end):
                 if flag == 0 and i == (leng - 1):
                     pol_temp = pol_temp + d[0]
             pol = pol + pol_temp
-            sql_new = f"""
-                                    SELECT value 
-                                    from {j}
-                                    WHERE now_time>='{date_del}' and now_time<'{date_start}'
-                                    ORDER BY now_time DESC limit 1
-                                    """
+            sql_new = sql_new + """ limit 1"""
             cursor.execute(sql_new)
             first_pol = cursor.fetchone()
             pol = pol - first_pol[0]
@@ -901,12 +888,7 @@ def calculate_specific_shift(date, start, end):
                 if flag == 0 and i == (leng - 1):
                     pen_temp = pen_temp + d[0]
             pen = pen + pen_temp
-            sql_new = f"""
-                                    SELECT value 
-                                    from {j}
-                                    WHERE now_time>='{date_del}' and now_time<'{date_start}'
-                                    ORDER BY now_time DESC limit 1
-                                    """
+            sql_new = sql_new + """ limit 1"""
             cursor.execute(sql_new)
             first_pen = cursor.fetchone()
             pen = pen - first_pen[0]
@@ -932,12 +914,7 @@ def calculate_specific_shift(date, start, end):
                 if flag == 0 and i == (leng - 1):
                     kat1_temp = kat1_temp + d[0]
             kat1 = kat1 + kat1_temp
-            sql_new = f"""
-                                    SELECT value 
-                                    from {j}
-                                    WHERE now_time>='{date_del}' and now_time<'{date_start}'
-                                    ORDER BY now_time DESC limit 1
-                                    """
+            sql_new = sql_new + """ limit 1"""
             cursor.execute(sql_new)
             first_kat1 = cursor.fetchone()
             kat1 = kat1 - first_kat1[0]
@@ -963,12 +940,7 @@ def calculate_specific_shift(date, start, end):
                 if flag == 0 and i == (leng - 1):
                     kat2_temp = kat2_temp + d[0]
             kat2 = kat2 + kat2_temp
-            sql_new = f"""
-                                    SELECT value 
-                                    from {j}
-                                    WHERE now_time>='{date_del}' and now_time<'{date_start}'
-                                    ORDER BY now_time DESC limit 1
-                                    """
+            sql_new = sql_new + """ limit 1"""
             cursor.execute(sql_new)
             first_kat2 = cursor.fetchone()
             kat2 = kat2 - first_kat2[0]
@@ -994,12 +966,7 @@ def calculate_specific_shift(date, start, end):
                 if flag == 0 and i == (leng - 1):
                     kat3_temp = kat3_temp + d[0]
             kat3 = kat3 + kat3_temp
-            sql_new = f"""
-                                    SELECT value 
-                                    from {j}
-                                    WHERE now_time>='{date_del}' and now_time<'{date_start}'
-                                    ORDER BY now_time DESC limit 1
-                                    """
+            sql_new = sql_new + """ limit 1"""
             cursor.execute(sql_new)
             first_kat3 = cursor.fetchone()
             kat3 = kat3 - first_kat3[0]
