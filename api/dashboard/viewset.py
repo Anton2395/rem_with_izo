@@ -185,8 +185,7 @@ class EditionDayViews(APIView):
             if globals()[dash].objects.filter(date=date_del).exists():
                 art_del = globals()[dash].objects.get(date=date_del)
             else:
-                calculate_edition(date_del)
-                art_del = globals()[dash].objects.get(date=date_del)
+                art_del = calculate_edition(date_del)
             if art_del.suitable != 0:
                 change_suitable = (((art.suitable/art_del.suitable)-1)*100)
             else:
@@ -251,16 +250,16 @@ class EditionMonthViews(APIView):
                 else:
                     art = calculate_edition(dat)
                 suitable = suitable + art.suitable
-                substandard = substandard + art.suitable
+                substandard = substandard + art.substandard
                 defect = defect + art.defect
                 flooded = flooded + art.flooded
                 sum = sum + art.sum
                 dat = dat - delt
                 sh = sh - 1
-            sh = data_pred.day
 
 
             #пред. месяц
+            sh = data_pred.day
             suitable_pr = 0
             substandard_pr = 0
             defect_pr = 0
