@@ -38,7 +38,7 @@
         <div class="indicators">
           <div class="module">
             <div class="index">{{ panelRelease.sum }}</div>
-            <indicator :change="panelRelease.change_sum"></indicator>
+            <!-- <indicator :change="panelRelease.change_sum"></indicator> -->
           </div>
           <div class="data-list">
             <div class="list">
@@ -78,7 +78,7 @@
             <div class="title">Залито метров</div>
             <div class="data">
               <div class="index">{{ panelRelease.flooded }}</div>
-              <indicator :change="panelRelease.change_flooded"></indicator>
+              <!-- <indicator :change="panelRelease.change_flooded"></indicator> -->
             </div>
           </div>
         </div>

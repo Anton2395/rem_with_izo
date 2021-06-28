@@ -42,7 +42,7 @@
           v-if="comparisonModuleData && comparisonModuleData.isQuery"
         >
           <div class="module">
-            <div class="index">{{ comparisonModuleData.sum1 }}</div>
+            <div class="index">{{ comparisonModuleData.sum1.toFixed(2) }}</div>
             <indicator :change="comparisonModuleData.sum1_ch"></indicator>
           </div>
           <div class="data-list">
@@ -53,7 +53,7 @@
               </div>
               <div class="data">
                 <div class="index">
-                  {{ comparisonModuleData.suitable1 }}
+                  {{ comparisonModuleData.suitable1.toFixed(2) }}
                 </div>
                 <indicator
                   :change="comparisonModuleData.sui1_ch"
@@ -67,7 +67,7 @@
               </div>
               <div class="data">
                 <div class="index">
-                  {{ comparisonModuleData.substandard1 }}
+                  {{ comparisonModuleData.substandard1.toFixed(2) }}
                 </div>
                 <indicator
                   :change="comparisonModuleData.sub1_ch"
@@ -81,7 +81,7 @@
               </div>
               <div class="data">
                 <div class="index">
-                  {{ comparisonModuleData.defect1 }}
+                  {{ comparisonModuleData.defect1.toFixed(2) }}
                 </div>
                 <indicator
                   :change="comparisonModuleData.def1_ch"
@@ -92,7 +92,7 @@
           <div class="indicators-footer">
             <div class="title">Залито метров</div>
             <div class="data">
-              <div class="index">{{ comparisonModuleData.flooded1 }}</div>
+              <div class="index">{{ comparisonModuleData.flooded1.toFixed(2) }}</div>
               <indicator
                 :change="comparisonModuleData.flo_ch"
               ></indicator>
@@ -116,7 +116,7 @@
           v-if="comparisonModuleData && comparisonModuleData.isQuery"
         >
           <div class="module">
-            <div class="index">{{ comparisonModuleData.sum2 }}</div>
+            <div class="index">{{ comparisonModuleData.sum2.toFixed(2) }}</div>
           </div>
           <div class="data-list">
             <div class="list">
@@ -126,7 +126,7 @@
               </div>
               <div class="data">
                 <div class="index">
-                  {{ comparisonModuleData.suitable2 }}
+                  {{ comparisonModuleData.suitable2.toFixed(2) }}
                 </div>
               </div>
             </div>
@@ -137,7 +137,7 @@
               </div>
               <div class="data">
                 <div class="index">
-                  {{ comparisonModuleData.substandard2 }}
+                  {{ comparisonModuleData.substandard2.toFixed(2) }}
                 </div>
               </div>
             </div>
@@ -148,7 +148,7 @@
               </div>
               <div class="data">
                 <div class="index">
-                  {{ comparisonModuleData.defect2 }}
+                  {{ comparisonModuleData.defect2.toFixed(2) }}
                 </div>
               </div>
             </div>
@@ -156,7 +156,7 @@
           <div class="indicators-footer">
             <div class="title">Залито метров</div>
             <div class="data">
-              <div class="index">{{ comparisonModuleData.flooded2 }}</div>
+              <div class="index">{{ comparisonModuleData.flooded2.toFixed(2) }}</div>
             </div>
           </div>
         </div>
