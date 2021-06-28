@@ -81,7 +81,7 @@ services:
       - ./web:/code
       # - web_data:/code/
     ports:
-      - "8011:80"
+      - "80:80"
     networks:
       mvlab_network:
         ipv4_address: 10.0.0.5
