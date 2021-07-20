@@ -3,7 +3,7 @@ version: "3.9"
 
 services:
   postgres:
-    container_name: postgres_container
+    container_name: postgres_container1
     image: postgres
     # restart: always
     environment:
@@ -16,13 +16,13 @@ services:
       - postgres:/data/postgres
       #  - ./volume/DB/:/data/postgres
     ports:
-      - "15432:5432"
+      - "25432:5432"
     networks:
       mvlab_network:
         ipv4_address: 10.0.0.2
 
   pgadmin:
-    container_name: pgadmin_container
+    container_name: pgadmin_container1
     image: dpage/pgadmin4:5.0
     # restart: always
     environment:
@@ -34,7 +34,7 @@ services:
       - pgadmin:/root/.pgadmin
       # - ./volume/pgadmin_data/:/root/.pgadmin
     ports:
-      - "${PGADMIN_PORT:-5050}:80"
+      - "${PGADMIN_PORT:-5051}:80"
     networks:
       mvlab_network:
         ipv4_address: 10.0.0.3
@@ -42,7 +42,7 @@ services:
     restart: unless-stopped
 
   nginx:
-    container_name: nginx_server
+    container_name: nginx_server1
     image: nginx
     # restart: always
     environment:
@@ -51,13 +51,13 @@ services:
       - ./temp_data:/usr/share/nginx/html
       # - web_data:/usr/share/nginx/html
     ports:
-      - "81:80"
+      - "82:80"
     networks:
       mvlab_network:
         ipv4_address: 10.0.0.4
 
   node-red:
-    container_name: node-red
+    container_name: node-red1
     image: nodered/node-red:latest
     # restart: always
     environment:
@@ -71,7 +71,7 @@ services:
         ipv4_address: 10.0.0.8
 
   web:
-    container_name: web_server
+    container_name: web_server1
     build: ./web
     # command: bash -c "npm install && npm run dev"
     command: bash -c "
@@ -81,14 +81,14 @@ services:
       - ./web:/code
       # - web_data:/code/
     ports:
-      - "80:80"
+      - "801:80"
     networks:
       mvlab_network:
         ipv4_address: 10.0.0.5
     # restart: unless-stopped
 
   opc:
-    container_name: opc_server
+    container_name: opc_server1
     build: ./opc
     command: python3 main.py
     # restart: always
@@ -97,13 +97,13 @@ services:
     volumes:
       - ./opc:/code
     ports:
-      - 5001:5001
+      - 5002:5001
     networks:
       mvlab_network:
         ipv4_address: 10.0.0.6
 
   api:
-    container_name: api_server
+    container_name: api_server1
     build: ./api
     # restart: always
     command:
@@ -118,7 +118,7 @@ services:
     volumes:
       - ./api:/code
     ports:
-      - 50001:50001
+      - 50002:50001
     networks:
       mvlab_network:
         ipv4_address: 10.0.0.7
