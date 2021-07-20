@@ -86,7 +86,7 @@ export default {
         // baseURL: 'http://128.65.54.166:8082',
 
         // baseURL:  'http://localhost:50001/',
-        baseUrl: 'http://izospan.ddns.net:50001',
+        baseUrl: 'http://itech.by:50002/',
 
         proxy: false,
     },
