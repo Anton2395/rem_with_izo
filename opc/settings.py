@@ -5,7 +5,7 @@ import time
 
 DB = {
     'dbName': 'db1',
-    'host': '10.0.0.2',
+    'host': '10.0.1.1',
     'port': 25432,
     'user': 'mvlab',
     'pass': 'z1x2c3',
