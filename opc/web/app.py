@@ -14,7 +14,7 @@ from passlib.hash import django_pbkdf2_sha256
 # БД
 #######################################################
 # engine = create_engine('sqlite:///test.db', connect_args={'check_same_thread': False}, echo=False)
-engine = create_engine('postgresql+psycopg2://' + DB['user'] + ':' + DB['pass'] + '@' + DB['host'] + ':' + DB['port'] + '/' + DB['dbName'], pool_size=20, max_overflow=0)
+engine = create_engine('postgresql+psycopg2://' + DB['user'] + ':' + DB['pass'] + '@' + DB['host'] + ':' + str(DB['port']) + '/' + DB['dbName'], pool_size=20, max_overflow=0)
 base = declarative_base()
 
 
