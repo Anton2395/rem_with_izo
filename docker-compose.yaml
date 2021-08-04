@@ -48,10 +48,14 @@ services:
     environment:
       - TZ=Europe/Minsk
     volumes:
-      - ./temp_data:/usr/share/nginx/html
+#      - ./temp_data:/usr/share/nginx/html
       # - web_data:/usr/share/nginx/html
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+      - web_data:/dat1/
+      - web_rem:/dat2/
     ports:
-      - "82:80"
+      - "82:81"
     networks:
       mvlab_network:
         ipv4_address: 10.0.1.4
@@ -76,10 +80,27 @@ services:
     # command: bash -c "npm install && npm run dev"
     command: bash -c "
       npm install &&
-      npm run dev"
+      npm run generate"
     volumes:
       - ./web:/code
-      # - web_data:/code/
+      - web_data:/code/
+    ports:
+      - "801:80"
+    networks:
+      mvlab_network:
+        ipv4_address: 10.0.1.5
+    # restart: unless-stopped
+
+  web_rem:
+    container_name: web_rem_server1
+    build: ./web_rem
+    # command: bash -c "npm install && npm run dev"
+    command: bash -c "
+      npm install &&
+      npm run generate"
+    volumes:
+      - ./web_rem:/code
+      - web_rem:/code/
     ports:
       - "801:80"
     networks:
@@ -138,5 +159,6 @@ volumes:
   postgres:
   pgadmin:
   web_data:
+  web_rem:
 #     api_data:
 #     opc_data:
